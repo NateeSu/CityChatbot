@@ -9,7 +9,6 @@ const securityEnvironment: SecurityEnvironment =
     : "local";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
   poweredByHeader: false,
   reactStrictMode: true,
   transpilePackages: ["@citychatbot/config", "@citychatbot/security"],
