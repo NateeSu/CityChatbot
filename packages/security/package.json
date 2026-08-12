@@ -27,6 +27,10 @@
     "./ai-safety": {
       "types": "./src/ai-safety.ts",
       "default": "./src/ai-safety.ts"
+    },
+    "./privacy": {
+      "types": "./src/privacy.ts",
+      "default": "./src/privacy.ts"
     }
   }
 }

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "1b0e961afa3d4b2aa5dc6b307978b781da4fd02731cc2099a9a9f5ce568b3aee",
+  "executionManifestSha256": "f4cbb6c9c1a81c914b53b03d0b3ccc3fc01223fe1a564847510b7c41b61fbd0d",
+  "taskId": "P0-ARCH-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "5ed2c572044df0772ad72c9b9b14085661d9ed9df3d6c53c5680462a6213bcb7",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:18:57Z",
+  "finishedAt": "2026-08-12T15:18:58Z",
+  "requiredTestIds": [
+    "P0-ARCH-REQUEST-BACKGROUND",
+    "P0-ARCH-OUTBOX-ATOMICITY",
+    "P0-ARCH-TENANT-SERVICE-ROLE",
+    "P0-ARCH-EXPLICIT-ROUTES",
+    "P0-ARCH-FAIL-CLOSED-ROLLBACK"
+  ],
+  "passedTestIds": [
+    "P0-ARCH-REQUEST-BACKGROUND",
+    "P0-ARCH-OUTBOX-ATOMICITY",
+    "P0-ARCH-TENANT-SERVICE-ROLE",
+    "P0-ARCH-EXPLICIT-ROUTES",
+    "P0-ARCH-FAIL-CLOSED-ROLLBACK"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_architecture_contract -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_explicit_rollback_and_failure_isolation (scripts.test_architecture_contract.ArchitectureContractTests.test_explicit_rollback_and_failure_isolation) ... ok\ntest_request_background_and_outbox_contract_is_recorded (scripts.test_architecture_contract.ArchitectureContractTests.test_request_background_and_outbox_contract_is_recorded) ... ok\ntest_route_contract_has_no_wildcard_route (scripts.test_architecture_contract.ArchitectureContractTests.test_route_contract_has_no_wildcard_route) ... ok\ntest_tenant_and_secret_boundary_is_explicit (scripts.test_architecture_contract.ArchitectureContractTests.test_tenant_and_secret_boundary_is_explicit) ... ok\ntest_webhook_ack_does_not_claim_direct_chat_delivery (scripts.test_architecture_contract.ArchitectureContractTests.test_webhook_ack_does_not_claim_direct_chat_delivery) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.111s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-COR-001"
+    }
+  ],
+  "reportHash": "23cf146601c8a3c57a67b020f5e801df3710dd259803e247d5280f0c6c087f13"
+}

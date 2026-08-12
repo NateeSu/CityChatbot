@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "8935769d2bc94d4c5787eee35ebed1c0a53b3108226f315e784e8e0c7797e2fe",
+  "executionManifestSha256": "462f91b0fbfd12ed58f5edc31c208b860591723797f56f28e2fe5c864a3ea2bb",
+  "taskId": "P8-RAG-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "19af0cbdde687dfe40a937402d4e77056ffdff38d7f6a098b3ceb75e2039631f",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:39:51Z",
+  "finishedAt": "2026-08-12T16:39:54Z",
+  "requiredTestIds": [
+    "P8-RAG-PARSER",
+    "P8-RAG-RECALL",
+    "P8-RAG-CITATION",
+    "P8-RAG-CONFLICT-STALE",
+    "P8-RAG-INJECTION-TENANT"
+  ],
+  "passedTestIds": [
+    "P8-RAG-PARSER",
+    "P8-RAG-RECALL",
+    "P8-RAG-CITATION",
+    "P8-RAG-CONFLICT-STALE",
+    "P8-RAG-INJECTION-TENANT"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec vitest run packages/knowledge/src/retriever.test.ts packages/chat/src/grounding.test.ts --reporter=dot && python -m unittest scripts.test_corpus_audit scripts.test_rag_evaluator -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n···············\n\n Test Files  2 passed (2)\n      Tests  15 passed (15)\n   Start at  23:39:52\n   Duration  959ms (transform 616ms, setup 0ms, import 799ms, tests 36ms, environment 0ms)\n\n",
+      "stderr": "test_conflict_ledger_is_attached_to_known_sources (scripts.test_corpus_audit.CorpusAuditTests.test_conflict_ledger_is_attached_to_known_sources) ... ok\ntest_fail_safe_governance_blocks_every_file_from_active_index (scripts.test_corpus_audit.CorpusAuditTests.test_fail_safe_governance_blocks_every_file_from_active_index) ... ok\ntest_frozen_corpus_counts_match_spec (scripts.test_corpus_audit.CorpusAuditTests.test_frozen_corpus_counts_match_spec) ... ok\ntest_integrity_digests_are_present (scripts.test_corpus_audit.CorpusAuditTests.test_integrity_digests_are_present) ... ok\ntest_locked_rag_conflict_stale_injection_and_tenant_boundaries (scripts.test_corpus_audit.CorpusAuditTests.test_locked_rag_conflict_stale_injection_and_tenant_boundaries) ... ok\ntest_locked_rag_parser_recall_and_claim_citation_contract (scripts.test_corpus_audit.CorpusAuditTests.test_locked_rag_parser_recall_and_claim_citation_contract) ... ok\ntest_macro_docx_is_rejected_and_quarantined (scripts.test_corpus_audit.CorpusAuditTests.test_macro_docx_is_rejected_and_quarantined) ... ok\ntest_manifest_is_deterministic_and_matches_checked_in_artifact (scripts.test_corpus_audit.CorpusAuditTests.test_manifest_is_deterministic_and_matches_checked_in_artifact) ... ok\ntest_ooxml_content_control_keeps_adl_comparator (scripts.test_corpus_audit.CorpusAuditTests.test_ooxml_content_control_keeps_adl_comparator) ... ok\ntest_canonical_reason_and_outcome_fields_are_only_used (scripts.test_rag_evaluator.RAGEvaluatorTests.test_canonical_reason_and_outcome_fields_are_only_used) ... ok\ntest_checked_in_bundle_is_immutable_and_verified (scripts.test_rag_evaluator.RAGEvaluatorTests.test_checked_in_bundle_is_immutable_and_verified) ... ok\ntest_claim_evidence_and_citation_coverage_is_exact_for_no_active_corpus (scripts.test_rag_evaluator.RAGEvaluatorTests.test_claim_evidence_and_citation_coverage_is_exact_for_no_active_corpus) ... ok\ntest_conflict_stale_injection_and_tenant_cases_use_safe_fallback (scripts.test_rag_evaluator.RAGEvaluatorTests.test_conflict_stale_injection_and_tenant_cases_use_safe_fallback) ... ok\ntest_evaluator_self_tests_reject_known_bad_answers (scripts.test_rag_evaluator.RAGEvaluatorTests.test_evaluator_self_tests_reject_known_bad_answers) ... ok\ntest_locked_evaluator_covers_every_case_five_times (scripts.test_rag_evaluator.RAGEvaluatorTests.test_locked_evaluator_covers_every_case_five_times) ... ok\ntest_report_has_metrics_hash_and_unit_ids (scripts.test_rag_evaluator.RAGEvaluatorTests.test_report_has_metrics_hash_and_unit_ids) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 0.820s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P8-E2E-001"
+    }
+  ],
+  "reportHash": "5b8b3e749029bc4671aaef5b4713f866c0956449bb3051d574f3cde7d68734be"
+}

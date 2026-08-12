@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { InMemoryKnowledgeRepository, KnowledgeDomainError, type CreateKnowledgeDocumentVersionInput } from "./documents";
+import { InMemoryKnowledgeRepository, KnowledgeDomainError, type CreateKnowledgeDocumentVersionInput, type KnowledgeUnitGateReceipt } from "./documents";
 
 const TENANT_A = "tenant-a";
 const TENANT_B = "tenant-b";
@@ -8,6 +8,14 @@ const DEPARTMENT_B = "department-b";
 const CATEGORY = "category-civic";
 const NOW = new Date("2026-08-10T00:00:00.000Z");
 const SHA = "a".repeat(64);
+const UNIT_GATE_RECEIPT: KnowledgeUnitGateReceipt = {
+  manifestVersion: "task-unit-gates.v1",
+  reportHash: `sha256:${"b".repeat(64)}`,
+  requiredTestIds: ["P6-KB-DOCUMENT-LIFECYCLE", "P6-KB-UNIT-GATED-ACTIVATION"],
+  passedTestIds: ["P6-KB-DOCUMENT-LIFECYCLE", "P6-KB-UNIT-GATED-ACTIVATION"],
+  actor: "SYSTEM_UNIT_GATE",
+  passedAt: NOW.toISOString(),
+};
 
 const input = (overrides: Partial<CreateKnowledgeDocumentVersionInput> = {}): CreateKnowledgeDocumentVersionInput => ({
   tenantId: TENANT_A,
@@ -138,5 +146,27 @@ describe("knowledge document lifecycle", () => {
     expect(repository.listSearchableChunks(TENANT_A, { at: NOW })).toHaveLength(0);
     repository.activateApprovedVersion(TENANT_A, created.version.id, NOW);
     expect(repository.listSearchableChunks(TENANT_A, { at: NOW }).map((value) => value.id)).toEqual([chunk.id]);
+  });
+
+  it("activates an evaluated version from a complete SYSTEM_UNIT_GATE receipt without human approval", () => {
+    const repository = new InMemoryKnowledgeRepository(() => NOW);
+    const created = repository.createVersion(input({ checksumSha256: "1".repeat(64), idempotencyKey: "unit-gate-activation-001" }));
+    processToEvaluation(repository, TENANT_A, created.version.id);
+    const active = repository.unitGateAndActivate(TENANT_A, created.version.id, UNIT_GATE_RECEIPT, NOW);
+    expect(active.state).toBe("ACTIVE");
+    expect(active.approvalStatus).toBe("PENDING");
+    expect(active.activationStatus).toBe("UNIT_GATED");
+    expect(active.activatedBy).toBe("SYSTEM_UNIT_GATE");
+    expect(active.unitGateReportHash).toBe(UNIT_GATE_RECEIPT.reportHash);
+    expect(active.unitGatePassedTestIds).toEqual(UNIT_GATE_RECEIPT.passedTestIds);
+    expect(repository.listRetrievableVersions(TENANT_A, { at: NOW }).map((version) => version.id)).toEqual([created.version.id]);
+  });
+
+  it("rejects an incomplete unit-gate receipt and cross-tenant activation", () => {
+    const repository = new InMemoryKnowledgeRepository(() => NOW);
+    const created = repository.createVersion(input({ checksumSha256: "2".repeat(64), idempotencyKey: "unit-gate-activation-002" }));
+    processToEvaluation(repository, TENANT_A, created.version.id);
+    expect(() => repository.unitGateAndActivate(TENANT_A, created.version.id, { ...UNIT_GATE_RECEIPT, passedTestIds: [] }, NOW)).toThrowError(/UNIT_GATE_REQUIRED/);
+    expect(() => repository.unitGateAndActivate(TENANT_B, created.version.id, UNIT_GATE_RECEIPT, NOW)).toThrowError(/TENANT_BOUNDARY/);
   });
 });

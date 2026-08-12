@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "5a6a69c117e494165d414b240015534d135f0fce159d59b5e3ec7b6edf39c67e",
+  "executionManifestSha256": "b00c83eba2bf1b9befd39ff61e71d0d1e742144e7c3197d2b86fd47e255ac6f6",
+  "taskId": "P8-RES-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "f7448759cdffd6387cae1369b5790951b1836c43e3ea3a7c5c0bb6fa810dff5a",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:57:47Z",
+  "finishedAt": "2026-08-12T16:57:48Z",
+  "requiredTestIds": [
+    "P8-RES-FAILURE-MATRIX",
+    "P8-RES-DR",
+    "P8-RES-PERFORMANCE",
+    "P8-RES-ROLLBACK"
+  ],
+  "passedTestIds": [
+    "P8-RES-FAILURE-MATRIX",
+    "P8-RES-DR",
+    "P8-RES-PERFORMANCE",
+    "P8-RES-ROLLBACK"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_recovery_contract scripts.test_pyramid_audit -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_backup_manifest_and_pitr_target_are_versioned (scripts.test_recovery_contract.RecoveryContractTests.test_backup_manifest_and_pitr_target_are_versioned) ... ok\ntest_dsar_is_pseudonymous_idempotent_and_tenant_scoped (scripts.test_recovery_contract.RecoveryContractTests.test_dsar_is_pseudonymous_idempotent_and_tenant_scoped) ... ok\ntest_failure_classes_and_safe_commit_boundary_are_implemented (scripts.test_recovery_contract.RecoveryContractTests.test_failure_classes_and_safe_commit_boundary_are_implemented) ... ok\ntest_legal_hold_blocks_matching_scope_and_is_reversible (scripts.test_recovery_contract.RecoveryContractTests.test_legal_hold_blocks_matching_scope_and_is_reversible) ... ok\ntest_manifest_example_is_json_safe_when_present (scripts.test_recovery_contract.RecoveryContractTests.test_manifest_example_is_json_safe_when_present) ... ok\ntest_p8_res_dr_isolated_restore_and_fail_closed (scripts.test_recovery_contract.RecoveryContractTests.test_p8_res_dr_isolated_restore_and_fail_closed) ... ok\ntest_p8_res_failure_matrix_preserves_core_intake_and_retries_safely (scripts.test_recovery_contract.RecoveryContractTests.test_p8_res_failure_matrix_preserves_core_intake_and_retries_safely) ... ok\ntest_p8_res_performance_contract_passes_the_versioned_two_x_soak_profile (scripts.test_recovery_contract.RecoveryContractTests.test_p8_res_performance_contract_passes_the_versioned_two_x_soak_profile) ... ok\ntest_p8_res_rollback_is_artifact_based_and_preserves_production_schema (scripts.test_recovery_contract.RecoveryContractTests.test_p8_res_rollback_is_artifact_based_and_preserves_production_schema) ... ok\ntest_restore_reconciliation_checks_integrity_and_access_boundaries (scripts.test_recovery_contract.RecoveryContractTests.test_restore_reconciliation_checks_integrity_and_access_boundaries) ... ok\ntest_retention_policy_is_versioned_and_fail_closed (scripts.test_recovery_contract.RecoveryContractTests.test_retention_policy_is_versioned_and_fail_closed) ... ok\ntest_retry_jobs_are_deduplicated_and_raw_provider_errors_are_not_persisted (scripts.test_recovery_contract.RecoveryContractTests.test_retry_jobs_are_deduplicated_and_raw_provider_errors_are_not_persisted) ... ok\ntest_runbook_covers_every_required_failure_and_rollback (scripts.test_recovery_contract.RecoveryContractTests.test_runbook_covers_every_required_failure_and_rollback) ... ok\ntest_fullspec_workload_baseline_and_two_x_scenario (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_fullspec_workload_baseline_and_two_x_scenario) ... ok\ntest_headroom_and_cost_ceiling_are_explicit (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_headroom_and_cost_ceiling_are_explicit) ... ok\ntest_slo_backpressure_and_isolation_contract_pass (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_slo_backpressure_and_isolation_contract_pass) ... ok\n\n----------------------------------------------------------------------\nRan 16 tests in 0.023s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P8-UAT-001"
+    }
+  ],
+  "reportHash": "d7384f5aa6d7087b623dc3d988dca07eaba108f8aa115a19e7e95199ec9954bf"
+}

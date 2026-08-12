@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "production-readiness.v1",
+  "taskId": "P8-GO-001",
+  "mode": "AUTOMATED_READINESS_REHEARSAL",
+  "productionMutationAllowed": false,
+  "migration": {
+    "strategy": "expand-contract-or-forward-fix",
+    "orderedBy": "timestamped filename",
+    "rehearsalTarget": "isolated-synthetic",
+    "rollbackStrategy": "forward-compatible fix or last-known-good artifact"
+  },
+  "backup": {
+    "manifest": "docs/operations/p7-dr-001-manifest.example.json",
+    "rpoMinutes": 15,
+    "rtoMinutes": 240,
+    "restoreTarget": "isolated database/storage namespace",
+    "productionOverwrite": false
+  },
+  "smoke": {
+    "required": ["health", "LIFF safe landing", "citizen complaint fallback", "admin boundary", "tenant isolation"],
+    "failureAction": "fail-closed-and-rollback"
+  },
+  "rollback": {
+    "application": "redeploy previous signed manifest",
+    "configuration": "disable narrowest feature flag",
+    "database": "forward fix or restore isolated checkpoint; never destructive production edit",
+    "verification": "health and synthetic smoke before traffic restoration"
+  },
+  "externalDependencies": "execution-retry-dependency-not-an-approval-gate"
+}

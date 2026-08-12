@@ -100,6 +100,42 @@ def safe_result(name: str, passed: bool, response: dict[str, Any], detail: str) 
     }
 
 
+def validate_report_contract(report: dict[str, Any]) -> None:
+    """Validate the persisted journey report without trusting external status."""
+
+    if report.get("schemaVersion") != 1 or report.get("taskId") != "P8-E2E-001":
+        raise E2ECertificationError("journey report schema/task mismatch")
+    if report.get("mode") != "local-synthetic":
+        raise E2ECertificationError("journey report must be local-synthetic")
+    summary = report.get("summary")
+    if not isinstance(summary, dict):
+        raise E2ECertificationError("journey report summary is required")
+    for key in ("localChecks", "localPassed", "localFailed", "externalNotAvailable"):
+        if not isinstance(summary.get(key), int) or summary[key] < 0:
+            raise E2ECertificationError(f"journey summary field is invalid: {key}")
+    if summary["localPassed"] + summary["localFailed"] != summary["localChecks"]:
+        raise E2ECertificationError("local journey check counts do not reconcile")
+    journeys = report.get("journeys")
+    if not isinstance(journeys, list) or not journeys:
+        raise E2ECertificationError("journeys are required")
+    checks = [check for journey in journeys for check in journey.get("checks", [])]
+    if len(checks) != summary["localChecks"]:
+        raise E2ECertificationError("journey check count does not reconcile")
+    if any(check.get("status") not in {"PASS", "FAIL"} for check in checks):
+        raise E2ECertificationError("journey check has a non-canonical status")
+    cleanup = report.get("cleanup")
+    if not isinstance(cleanup, dict) or cleanup.get("productionDataTouched") is not False:
+        raise E2ECertificationError("synthetic journey must prove production data was untouched")
+    dependencies = report.get("externalDependencies")
+    if not isinstance(dependencies, list):
+        raise E2ECertificationError("external dependency inventory is required")
+    if summary["externalNotAvailable"] != sum(item.get("status") == "NOT_AVAILABLE" for item in dependencies):
+        raise E2ECertificationError("external dependency count does not reconcile")
+    serialized = json.dumps(report, ensure_ascii=False, sort_keys=True)
+    if any(secret_marker in serialized.lower() for secret_marker in ("sk-or-v1-", "service_role", "password=", "secret=")):
+        raise E2ECertificationError("journey report contains secret-like data")
+
+
 def expect_status(
     base_url: str,
     name: str,
@@ -292,6 +328,7 @@ def build_report(root: Path, base_url: str, rc_path: Path) -> dict[str, Any]:
     }
     without_digest = {key: value for key, value in report.items() if key != "reportSha256"}
     report["reportSha256"] = sha256_bytes(canonical_json(without_digest))
+    validate_report_contract(report)
     return report
 
 

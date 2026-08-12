@@ -38,6 +38,9 @@ importers:
       '@citychatbot/bot-settings':
         specifier: workspace:*
         version: link:../../packages/bot-settings
+      '@citychatbot/chat':
+        specifier: workspace:*
+        version: link:../../packages/chat
       '@citychatbot/complaints':
         specifier: workspace:*
         version: link:../../packages/complaints

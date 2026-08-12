@@ -4,9 +4,10 @@ import { processDurableLineWebhook } from "@citychatbot/line/durable-webhook";
 import { NextResponse } from "next/server";
 
 import { PostgresLineWebhookStore } from "./store";
+import { runLineWorkerBatch } from "../../worker/runtime";
 
 export const runtime = "nodejs";
-export const maxDuration = 10;
+export const maxDuration = 60;
 
 const store = new PostgresLineWebhookStore();
 
@@ -21,5 +22,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ web
   const rawBody = new Uint8Array(await request.arrayBuffer());
   const result = await processDurableLineWebhook({ webhookKey: (await params).webhookKey, webhookHashSecret: hashSecret, signature, rawBody, requestId, correlationId, store });
   if (!result.accepted) return NextResponse.json({ accepted: false, reasonCode: result.reasonCode, requestId: result.requestId }, { status: result.status });
-  return NextResponse.json({ accepted: true, requestId: result.requestId, correlationId: result.correlationId, acceptedEventIds: result.acceptedEventIds, duplicateEventIds: result.duplicateEventIds }, { status: 200 });
+  let workerStatus: "NOT_RUN" | "OK" | "PARTIAL" | "DEFERRED" = "NOT_RUN";
+  if (process.env.LINE_CHAT_RUNTIME_ENABLED === "true") {
+    try {
+      workerStatus = (await runLineWorkerBatch({ maxJobs: 5 })).status === "OK" ? "OK" : "PARTIAL";
+    } catch {
+      workerStatus = "DEFERRED";
+    }
+  }
+  return NextResponse.json({ accepted: true, requestId: result.requestId, correlationId: result.correlationId, acceptedEventIds: result.acceptedEventIds, duplicateEventIds: result.duplicateEventIds, workerStatus }, { status: 200 });
 }

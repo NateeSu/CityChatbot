@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "backup-restore-manifest.v1",
+  "backupId": "synthetic-backup-2026-08-12T04:00:00Z",
+  "source": {
+    "environment": "production-like",
+    "releaseCandidate": "RC-REDACTED",
+    "databasePitrPosition": "opaque-provider-position",
+    "storageInventoryHash": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "configurationVersion": "config-v1",
+    "secretKeyVersions": ["supabase-key-v1", "line-channel-key-v1"]
+  },
+  "target": {
+    "environment": "isolated-synthetic",
+    "tenantIds": ["synthetic-tenant-a", "synthetic-tenant-b"],
+    "storageNamespace": "restore-rehearsal/synthetic/2026-08-12"
+  },
+  "rpoMinutes": 15,
+  "rtoMinutes": 240,
+  "checks": [
+    "database-checksum",
+    "foreign-keys",
+    "composite-tenant-foreign-keys",
+    "rls-and-forced-rls",
+    "append-only-audit",
+    "citation-version-links",
+    "storage-object-permissions",
+    "secret-redaction"
+  ],
+  "productionMutationAllowed": false,
+  "legalHoldAware": true
+}

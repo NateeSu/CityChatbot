@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "abb33dbf812ec35ad6b23b5161dd45ef33b7f7a52e9b52d83d7e9e683adf8dcc",
+  "executionManifestSha256": "040938ee8cdc577c15917157a0c68a841b5573c5ab3d58bcdd0fd33996ef330a",
+  "taskId": "P0-COR-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "ebdb6883d377259b029a29efbc0ccbe87c66dfb28f5da5b553b2c7cd944a7ed8",
+  "attempt": 2,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:20:55Z",
+  "finishedAt": "2026-08-12T15:20:56Z",
+  "requiredTestIds": [
+    "P0-COR-AUDIT-BASELINE",
+    "P0-COR-DETERMINISTIC-MANIFEST",
+    "P0-COR-CONFLICT-QUARANTINE",
+    "P0-COR-OOXML-CONTROL",
+    "P0-COR-MACRO-REJECT"
+  ],
+  "passedTestIds": [
+    "P0-COR-AUDIT-BASELINE",
+    "P0-COR-DETERMINISTIC-MANIFEST",
+    "P0-COR-CONFLICT-QUARANTINE",
+    "P0-COR-OOXML-CONTROL",
+    "P0-COR-MACRO-REJECT"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/audit_corpus.py --input doc_rag_test --verify docs/corpus/corpus-manifest.json && python -m unittest scripts.test_corpus_audit -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "CORPUS_MANIFEST_VERIFIED sha256:53d5313b3cdbcc00f79596c4804f3a630afbb6fadbf50b147336cd1f7108ace1\n",
+      "stderr": "test_conflict_ledger_is_attached_to_known_sources (scripts.test_corpus_audit.CorpusAuditTests.test_conflict_ledger_is_attached_to_known_sources) ... ok\ntest_fail_safe_governance_blocks_every_file_from_active_index (scripts.test_corpus_audit.CorpusAuditTests.test_fail_safe_governance_blocks_every_file_from_active_index) ... ok\ntest_frozen_corpus_counts_match_spec (scripts.test_corpus_audit.CorpusAuditTests.test_frozen_corpus_counts_match_spec) ... ok\ntest_integrity_digests_are_present (scripts.test_corpus_audit.CorpusAuditTests.test_integrity_digests_are_present) ... ok\ntest_macro_docx_is_rejected_and_quarantined (scripts.test_corpus_audit.CorpusAuditTests.test_macro_docx_is_rejected_and_quarantined) ... ok\ntest_manifest_is_deterministic_and_matches_checked_in_artifact (scripts.test_corpus_audit.CorpusAuditTests.test_manifest_is_deterministic_and_matches_checked_in_artifact) ... ok\ntest_ooxml_content_control_keeps_adl_comparator (scripts.test_corpus_audit.CorpusAuditTests.test_ooxml_content_control_keeps_adl_comparator) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.454s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-COR-002"
+    }
+  ],
+  "reportHash": "9f29520a08be218d42ac0f3869ae88a0d019bd35988dd3d970b75743661e2789"
+}

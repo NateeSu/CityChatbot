@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "48b2d183a9f53e69ece68c2f4353350a3d0b9b6307726d7894bb9aa2d00c99a6",
+  "executionManifestSha256": "20d3451f1f7cb8f50bcada1874cb1ae3b363411faae88bc13241656c1fda5dce",
+  "taskId": "P0-QA-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "c48a2c5fe60d1404197fbaceb6cc530010badb7c801441958189c710993301bb",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:27:13Z",
+  "finishedAt": "2026-08-12T15:27:14Z",
+  "requiredTestIds": [
+    "P0-QA-CASE-SCHEMA",
+    "P0-QA-OUTCOME-REASON",
+    "P0-QA-SOURCE-CHECKSUM",
+    "P0-QA-SAFETY-COVERAGE",
+    "P0-QA-SPLIT-SEAL"
+  ],
+  "passedTestIds": [
+    "P0-QA-CASE-SCHEMA",
+    "P0-QA-OUTCOME-REASON",
+    "P0-QA-SOURCE-CHECKSUM",
+    "P0-QA-SAFETY-COVERAGE",
+    "P0-QA-SPLIT-SEAL"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/build_certified_cases.py --verify && python -m unittest scripts.test_certified_cases -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "RAG_SUITE_VERIFIED sha256=sha256:df468f04a5d7a8cc92ad954bcaf76971ef8569d835d8c2e90ae47d46f7bf32f3\n",
+      "stderr": "test_all_hard_cases_have_six_variants_and_safety_tags (scripts.test_certified_cases.CertifiedCasesTests.test_all_hard_cases_have_six_variants_and_safety_tags) ... ok\ntest_canonical_case_schema_and_outcome_reason_mapping (scripts.test_certified_cases.CertifiedCasesTests.test_canonical_case_schema_and_outcome_reason_mapping) ... ok\ntest_checked_in_artifacts_are_deterministic_and_verified (scripts.test_certified_cases.CertifiedCasesTests.test_checked_in_artifacts_are_deterministic_and_verified) ... ok\ntest_every_case_has_source_checksum_and_fully_passed_system_gate (scripts.test_certified_cases.CertifiedCasesTests.test_every_case_has_source_checksum_and_fully_passed_system_gate) ... ok\ntest_split_is_exact_and_blind_ids_are_sealed (scripts.test_certified_cases.CertifiedCasesTests.test_split_is_exact_and_blind_ids_are_sealed) ... ok\ntest_tampered_case_is_rejected (scripts.test_certified_cases.CertifiedCasesTests.test_tampered_case_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.032s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-SEC-001"
+    }
+  ],
+  "reportHash": "139352312a1d540d011d3445a6423a7ab666560b1d33295c00a8163c3a4f9840"
+}

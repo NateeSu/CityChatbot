@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "bfc7c8750078b9c5b301bf706cc3b67b79da8bd9bd69da7a4f04611163880abd",
+  "executionManifestSha256": "ec276b2ca6f73770924ee0b041b50a640f68962174bc57f8cf7873f2dd6b5ebd",
+  "taskId": "P8-E2E-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "da3da7f69e520bd8874b6090c4c7df1284d400955efec5d59da9f23ced7aaccb",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:41:31Z",
+  "finishedAt": "2026-08-12T16:41:32Z",
+  "requiredTestIds": [
+    "P8-E2E-LIFF",
+    "P8-E2E-LINE",
+    "P8-E2E-ADMIN",
+    "P8-E2E-CLEANUP"
+  ],
+  "passedTestIds": [
+    "P8-E2E-LIFF",
+    "P8-E2E-LINE",
+    "P8-E2E-ADMIN",
+    "P8-E2E-CLEANUP"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_e2e_certification -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_canonical_json_is_stable (scripts.test_e2e_certification.E2ECertificationTests.test_canonical_json_is_stable) ... ok\ntest_external_dependencies_are_explicitly_fail_closed (scripts.test_e2e_certification.E2ECertificationTests.test_external_dependencies_are_explicitly_fail_closed) ... ok\ntest_journey_contract_reconciles_local_checks_and_cleanup (scripts.test_e2e_certification.E2ECertificationTests.test_journey_contract_reconciles_local_checks_and_cleanup) ... ok\ntest_report_is_json_object (scripts.test_e2e_certification.E2ECertificationTests.test_report_is_json_object) ... ok\ntest_report_write_is_immutable (scripts.test_e2e_certification.E2ECertificationTests.test_report_write_is_immutable) ... ok\ntest_unit_gate_ids_cover_journey_and_artifact_boundaries (scripts.test_e2e_certification.E2ECertificationTests.test_unit_gate_ids_cover_journey_and_artifact_boundaries) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.080s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P8-SEC-001"
+    }
+  ],
+  "reportHash": "4c7e2840e504df8716588b798982bf281ab4c4bae5856777695a1f283bbfceea"
+}

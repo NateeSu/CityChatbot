@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "cd7a0af41ccf59180cd229cb37aa140563d080fbf8a17efb7e03777a95ae1fbe",
+  "executionManifestSha256": "b555f4ee841e543a8cea50bd88ce6cc7ec5daea4b5859ab8a5632864a88649ff",
+  "taskId": "P0-COR-002",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "7fe56d1e3ba563f8a7036192eaea67b4e9cfa98a70a81e296ddea46654b9ba39",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:23:07Z",
+  "finishedAt": "2026-08-12T15:23:07Z",
+  "requiredTestIds": [
+    "P0-COR-CONFLICT-ALL-QUARANTINED",
+    "P0-COR-CONFLICT-SOURCE-MAPPING",
+    "P0-COR-CONFLICT-NO-ACTIVE-FACTS",
+    "P0-COR-CONFLICT-EXCLUDED-EVALUATION",
+    "P0-COR-CONFLICT-DETERMINISTIC"
+  ],
+  "passedTestIds": [
+    "P0-COR-CONFLICT-ALL-QUARANTINED",
+    "P0-COR-CONFLICT-SOURCE-MAPPING",
+    "P0-COR-CONFLICT-NO-ACTIVE-FACTS",
+    "P0-COR-CONFLICT-EXCLUDED-EVALUATION",
+    "P0-COR-CONFLICT-DETERMINISTIC"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/build_conflict_ledger.py --verify docs/corpus/conflict-ledger.json && python -m unittest scripts.test_conflict_ledger -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "CONFLICT_LEDGER_VERIFIED docs\\corpus\\conflict-ledger.json sha256=63cfaaa510087b063c78bf129b41d3b8d9cb3e9103aca60fef5aa2f33423c009\n",
+      "stderr": "test_all_conflicts_are_quarantined (scripts.test_conflict_ledger.ConflictLedgerTests.test_all_conflicts_are_quarantined) ... ok\ntest_checked_in_ledger_is_deterministic_and_integrity_verified (scripts.test_conflict_ledger.ConflictLedgerTests.test_checked_in_ledger_is_deterministic_and_integrity_verified) ... ok\ntest_each_conflict_is_attached_to_manifest_source_files (scripts.test_conflict_ledger.ConflictLedgerTests.test_each_conflict_is_attached_to_manifest_source_files) ... ok\ntest_no_conflict_fact_can_enter_active_index (scripts.test_conflict_ledger.ConflictLedgerTests.test_no_conflict_fact_can_enter_active_index) ... ok\ntest_template_and_evaluation_only_content_is_not_production_content (scripts.test_conflict_ledger.ConflictLedgerTests.test_template_and_evaluation_only_content_is_not_production_content) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.007s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-QA-001"
+    }
+  ],
+  "reportHash": "b951f730257286fd776f72bbee49923efc1d9bd886c0d41fe66baea1d798e816"
+}

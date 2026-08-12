@@ -8,6 +8,12 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+UNIT_TEST_IDS = (
+    "P6-KB-DOCUMENT-LIFECYCLE",
+    "P6-KB-UNIT-GATED-ACTIVATION",
+    "P6-KB-REPROCESS-FAIL-CLOSED",
+    "P6-KB-TENANT-SCOPE",
+)
 MIGRATION = ROOT / "supabase" / "migrations" / "20260810070000_knowledge_index_schema.sql"
 CONTRACT = ROOT / "supabase" / "tests" / "knowledge_index_schema_contract.sql"
 

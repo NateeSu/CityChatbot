@@ -34,6 +34,16 @@ export type NormalizedLineEvent = {
   supported: boolean;
 };
 
+export type DurableLineChatEvent = {
+  webhookEventId: string;
+  eventType: "message";
+  timestamp: number;
+  redelivery: boolean;
+  lineUserId: string;
+  text: string;
+  replyToken?: string;
+};
+
 export type LineInboxRecord = NormalizedLineEvent & {
   tenantId: string;
   channelRecordId: string;
@@ -166,6 +176,43 @@ export const parseLineWebhookEvents = (
       supported,
     };
   });
+};
+
+/**
+ * Rehydrates only the message fields needed by the durable chat worker.
+ * Signature, destination, event id and replay-window checks happen again at
+ * this boundary so an encrypted inbox payload cannot be used as an arbitrary
+ * chat command by a worker or a future code path.
+ */
+export const parseDurableLineChatEvent = (
+  body: Uint8Array,
+  expectedDestination: string,
+  expectedWebhookEventId: string,
+  now = Date.now(),
+  maxEventAgeMs = 24 * 60 * 60 * 1000,
+): DurableLineChatEvent | undefined => {
+  const parsed = parseRawJson(body);
+  if (parsed.destination !== expectedDestination) throw new LineWebhookError("FORBIDDEN", "webhook destination mismatch");
+  if (!Array.isArray(parsed.events) || parsed.events.length === 0 || parsed.events.length > 100) return invalid("webhook events must be a bounded non-empty array");
+  const raw = parsed.events.find((value: unknown) => isRecord(value) && value.webhookEventId === expectedWebhookEventId);
+  if (!isRecord(raw)) return invalid("durable webhook event was not found");
+  if (raw.type !== "message") return undefined;
+  if (typeof raw.timestamp !== "number" || !Number.isSafeInteger(raw.timestamp)) return invalid("webhook event timestamp is invalid");
+  if (raw.timestamp < now - maxEventAgeMs || raw.timestamp > now + 30_000) throw new LineWebhookError("CONFLICT", "durable webhook event is outside the replay window");
+  if (!isRecord(raw.source) || typeof raw.source.userId !== "string" || !/^U[0-9a-fA-F]{8,64}$/.test(raw.source.userId)) return invalid("LINE user identity is invalid");
+  if (!isRecord(raw.message) || raw.message.type !== "text" || typeof raw.message.text !== "string") return undefined;
+  if (raw.message.text.length === 0 || raw.message.text.length > 5000 || /[\u0000-\u001f\u007f]/.test(raw.message.text)) return invalid("LINE message text is invalid");
+  if (raw.replyToken !== undefined && (typeof raw.replyToken !== "string" || raw.replyToken.length === 0 || raw.replyToken.length > 512 || /[\u0000-\u001f\u007f]/.test(raw.replyToken))) return invalid("LINE reply token is invalid");
+  const deliveryContext = isRecord(raw.deliveryContext) ? raw.deliveryContext : undefined;
+  return {
+    webhookEventId: expectedWebhookEventId,
+    eventType: "message",
+    timestamp: raw.timestamp,
+    redelivery: deliveryContext?.isRedelivery === true,
+    lineUserId: raw.source.userId,
+    text: raw.message.text,
+    ...(raw.replyToken === undefined ? {} : { replyToken: raw.replyToken }),
+  };
 };
 
 export type LineWebhookRequest = {

@@ -1,0 +1,199 @@
+{
+  "schemaVersion": "conflict-ledger.v1",
+  "revision": "corpus-conflicts-2026-08-12",
+  "systemActor": "SYSTEM_UNIT_GATE",
+  "source": "fullspec.md §2.4 + docs/corpus/corpus-manifest.json",
+  "summary": {
+    "conflictCount": 15,
+    "quarantinedCount": 15,
+    "activeIndexEligibleCount": 0,
+    "inventoriedFactCount": 0,
+    "evaluationOnlyOrExcludedCount": 1
+  },
+  "conflicts": [
+    {
+      "conflictId": "CR-001",
+      "sourceSummary": "งานทะเบียนฯ FAQ #16 ถาม “แจ้งตาย” แต่คำตอบเป็นการทำบัตรก่อน/หลังหมดอายุ",
+      "requiredDisposition": "quarantine FAQ #16; ใช้ FAQ แจ้งตายที่ตรวจแล้วเท่านั้น",
+      "sourceFiles": [
+        "งานทะเบียนราษฎรและบัตรประจำตัวประชาชน .docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-002",
+      "sourceSummary": "กองการศึกษา เบอร์ติดต่อท้าย `511` เทียบกับ `151/152`",
+      "requiredDisposition": "unresolved conflict; ห้ามตอบ definitive จน owner รับรอง",
+      "sourceFiles": [
+        "กองการศึกษา.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-003",
+      "sourceSummary": "กองสาธารณสุข (2) เงื่อนไขค่าธรรมเนียม `≤50 ตร.ม.` และ `50–100 ตร.ม.` ทับที่ 50",
+      "requiredDisposition": "block fee fact ที่ boundary 50; owner ต้องกำหนด inclusive/exclusive",
+      "sourceFiles": [
+        "กองสาธารณสุข (2).docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-004",
+      "sourceSummary": "เงื่อนไขผ้าอ้อม `ADL ≤ 6` มี `≤` ใน content control และหายจาก extractor ทั่วไป",
+      "requiredDisposition": "parser regression + visual-text diff; ห้าม activate artifact ที่เหลือ `ADL 6`",
+      "sourceFiles": [
+        "กองสาธารณสุข (2).docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-005",
+      "sourceSummary": "สถานธนานุบาล 1/2 ระบุดอกเบี้ย “50 สตางค์/1 บาท” ไม่ชัดว่าเป็นร้อยละ/ต่อเดือน",
+      "requiredDisposition": "quarantine interest-rate fact; ห้าม normalize เป็น `%` เอง",
+      "sourceFiles": [
+        "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx",
+        "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 2.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-006",
+      "sourceSummary": "ศูนย์เด็กเล็กใช้ช่วงอายุ `2.8–3.11 ปี` ซึ่งกำกวม",
+      "requiredDisposition": "owner ต้องแปลงเป็นปี/เดือนหรือวันเกิด cutoff ที่ชัด",
+      "sourceFiles": [
+        "ศูนย์พัฒนาเด็กเล็ก.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-007",
+      "sourceSummary": "โรงเรียนเทศบาล 1 มีข้อมูลภาษาจีน, URL, ค่าใช้จ่าย และ eligibility บางข้อขัด/น่าสงสัย",
+      "requiredDisposition": "resolve ต่อ fact key; ค่าใช้จ่ายต้องแยก application/tuition/insurance/uniform/bedding",
+      "sourceFiles": [
+        "โรงเรียนเทศบาล 1.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-008",
+      "sourceSummary": "โรงเรียนเทศบาล 2 ข้อกำหนดพาเด็กมาทดสอบ “ต้อง” เทียบกับ “ถ้าสะดวก”",
+      "requiredDisposition": "unresolved conflict; `CLARIFY/HANDOFF` จน owner รับรอง",
+      "sourceFiles": [
+        "โรงเรียนเทศบาล 2.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-009",
+      "sourceSummary": "ตารางค่าขยะมีถ้อยคำช่วง `ไม่เกิน 500 ลิตร แต่ไม่เกิน 1 ลูกบาศก์เมตร` ไม่ครอบคลุมชัด",
+      "requiredDisposition": "block affected rows; owner แก้ range และหน่วย",
+      "sourceFiles": [
+        "กองคลัง.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-010",
+      "sourceSummary": "สถานธนานุบาล 1 มีข้อความ template, deadline เก่า, เบอร์บุคคล และ screenshot chatbot เก่า 5 ภาพ",
+      "requiredDisposition": "classify `EXCLUDED`/`EVALUATION_ONLY`; ห้ามเข้าดัชนี production",
+      "sourceFiles": [
+        "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-011",
+      "sourceSummary": "QR ฉีดพ่นยุงไม่มี URL text/metadata",
+      "requiredDisposition": "decode ใน quarantine, allowlist/domain/redirect/health unit gate; ผ่านแล้ว public อัตโนมัติ ไม่รอ owner",
+      "sourceFiles": [
+        "กองสาธารณสุข งานบริการสาธารณสุข.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-012",
+      "sourceSummary": "`คณะผู้บริหาร.txt` มีชื่อปัจจุบันและ mobile ส่วนบุคคล",
+      "requiredDisposition": "volatile + PII; ระบบเลือก official public contact และ exclude personal mobile อัตโนมัติ ไม่มี consent/approval gate",
+      "sourceFiles": [
+        "คณะผู้บริหาร.txt"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-013",
+      "sourceSummary": "ตารางรถในไฟล์สำนักปลัดเป็น static/volatile",
+      "requiredDisposition": "ห้ามตอบว่า “วันนี้” เว้นแต่ source มี valid-at/freshness ที่ยังผ่าน",
+      "sourceFiles": [
+        "สำนักปลัด.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-014",
+      "sourceSummary": "เอกสารฟิตเนสให้คำแนะนำโรคประจำตัวเพียง “แจ้งเจ้าหน้าที่”",
+      "requiredDisposition": "medical-safe policy; ไม่ใช้เป็นคำวินิจฉัยหรืออนุญาตให้ออกกำลัง definitive",
+      "sourceFiles": [
+        "ฟิตเนส.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    },
+    {
+      "conflictId": "CR-015",
+      "sourceSummary": "KCC มีเวลาศูนย์กับเวลาห้องประชุมต่างกัน",
+      "requiredDisposition": "model เป็นคนละ `service_id/fact_key`; ห้ามรวมเป็น operating hours เดียว",
+      "sourceFiles": [
+        "ศูนย์การเรียนรู้เมืองฉะเชิงเทรา KCC.docx"
+      ],
+      "state": "QUARANTINED",
+      "answerPolicy": "HANDOFF_ONLY",
+      "activeIndexEligible": false,
+      "facts": []
+    }
+  ],
+  "integrity": {
+    "ledgerSha256": "63cfaaa510087b063c78bf129b41d3b8d9cb3e9103aca60fef5aa2f33423c009"
+  }
+}

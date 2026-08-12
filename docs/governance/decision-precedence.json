@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "revision": "decision-precedence.v1",
+  "actor": "SYSTEM_UNIT_GATE",
+  "precedence": [
+    "ENCODED_SECURITY_TENANCY_PRIVACY_POLICY",
+    "MUST_INVARIANT",
+    "API_DATA_STATE_CONTRACT",
+    "ACCEPTANCE_TEST_CONTRACT",
+    "PLAN_EXECUTION_RULE",
+    "SCREEN_MANIFEST",
+    "VISUAL_REFERENCE"
+  ],
+  "cases": {
+    "REQUIREMENT_CHANGE": {
+      "action": "CREATE_VERSIONED_BASELINE",
+      "queue": "P0-GOV-002",
+      "featureState": "UNIT_GATE_PENDING"
+    },
+    "CONTRACT_CONFLICT": {
+      "action": "QUARANTINE_AFFECTED_SCOPE",
+      "queue": "P0-ARCH-001",
+      "featureState": "HANDOFF_ONLY"
+    },
+    "SECURITY_EXCEPTION": {
+      "action": "DISABLE_AND_ROLLBACK_AFFECTED_SCOPE",
+      "queue": "P0-SEC-001",
+      "featureState": "FAIL_CLOSED"
+    }
+  }
+}

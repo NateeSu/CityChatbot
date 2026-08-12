@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "bb7545c9c0ded6b98cd49d6337532b241ac99db3fbb18cd914820977666920c5",
+  "executionManifestSha256": "3c2b1837d4418b49dba1630f15f4fb038e71c481c190c7f9d8b18c65904e844b",
+  "taskId": "P0-GOV-002",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "fc729bdfee678283e915437a226d529be959db8618e0635a8b38ce8d9cd087f3",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:16:33Z",
+  "finishedAt": "2026-08-12T15:16:34Z",
+  "requiredTestIds": [
+    "P0-GOV-TRACE-CANONICAL-COVERAGE",
+    "P0-GOV-TRACE-BIDIRECTIONAL-LINKS",
+    "P0-GOV-TRACE-NO-DUPLICATES",
+    "P0-GOV-TRACE-SOURCE-LOCATORS",
+    "P0-GOV-TRACE-DETERMINISTIC-HASH"
+  ],
+  "passedTestIds": [
+    "P0-GOV-TRACE-CANONICAL-COVERAGE",
+    "P0-GOV-TRACE-BIDIRECTIONAL-LINKS",
+    "P0-GOV-TRACE-NO-DUPLICATES",
+    "P0-GOV-TRACE-SOURCE-LOCATORS",
+    "P0-GOV-TRACE-DETERMINISTIC-HASH"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/requirements_trace.py --verify evidence/traceability.csv && python -m unittest scripts.test_requirements_trace -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "TRACEABILITY_VERIFIED evidence\\traceability.csv rows=40 sha256=dfdc80212de97c21f798745c2e9b15d8f3feab36dfbefa84916bcd0f823b3d2d\n",
+      "stderr": "test_bidirectional_links_point_to_real_task_evidence_and_test_ids (scripts.test_requirements_trace.RequirementsTraceTests.test_bidirectional_links_point_to_real_task_evidence_and_test_ids) ... ok\ntest_catalog_covers_all_canonical_fullspec_ids (scripts.test_requirements_trace.RequirementsTraceTests.test_catalog_covers_all_canonical_fullspec_ids) ... ok\ntest_no_duplicate_requirement_or_approval_state (scripts.test_requirements_trace.RequirementsTraceTests.test_no_duplicate_requirement_or_approval_state) ... ok\ntest_repository_catalog_is_deterministic (scripts.test_requirements_trace.RequirementsTraceTests.test_repository_catalog_is_deterministic) ... ok\ntest_source_locators_are_line_addressable (scripts.test_requirements_trace.RequirementsTraceTests.test_source_locators_are_line_addressable) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.073s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-ARCH-001"
+    }
+  ],
+  "reportHash": "23e56e80e9ed4112f2993748bbc109b5c1bdc22478161239c4415e89e612e03e"
+}

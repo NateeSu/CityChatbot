@@ -8,7 +8,14 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+UNIT_TEST_IDS = (
+    "P6-KB-DOCUMENT-LIFECYCLE",
+    "P6-KB-UNIT-GATED-ACTIVATION",
+    "P6-KB-REPROCESS-FAIL-CLOSED",
+    "P6-KB-TENANT-SCOPE",
+)
 MIGRATION = ROOT / "supabase" / "migrations" / "20260810060000_knowledge_document_schema.sql"
+UNIT_GATE_MIGRATION = ROOT / "supabase" / "migrations" / "20260812190000_knowledge_unit_gate_activation.sql"
 SEED = ROOT / "supabase" / "seed.sql"
 CONTRACT = ROOT / "supabase" / "tests" / "knowledge_schema_contract.sql"
 
@@ -57,6 +64,7 @@ class KnowledgeSchemaContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.migration = MIGRATION.read_text(encoding="utf-8")
+        cls.unit_gate_migration = UNIT_GATE_MIGRATION.read_text(encoding="utf-8")
         cls.seed = SEED.read_text(encoding="utf-8")
         cls.contract = CONTRACT.read_text(encoding="utf-8")
         cls.normalized_migration = normalized(cls.migration)
@@ -129,6 +137,23 @@ class KnowledgeSchemaContractTests(unittest.TestCase):
         self.assertIn("tenant A must not see tenant B", self.contract)
         self.assertNotRegex(self.normalized_migration, r"\bdrop\s+(table|schema)\b")
         self.assertNotRegex(self.migration, r"sk-or-v1-[A-Za-z0-9]{20,}")
+
+    def test_machine_only_unit_gate_activation_is_traceable_and_fail_closed(self) -> None:
+        sql = normalized(self.unit_gate_migration)
+        for marker in (
+            "activation_status",
+            "unit_gate_manifest_version",
+            "unit_gate_report_hash",
+            "unit_gate_passed_test_ids",
+            "system_unit_gate",
+            "activate_knowledge_document_version_unit_gated",
+            "target.state <> 'evaluating'",
+            "state = 'active'",
+            "activation_status = 'unit_gated'",
+        ):
+            self.assertIn(marker, sql)
+        self.assertNotRegex(sql, r"wait\s+(for\s+)?human|human\s+approval\s+(is\s+)?required|pending\s+human")
+        self.assertNotRegex(self.unit_gate_migration, r"sk-or-v1-[A-Za-z0-9]{20,}")
 
 
 if __name__ == "__main__":

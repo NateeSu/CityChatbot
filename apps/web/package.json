@@ -15,6 +15,7 @@
     "@citychatbot/bot-settings": "workspace:*",
     "@citychatbot/complaints": "workspace:*",
     "@citychatbot/config": "workspace:*",
+    "@citychatbot/chat": "workspace:*",
     "@citychatbot/incident-ops": "workspace:*",
     "@citychatbot/job-ops": "workspace:*",
     "@citychatbot/knowledge": "workspace:*",

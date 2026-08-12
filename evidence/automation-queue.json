@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "actor": "SYSTEM_UNIT_GATE",
+  "sourceTaskId": "P9-CAN-001",
+  "nextTaskId": "P9-CAN-002",
+  "reportHash": "de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "queuedAt": "2026-08-12T23:12:36Z",
+  "status": "QUEUED"
+}

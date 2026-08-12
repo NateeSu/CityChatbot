@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "7b0c570d82052c5c074e5d15ec3f607a514f12826966cbf8c00f9ac5ebeda1a4",
+  "executionManifestSha256": "e31d396225e31b2172ec2680a4a9d1a0750e1f6180d4478d3cfc2fb47ac2440d",
+  "taskId": "P6-KB-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "0efc34b74c9256e970ab60565f671807f1196378af0934b9cc970d08a2010495",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:04:03Z",
+  "finishedAt": "2026-08-12T16:04:08Z",
+  "requiredTestIds": [
+    "P6-KB-DOCUMENT-LIFECYCLE",
+    "P6-KB-UNIT-GATED-ACTIVATION",
+    "P6-KB-REPROCESS-FAIL-CLOSED",
+    "P6-KB-TENANT-SCOPE"
+  ],
+  "passedTestIds": [
+    "P6-KB-DOCUMENT-LIFECYCLE",
+    "P6-KB-UNIT-GATED-ACTIVATION",
+    "P6-KB-REPROCESS-FAIL-CLOSED",
+    "P6-KB-TENANT-SCOPE"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/knowledge/tsconfig.json --noEmit && pnpm exec vitest run packages/knowledge/src/documents.test.ts packages/knowledge/src/indexer.test.ts --reporter=dot && python -m unittest scripts.test_knowledge_schema scripts.test_knowledge_index_schema -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n···············\n\n Test Files  2 passed (2)\n      Tests  15 passed (15)\n   Start at  23:04:07\n   Duration  708ms (transform 338ms, setup 0ms, import 468ms, tests 29ms, environment 0ms)\n\n",
+      "stderr": "test_canonical_state_and_publish_guards_are_fail_closed (scripts.test_knowledge_schema.KnowledgeSchemaContractTests.test_canonical_state_and_publish_guards_are_fail_closed) ... ok\ntest_composite_tenant_foreign_keys_are_present (scripts.test_knowledge_schema.KnowledgeSchemaContractTests.test_composite_tenant_foreign_keys_are_present) ... ok\ntest_contract_is_real_and_sql_is_additive (scripts.test_knowledge_schema.KnowledgeSchemaContractTests.test_contract_is_real_and_sql_is_additive) ... ok\ntest_machine_only_unit_gate_activation_is_traceable_and_fail_closed (scripts.test_knowledge_schema.KnowledgeSchemaContractTests.test_machine_only_unit_gate_activation_is_traceable_and_fail_closed) ... ok\ntest_required_tables_are_tenant_owned_and_versioned (scripts.test_knowledge_schema.KnowledgeSchemaContractTests.test_required_tables_are_tenant_owned_and_versioned) ... ok\ntest_rls_and_explicit_policy_boundaries_exist (scripts.test_knowledge_schema.KnowledgeSchemaContractTests.test_rls_and_explicit_policy_boundaries_exist) ... ok\ntest_atomic_activation_and_rollback_are_privileged_and_review_gated (scripts.test_knowledge_index_schema.KnowledgeIndexSchemaContractTests.test_atomic_activation_and_rollback_are_privileged_and_review_gated) ... ok\ntest_canonical_chunk_and_fact_guards_are_fail_closed (scripts.test_knowledge_index_schema.KnowledgeIndexSchemaContractTests.test_canonical_chunk_and_fact_guards_are_fail_closed) ... ok\ntest_contract_is_additive_and_does_not_contain_credentials (scripts.test_knowledge_index_schema.KnowledgeIndexSchemaContractTests.test_contract_is_additive_and_does_not_contain_credentials) ... ok\ntest_database_policy_is_scoped_to_active_effective_approved_data (scripts.test_knowledge_index_schema.KnowledgeIndexSchemaContractTests.test_database_policy_is_scoped_to_active_effective_approved_data) ... ok\ntest_generation_and_fact_tables_are_tenant_owned_and_lineaged (scripts.test_knowledge_index_schema.KnowledgeIndexSchemaContractTests.test_generation_and_fact_tables_are_tenant_owned_and_lineaged) ... ok\n\n----------------------------------------------------------------------\nRan 11 tests in 0.021s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P6-QA-001"
+    }
+  ],
+  "reportHash": "847ffb9a43924a9a028e09b7634233c559c870f7215087c800d6b9d0c7b644c9"
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "qa-harness.v1",
+  "fixtureVersion": "p0-qa-002-2026-08-12",
+  "environment": "isolated-synthetic",
+  "seed": "citychatbot-p0-qa-2026-08-12",
+  "timezone": "Asia/Bangkok",
+  "networkPolicy": "NO_EXTERNAL_NETWORK",
+  "productionDataPolicy": "SYNTHETIC_ONLY",
+  "tenants": [
+    {"id": "10000000-0000-4000-8000-000000000001", "code": "TENANT_A", "state": "ACTIVE"},
+    {"id": "10000000-0000-4000-8000-000000000002", "code": "TENANT_B", "state": "ACTIVE"}
+  ],
+  "departments": [
+    {"id": "20000000-0000-4000-8000-000000000001", "tenantId": "10000000-0000-4000-8000-000000000001", "code": "A1"},
+    {"id": "20000000-0000-4000-8000-000000000002", "tenantId": "10000000-0000-4000-8000-000000000001", "code": "A2"},
+    {"id": "20000000-0000-4000-8000-000000000003", "tenantId": "10000000-0000-4000-8000-000000000002", "code": "B1"}
+  ],
+  "roles": ["CITIZEN", "STAFF", "DEPARTMENT_HEAD", "TENANT_ADMIN", "SUPER_ADMIN", "SUPPORT"],
+  "citizens": [
+    {"id": "30000000-0000-4000-8000-000000000001", "tenantId": "10000000-0000-4000-8000-000000000001", "lineUserId": "U-SYNTHETIC-A"},
+    {"id": "30000000-0000-4000-8000-000000000002", "tenantId": "10000000-0000-4000-8000-000000000002", "lineUserId": "U-SYNTHETIC-B"}
+  ],
+  "providerMocks": {
+    "line": {"mode": "signed-fixture", "signature": "fixture-only", "redelivery": true, "duplicateDeliveryMustBeNoOp": true},
+    "openrouter": {"mode": "structured-fixture", "network": "disabled", "privacyProfile": "PUBLIC_SAFE", "providerFailure": "HANDOFF_SYSTEM_ERROR"}
+  },
+  "clock": {"now": "2026-08-12T09:30:00+07:00", "timezone": "Asia/Bangkok", "dst": false},
+  "intentionalFailureProbe": {"command": "python scripts/qa_harness.py --intentional-failure", "expectedExitCode": 1, "marker": "QA_INTENTIONAL_FAILURE"},
+  "modelConfig": {"route": "fixture-openrouter", "model": "fixture-model", "promptVersion": "fixture-prompt.v1", "embeddingVersion": "fixture-embedding.none"}
+}

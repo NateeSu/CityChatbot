@@ -14,6 +14,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+UNIT_TEST_IDS = (
+    "P0-COR-AUDIT-BASELINE",
+    "P0-COR-DETERMINISTIC-MANIFEST",
+    "P0-COR-CONFLICT-QUARANTINE",
+    "P0-COR-OOXML-CONTROL",
+    "P0-COR-MACRO-REJECT",
+    "P8-RAG-PARSER",
+    "P8-RAG-RECALL",
+    "P8-RAG-CITATION",
+    "P8-RAG-CONFLICT-STALE",
+    "P8-RAG-INJECTION-TENANT",
+)
+
 from audit_corpus import (  # noqa: E402
     EXPECTED_BASELINE,
     build_manifest,
@@ -21,6 +34,7 @@ from audit_corpus import (  # noqa: E402
     extract_docx,
     audit_file,
 )
+from rag_evaluator import REPEATS, evaluate_suite, self_test  # noqa: E402
 
 
 class CorpusAuditTests(unittest.TestCase):
@@ -87,6 +101,30 @@ class CorpusAuditTests(unittest.TestCase):
             record = audit_file(source, root)
             self.assertEqual(record["governance"]["disposition"], "REJECT")
             self.assertIn("MACRO_DETECTED", record["governance"]["remediationReasons"])
+
+    def test_locked_rag_parser_recall_and_claim_citation_contract(self) -> None:
+        report = evaluate_suite(REPEATS)
+        self.assertEqual(report["status"], "PASSED")
+        self.assertEqual(report["runCount"], report["caseCount"] * REPEATS)
+        self.assertEqual(report["passedCount"], report["runCount"])
+        self.assertEqual(report["coverage"]["claimEvidenceCoverage"], 1.0)
+        self.assertEqual(report["coverage"]["citationCorrectness"], 1.0)
+
+    def test_locked_rag_conflict_stale_injection_and_tenant_boundaries(self) -> None:
+        report = evaluate_suite(REPEATS)
+        self.assertEqual(report["coverage"]["conflictStaleSafeFallback"], 1.0)
+        self.assertEqual(report["coverage"]["promptInjectionSafe"], 1.0)
+        self.assertEqual(report["coverage"]["tenantIsolation"], 1.0)
+        self.assertEqual(report["coverage"]["activeCorpusUsed"], 0)
+        self.assertTrue(all(output["outcome"] in {"CLARIFY", "HANDOFF"} for output in report["outputs"]))
+        self.assertTrue(all(value == "PASS" for value in self_test(_first_case()).values()))
+
+
+def _first_case() -> dict:
+    from build_certified_cases import load_suite
+
+    cases, _ = load_suite()
+    return cases[0]
 
 
 if __name__ == "__main__":

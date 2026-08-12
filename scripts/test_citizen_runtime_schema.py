@@ -10,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "supabase" / "migrations" / "20260812150000_citizen_complaint_runtime.sql"
 VERSION_MIGRATION = ROOT / "supabase" / "migrations" / "20260812160000_citizen_public_row_version.sql"
+LIST_FIX_MIGRATION = ROOT / "supabase" / "migrations" / "20260812180000_fix_citizen_list_projection.sql"
 MESSAGE_ROUTE = ROOT / "apps" / "web" / "app" / "api" / "v1" / "citizen" / "complaints" / "[id]" / "messages" / "route.ts"
 TRACKING_UI = ROOT / "apps" / "web" / "app" / "liff" / "complaints" / "ComplaintTracking.tsx"
 COMPLAINT_TYPES = ROOT / "packages" / "complaints" / "src" / "complaint.ts"
@@ -26,6 +27,8 @@ class CitizenRuntimeSchemaTests(unittest.TestCase):
         cls.normalized = normalized(cls.sql)
         cls.version_sql = VERSION_MIGRATION.read_text(encoding="utf-8")
         cls.version_normalized = normalized(cls.version_sql)
+        cls.list_fix_sql = LIST_FIX_MIGRATION.read_text(encoding="utf-8")
+        cls.list_fix_normalized = normalized(cls.list_fix_sql)
         cls.message_route = MESSAGE_ROUTE.read_text(encoding="utf-8")
         cls.tracking_ui = TRACKING_UI.read_text(encoding="utf-8")
         cls.complaint_types = COMPLAINT_TYPES.read_text(encoding="utf-8")
@@ -86,6 +89,12 @@ class CitizenRuntimeSchemaTests(unittest.TestCase):
         self.assertNotIn("const expectedVersion = typeof body.expectedVersion === \"number\" ? body.expectedVersion : 1", self.message_route)
         self.assertIn("expectedVersion: item.rowVersion", self.tracking_ui)
         self.assertIn("rowVersion: number", self.complaint_types)
+
+    def test_citizen_list_projection_groups_the_pagination_flag(self) -> None:
+        self.assertIn("create or replace function private.list_citizen_complaints", self.list_fix_normalized)
+        self.assertIn("group by more.has_more", self.list_fix_normalized)
+        self.assertIn("grant execute on function private.list_citizen_complaints", self.list_fix_normalized)
+        self.assertNotRegex(self.list_fix_sql, r"\bdrop\s+(table|schema|role)\b")
 
 
 if __name__ == "__main__":

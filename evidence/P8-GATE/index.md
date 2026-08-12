@@ -53,3 +53,38 @@ Unblock the listed prerequisites through authorized content/security/municipal/p
 - This gate was captured against the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`; the active production RC is now `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`. P8 remains blocked and must be recertified when its external prerequisites are available.
 - No external credentials, browser session, production database, LINE channel, AI provider route or staging deployment was used to manufacture a pass.
 - P8 hardening failure/blocker does not revoke the separate MVP unit-test authorization, but it prevents this hardening gate from being reported as complete.
+
+## Automated unit gate checkpoint — 2026-08-12T17:04:26Z
+
+<!-- unit-gate-runner -->
+Status: **PASSED**  
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
+Revision: `6d8c4ba311e0943ca66b481f6be05170de5c3bd7`  
+Report hash: `41da91e4dd8d5831a871e5a23396768add7c4f4647eba509fa8e9fcd7d9fdc74`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`d4ec49bfeb3839e826601b9498ac9cab6a66c1e5a35f6ccfada24f0d38d84b7e`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `0c46a684e61d58ecdb5f715d27840136161e96196995c11f6044dd5c9ad81a70`
+- Pass/total: `2/2` required test IDs
+- Command pass/total: `1/1`
+
+### Commands
+
+- `python -m unittest scripts.test_pyramid_audit -v` → exit `0`
+
+### Acceptance
+
+- Required commands exited with code `0`: **PASS**
+- No skipped/only/focused/flaky unit signal: **PASS**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.

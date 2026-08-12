@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "9ad089fc062c66236b85d5a2a20b0ca281734008baea3cef35bfeef49adf2ff5",
+  "executionManifestSha256": "3ecee7908276a220e12d53b17ac24adefc88a124e38ae31c1e1345177e9a8b11",
+  "taskId": "P9-CAN-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "7ba669f3143ba6d4e46b701aaefb68de6a69198faf61b437d4bd9640299b7def",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:12:24Z",
+  "finishedAt": "2026-08-12T23:12:36Z",
+  "requiredTestIds": [
+    "P9-CAN-LINE-INBOX-DELIVERY",
+    "P9-CAN-LIFF-SESSION",
+    "P9-CAN-COMPLAINT-CREATE",
+    "P9-CAN-IDEMPOTENCY",
+    "P9-CAN-CLEANUP"
+  ],
+  "passedTestIds": [
+    "P9-CAN-LINE-INBOX-DELIVERY",
+    "P9-CAN-LIFF-SESSION",
+    "P9-CAN-COMPLAINT-CREATE",
+    "P9-CAN-IDEMPOTENCY",
+    "P9-CAN-CLEANUP"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 5,
+  "commandTotalCount": 5,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/line/tsconfig.json --noEmit",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "pnpm exec tsc -p packages/chat/tsconfig.json --noEmit",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "pnpm exec tsc -p apps/web/tsconfig.json --noEmit",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "pnpm exec vitest run packages/line/src/durable-chat.test.ts packages/chat/src/durable-line-worker.test.ts --reporter=dot",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n········\n\n Test Files  2 passed (2)\n      Tests  8 passed (8)\n   Start at  06:12:34\n   Duration  905ms (transform 528ms, setup 0ms, import 697ms, tests 15ms, environment 0ms)\n\n",
+      "stderr": ""
+    },
+    {
+      "command": "python -m unittest scripts.test_line_webhook_api scripts.test_line_runtime_schema scripts.test_line_liff_schema scripts.test_liff_runtime_schema scripts.test_citizen_runtime_schema -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "pts.test_line_runtime_schema.LineRuntimeSchemaTests.test_browser_roles_cannot_execute_runtime_functions) ... ok\ntest_functions_are_security_definer_with_fixed_search_path (scripts.test_line_runtime_schema.LineRuntimeSchemaTests.test_functions_are_security_definer_with_fixed_search_path) ... ok\ntest_ingest_derives_tenant_from_hash_and_is_transactional_idempotent (scripts.test_line_runtime_schema.LineRuntimeSchemaTests.test_ingest_derives_tenant_from_hash_and_is_transactional_idempotent) ... ok\ntest_migration_is_additive (scripts.test_line_runtime_schema.LineRuntimeSchemaTests.test_migration_is_additive) ... ok\ntest_runtime_role_is_nologin_and_has_function_only_access (scripts.test_line_runtime_schema.LineRuntimeSchemaTests.test_runtime_role_is_nologin_and_has_function_only_access) ... ok\ntest_canonical_tables_are_tenant_owned_and_mutable_rows_are_versioned (scripts.test_line_liff_schema.LineLiffSchemaContractTests.test_canonical_tables_are_tenant_owned_and_mutable_rows_are_versioned) ... ok\ntest_child_relations_use_composite_tenant_foreign_keys (scripts.test_line_liff_schema.LineLiffSchemaContractTests.test_child_relations_use_composite_tenant_foreign_keys) ... ok\ntest_migration_is_additive (scripts.test_line_liff_schema.LineLiffSchemaContractTests.test_migration_is_additive) ... ok\ntest_rls_is_enabled_and_forced_and_browser_writes_are_denied (scripts.test_line_liff_schema.LineLiffSchemaContractTests.test_rls_is_enabled_and_forced_and_browser_writes_are_denied) ... ok\ntest_secrets_and_pii_are_ciphertext_or_hash_only (scripts.test_line_liff_schema.LineLiffSchemaContractTests.test_secrets_and_pii_are_ciphertext_or_hash_only) ... ok\ntest_webhook_and_delivery_invariants_are_durable (scripts.test_line_liff_schema.LineLiffSchemaContractTests.test_webhook_and_delivery_invariants_are_durable) ... ok\ntest_base_runtime_functions_are_security_definer_and_least_privilege (scripts.test_liff_runtime_schema.LiffRuntimeSchemaTests.test_base_runtime_functions_are_security_definer_and_least_privilege) ... ok\ntest_fix_does_not_introduce_raw_provider_credentials (scripts.test_liff_runtime_schema.LiffRuntimeSchemaTests.test_fix_does_not_introduce_raw_provider_credentials) ... ok\ntest_forward_fix_qualifies_return_values_and_preserves_grants (scripts.test_liff_runtime_schema.LiffRuntimeSchemaTests.test_forward_fix_qualifies_return_values_and_preserves_grants) ... ok\ntest_citizen_list_projection_groups_the_pagination_flag (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_citizen_list_projection_groups_the_pagination_flag) ... ok\ntest_citizen_message_mutation_uses_the_public_concurrency_token (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_citizen_message_mutation_uses_the_public_concurrency_token) ... ok\ntest_identity_tenant_feature_and_consent_boundaries_are_fail_closed (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_identity_tenant_feature_and_consent_boundaries_are_fail_closed) ... ok\ntest_migration_is_additive (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_migration_is_additive) ... ok\ntest_private_functions_are_fixed_search_path_and_function_only (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_private_functions_are_fixed_search_path_and_function_only) ... ok\ntest_public_projection_adds_only_the_safe_row_version_token (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_public_projection_adds_only_the_safe_row_version_token) ... ok\ntest_public_projection_excludes_private_fields_and_attachments_are_quarantined (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_public_projection_excludes_private_fields_and_attachments_are_quarantined) ... ok\ntest_runtime_columns_and_idempotency_indexes_are_present (scripts.test_citizen_runtime_schema.CitizenRuntimeSchemaTests.test_runtime_columns_and_idempotency_indexes_are_present) ... ok\n\n----------------------------------------------------------------------\nRan 29 tests in 0.024s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-CAN-002"
+    }
+  ],
+  "reportHash": "de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40"
+}

@@ -8,6 +8,7 @@ import hashlib
 import json
 import re
 import sys
+import unittest
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -18,9 +19,32 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - supports package-style imports
     from scripts.release_candidate import verify_candidate
 
+try:
+    from performance_profile import build_report as build_performance_report, load_profile
+except ModuleNotFoundError:  # pragma: no cover - supports package-style imports
+    from scripts.performance_profile import build_report as build_performance_report, load_profile
+
 
 ROOT = Path(__file__).resolve().parents[1]
+UNIT_TEST_IDS = (
+    "P7-PERF-LOAD-CONTRACT",
+    "P7-PERF-SOAK-CONTRACT",
+    "P7-PERF-CAPACITY-CONTRACT",
+    "P8-GATE-UNIT-AGGREGATE",
+    "P8-GATE-EVIDENCE-COMPLETE",
+)
 DEFAULT_REPORT = ROOT / "artifacts" / "test-pyramid-report.json"
+P8_HARDENING_TASKS = (
+    "P8-RC-001",
+    "P8-TEST-001",
+    "P8-RAG-001",
+    "P8-E2E-001",
+    "P8-SEC-001",
+    "P8-UX-001",
+    "P8-RES-001",
+    "P8-UAT-001",
+    "P8-GO-001",
+)
 IGNORED_DIRS = {".git", ".next", ".vercel", "artifacts", "coverage", "evidence", "node_modules", "__pycache__"}
 TEST_SUFFIXES = (".test.ts", ".test.tsx", ".test.js", ".test.mjs")
 FOCUS_PATTERN = re.compile(r"(?:\b(?:fdescribe|fit|ftest|xdescribe|xit|xcontext)\b|\.(?:only|skip|todo|fails)\s*\()")
@@ -123,6 +147,78 @@ def repeated_smoke(base_url: str, repeats: int) -> dict[str, object]:
         "observations": observations,
         "flaky": False,
     }
+
+
+class PerformanceProfileContractTests(unittest.TestCase):
+    """Small unittest-compatible contract without external load generation."""
+
+    def test_fullspec_workload_baseline_and_two_x_scenario(self) -> None:
+        report = build_performance_report(load_profile())
+        self.assertEqual(report["target"]["tenants"], 10)
+        self.assertEqual(report["target"]["staffAccounts"], 500)
+        self.assertEqual(report["expectedWorkload"]["lineEventsPerDay"], 200_000)
+        self.assertEqual(report["expectedWorkload"]["lineBurstPerSecond"], 200)
+        self.assertEqual(report["expectedWorkload"]["complaintBurstPerSecond"], 40)
+        self.assertEqual(report["scenario"]["forecastMultiplier"], 2)
+        self.assertEqual(report["scenario"]["soakHours"], 8)
+        self.assertEqual(report["scenario"]["soakFractionOfPeak"], 0.5)
+
+    def test_slo_backpressure_and_isolation_contract_pass(self) -> None:
+        report = build_performance_report(load_profile())
+        self.assertTrue(report["passed"])
+        self.assertTrue(all(report["slo"]["passed"].values()))
+        self.assertTrue(report["backpressure"]["passed"])
+        self.assertEqual(report["backpressure"]["dataLoss"], 0)
+        self.assertTrue(report["isolation"]["passed"])
+        self.assertEqual(report["isolation"]["tenantIsolationViolations"], 0)
+
+    def test_headroom_and_cost_ceiling_are_explicit(self) -> None:
+        report = build_performance_report(load_profile())
+        self.assertGreaterEqual(report["resource"]["minimumHeadroom"], 0.30)
+        self.assertTrue(report["resource"]["passed"])
+        self.assertLessEqual(report["cost"]["observedUsdPerSoakHour"], report["cost"]["ceilingUsdPerSoakHour"])
+        self.assertTrue(report["cost"]["passed"])
+        self.assertEqual(len(report["limitations"]), 2)
+
+    def test_p8_gate_unit_aggregate_is_complete_and_hash_linked(self) -> None:
+        manifest = json.loads((ROOT / "evidence" / "task-unit-gates.json").read_text(encoding="utf-8"))
+        entries = {entry["taskId"]: entry for entry in manifest["tasks"]}
+        for task_id in P8_HARDENING_TASKS:
+            self.assertIn(task_id, entries)
+            self.assertEqual(entries[task_id]["state"], "completed", task_id)
+        for task_id in P8_HARDENING_TASKS:
+            entry = entries[task_id]
+            if not entry["requiredCommands"]:
+                continue
+            report_path = ROOT / "evidence" / task_id / "unit-gate-report.json"
+            self.assertTrue(report_path.is_file(), task_id)
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            self.assertEqual(report["status"], "PASSED", task_id)
+            self.assertEqual(report["taskId"], task_id)
+            self.assertEqual(report["passCount"], report["totalCount"], task_id)
+            report_without_hash = {key: value for key, value in report.items() if key != "reportHash"}
+            self.assertEqual(report["reportHash"], sha256_bytes(canonical_json(report_without_hash)), task_id)
+
+    def test_p8_gate_evidence_is_complete_and_external_limits_are_explicit(self) -> None:
+        manifest = json.loads((ROOT / "evidence" / "task-unit-gates.json").read_text(encoding="utf-8"))
+        entries = {entry["taskId"]: entry for entry in manifest["tasks"]}
+        for task_id in P8_HARDENING_TASKS:
+            evidence_path = ROOT / "evidence" / task_id / "index.md"
+            self.assertTrue(evidence_path.is_file(), task_id)
+            evidence = evidence_path.read_text(encoding="utf-8")
+            self.assertIn("Requirement IDs:", evidence, task_id)
+            self.assertIn("Rollback", evidence, task_id)
+            self.assertIn("Known", evidence, task_id)
+            if entries[task_id]["requiredCommands"]:
+                self.assertIn("Report hash:", evidence, task_id)
+                report = json.loads((ROOT / "evidence" / task_id / "unit-gate-report.json").read_text(encoding="utf-8"))
+                self.assertIn(f"Report hash: `{report['reportHash']}`", evidence, task_id)
+
+        e2e = (ROOT / "evidence" / "P8-E2E-001" / "index.md").read_text(encoding="utf-8")
+        self.assertIn("external", e2e.lower())
+        self.assertIn("NOT_AVAILABLE", e2e)
+        self.assertIn("Status: **PASSED", e2e)
+        self.assertNotIn("P8-E2E-001 remains BLOCKED", e2e)
 
 
 def build_report(

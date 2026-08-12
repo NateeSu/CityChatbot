@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "capacity-profile.v1",
+  "target": {
+    "tenants": 10,
+    "staffAccounts": 500,
+    "concurrentStaff": 100,
+    "lineEventsPerDayPerTenant": 20000,
+    "lineBurstPerSecondPerTenant": 10,
+    "complaintsPerDayPerTenant": 1000,
+    "complaintBurstPerSecondPerTenant": 2,
+    "activeDocumentsPerTenant": 500,
+    "maxFileMb": 50,
+    "concurrentRag": 50,
+    "forecastMultiplier": 2,
+    "peakWindowMinutes": 30,
+    "soakHours": 8,
+    "soakFractionOfPeak": 0.5
+  },
+  "syntheticObservation": {
+    "webhookP95Ms": 720,
+    "webhookP99Ms": 1500,
+    "citizenApiP95Ms": 360,
+    "adminP95Ms": 760,
+    "ragP95Ms": 8800,
+    "resourceUtilization": {
+      "database": 0.58,
+      "queue": 0.46,
+      "compute": 0.54,
+      "storage": 0.51,
+      "providerBudget": 0.62
+    },
+    "costUsdPerSoakHour": 3.2,
+    "costCeilingUsdPerSoakHour": 8,
+    "tenantIsolationViolations": 0,
+    "droppedCoreRecords": 0,
+    "duplicateCoreRecords": 0,
+    "backpressureRecoveries": 4,
+    "backpressureDataLoss": 0
+  }
+}

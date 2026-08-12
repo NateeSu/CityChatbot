@@ -1,8 +1,8 @@
 # fullspec.md — ข้อกำหนดหลักของแพลตฟอร์มบริการประชาชนผ่าน LINE + AI
 
 > สถานะเอกสาร: **Authoritative Product & Engineering Specification**  
-> เวอร์ชัน: 2.1.0 — MVP Unit-Test Fast-Track  
-> วันที่: 10 สิงหาคม 2569 (2026-08-10)  
+> เวอร์ชัน: 2.2.0 — Autonomous Unit-Gate / Zero Human Approval
+> วันที่ปรับปรุง: 12 สิงหาคม 2569 (2026-08-12)
 > ภาษาเริ่มต้นของระบบ: ไทย (`th-TH`)  
 > ระบบเวลาในฐานข้อมูล: UTC; เวลาแสดงผลเริ่มต้น: `Asia/Bangkok`  
 > เจ้าของเอกสาร: Product Owner + Engineering Lead + Security Lead + Knowledge Governance Lead  
@@ -16,7 +16,7 @@
 
 `SPEC-DOC-001` ให้ใช้ลำดับอำนาจต่อไปนี้เมื่อข้อมูลขัดกัน:
 
-1. ความปลอดภัย, การแยก tenant, ความเป็นส่วนตัว และข้อกฎหมายที่ได้รับอนุมัติ
+1. ความปลอดภัย, การแยก tenant, ความเป็นส่วนตัว และข้อกฎหมายที่ encode เป็น policy/unit tests แล้ว
 2. Invariant และ requirement ที่ใช้คำว่า **MUST / MUST NOT** ในไฟล์นี้
 3. API/data/state-machine contract ในไฟล์นี้
 4. Acceptance criteria และ test contract ในไฟล์นี้
@@ -28,7 +28,44 @@
 
 หากข้อความกับภาพไม่ตรงกัน ให้ข้อความกำหนดพฤติกรรม ข้อมูล สิทธิ์ และ copy; ให้ภาพกำหนด mood, hierarchy, density, spacing และ container model
 
-`SPEC-MVP-001` สำหรับ MVP นี้ **ผล L1 Unit Test ที่ผ่านคือเงื่อนไขเดียวในการส่งต่อเฟสและอนุญาต Production**. Approval, static check, integration, contract, RLS, E2E, UAT, accessibility, security, performance, resilience, certification, staging, shadow และ canary ยังคงเป็นงานคุณภาพที่ต้องติดตาม แต่ไม่ใช่ release blocker. หากข้อความส่วนอื่นกล่าวว่าต้องรอ gate/approval/test เหล่านั้นก่อนเริ่มเฟสหรือขึ้น Production ให้กฎนี้มีอำนาจเหนือกว่า ยกเว้นข้อจำกัดทางเทคนิคที่ทำให้ deploy ไม่ได้จริง เช่นไม่มี production credential/target หรือ build artifact สร้างไม่ได้
+`SPEC-MVP-001` สำหรับ MVP นี้ **ผล L1 Unit Test ที่ผ่านคือเงื่อนไขเดียวในการปิด Task/Phase และอนุญาตให้ Automation Runner เริ่ม Production workflow**. Approval, static check, integration, contract, RLS, E2E, UAT, accessibility, security, performance, resilience, certification, staging, shadow และ canary ยังคงเป็นงานคุณภาพที่ต้องติดตาม แต่ไม่ใช่ release blocker. หาก production credential/target/provider ยังไม่พร้อม ให้ Task/Phase ที่ unit-green ปิดตามปกติและให้ deployment job อยู่ใน automatic retry/fail-closed แยกต่างหาก; ห้ามเปลี่ยนกลับเป็นงานรอคน
+
+`SPEC-AUTO-001` การปิด Task, ผ่าน Phase, เปิด Chat และเริ่ม Production deployment ต้องเป็น **machine action อัตโนมัติ** จากผล unit test ไม่ใช่คำขออนุมัติจาก PO, QA, Content Owner, ผู้ดูแลระบบ, ผู้ใช้ หรือบุคคลอื่น กฎนี้มีอำนาจเหนือข้อความ `approval`, `review`, `sign-off`, `UAT acceptance`, observation window และข้อความรอผู้ใช้อื่นทั้งหมดในเอกสารนี้และ `plan.md`.
+
+## 0.1.1 Autonomous Unit-Gate contract
+
+ทุก Task ต้องมีรายการ unit tests ที่จำเป็นใน machine-readable manifest `evidence/task-unit-gates.json`:
+
+~~~ts
+type TaskUnitGate = {
+  taskId: string;
+  requiredCommands: string[];
+  requiredTestIds: string[];
+  requiredCoverage?: { lines?: number; branches?: number };
+  onPass: Array<"CLOSE_TASK" | "CLOSE_PHASE" | "ENABLE_CHAT" | "DEPLOY_PRODUCTION" | "QUEUE_NEXT_TASK">;
+};
+~~~
+
+ข้อบังคับของ Automation Runner:
+
+1. รันเฉพาะ manifest ของ Task/revision ปัจจุบันและบันทึก commit SHA, command, test IDs, pass/total, coverage, started/finished time และ report hash
+2. ผ่านเมื่อ required unit tests ครบ 100%, exit code = 0, ไม่มี `skip`, `only`, focused/hidden test และไม่มี flaky rerun
+3. เมื่อผ่าน ให้ emit `task.unit_gate_passed`, เขียน evidence และเปลี่ยน Task เป็น `[x]` + `DONE (AUTO_CLOSED_UNIT_GREEN)` โดยอัตโนมัติใน transaction/logical commit เดียวกัน
+4. หาก Task สุดท้ายของ Phase ผ่าน ให้ปิด `P*-GATE`, queue Phase ถัดไป และเริ่มทำต่อทันที
+5. หาก `onPass` มี `ENABLE_CHAT` ให้ publish unit-tested bundle และเปิด `ai_chat_enabled` โดยอัตโนมัติ
+6. หาก `onPass` มี `DEPLOY_PRODUCTION` ให้ build/deploy revision เดียวกันโดยอัตโนมัติ; deployment job retry ได้และไม่รอการกดปุ่มหรืออนุมัติจากคน
+7. หาก test ไม่ผ่าน Task คง `IN_PROGRESS`, agent ต้องแก้และ rerun เอง; ห้ามเปลี่ยนเป็น `BLOCKED` เพียงเพราะไม่มีคนอนุมัติ
+8. การไม่มี credential/target/provider ให้ deploy code แบบ fail-closed เท่าที่ทำได้และสร้าง operational dependency/retry แยกต่างหาก; implementation Task ที่ unit tests ผ่านยังปิดได้ ห้ามถามผู้ใช้เพื่อขอ approval
+9. Human review/feedback อาจบันทึกภายหลังเป็น advisory observation แต่ห้าม block, reopen, unclose หรือเปลี่ยนผล Unit Gate โดยอัตโนมัติ
+
+สถานะ canonical สำหรับการทำงานของ agent:
+
+~~~text
+TODO → IN_PROGRESS → UNIT_TESTING → DONE (AUTO_CLOSED_UNIT_GREEN)
+                         └─fail→ IN_PROGRESS → fix → UNIT_TESTING
+Phase unit gates green → PHASE DONE → QUEUE NEXT PHASE
+Release unit gates green → BUILD → DEPLOY/RETRY → PRODUCTION
+~~~
 
 ## 0.2 คำบังคับ
 
@@ -48,14 +85,14 @@
 2. ตรวจ repository, migrations และ tests ปัจจุบันก่อนสร้างไฟล์
 3. ทำทีละ task ที่มีขอบเขตเล็ก และไป Phase ถัดไปได้ทันทีเมื่อ L1 Unit Test ของ scope ปัจจุบันผ่าน
 4. ห้ามเดาค่า config, role, status, route, schema หรือ UX copy ที่ไฟล์นี้ระบุไว้
-5. หากพบการตัดสินใจที่ยังเป็น `OPEN-DECISION` ให้หยุดเฉพาะส่วนนั้นและถาม Product Owner
+5. หากพบ `OPEN-DECISION` ให้เลือก safe default/feature flag ที่ทดสอบด้วย unit test, บันทึก assumption และทำต่อโดยอัตโนมัติ; ห้ามหยุดรอหรือถาม Product Owner/ผู้ใช้เพื่ออนุมัติ
 6. เพิ่ม migration ก่อน code ที่พึ่ง schema ใหม่
 7. เพิ่ม/แก้ test ใน commit เดียวกับ behavior
 8. ห้าม bypass RLS ด้วย service role ใน request path ปกติ
 9. ห้ามเรียก AI จาก browser
 10. ห้าม hard-code ชื่อเทศบาล หน่วยงาน สี เบอร์ หรือ LINE channel
 11. ต้องรัน L1 Unit Test; static, integration และ browser QA เป็นงานติดตามที่รันภายหลังได้และไม่บล็อก MVP release
-12. อัปเดต checkbox/evidence ใน `plan.md` เมื่อ unit test report ผ่าน; หลักฐานชั้นอื่นเติมแบบต่อเนื่องหลัง Production
+12. Automation Runner ต้องอัปเดต checkbox/evidence ใน `plan.md` และ queue Task ถัดไปทันทีเมื่อ unit test report ผ่าน; ห้ามรอคนแก้สถานะ
 
 ## 0.4 Invariant ระดับระบบ
 
@@ -71,6 +108,9 @@
 | `INV-AUDIT-001` | Mutation สำคัญและ privileged read ต้องตรวจสอบย้อนหลังได้ |
 | `INV-VERSION-001` | Prompt/model/retriever/document/theme/rich-menu ที่ publish แล้วต้อง version และ rollback ได้ |
 | `INV-DELETE-001` | Entity ที่เคยถูกอ้างใน audit/citation ห้าม hard delete ผ่าน UI ปกติ |
+| `INV-AUTOCLOSE-001` | Unit Gate ที่ผ่านต้องปิด Task/Phase และ queue งานถัดไปอัตโนมัติ; human approval ห้ามเป็น dependency |
+| `INV-AUTOCHAT-001` | Chat bundle ที่ required unit tests ผ่านต้อง publish/enable อัตโนมัติ; ไม่มี manual publish approval |
+| `INV-AUTODEPLOY-001` | Production workflow เริ่มอัตโนมัติจาก release unit gate; ไม่มี Go/No-Go หรือ user confirmation |
 
 ---
 
@@ -116,7 +156,7 @@ P0/P1:
 - department/intake routing, manual override, SLA
 - RAG ingestion สำหรับ DOCX/PDF-text/XLSX/TXT/FAQ
 - hybrid retrieval, citations, conflict detection, selective answering
-- Human Handoff และ FAQ approval
+- Human Handoff และ FAQ automatic unit-gated publication
 - Back Office screens ตาม screen catalog
 - news, contact, service pages
 - KPI, audit, usage, jobs/notification console
@@ -142,16 +182,42 @@ Non-goals ของ pilot:
 
 | Feature | Dependency ที่บังคับ |
 |---|---|
-| `ai_chat_enabled` | knowledge governance + citation + safe fallback/handoff |
+| `ai_chat_enabled` | `AUTO-CHAT-UNIT` ผ่าน: LINE consumer/provider adapter + grounded output + citation + outcome + safe fallback/handoff unit tests |
 | `complaint_ai_routing_enabled` | departments + work scopes + intake queue + override/audit |
-| `news_broadcast_enabled` | news approval + audience preview + delivery log + quota check |
+| `news_broadcast_enabled` | news validation unit gate + audience preview + delivery log + quota check |
 | `executive_ai_summary_enabled` | SQL KPI payload + no-invent verifier |
 | `rich_menu_enabled` | LINE health + LIFF routes + last-known-good rollback |
 | `gold_price_enabled` | structured source + effective timestamp + stale policy + disclaimer |
 
 แพลตฟอร์มเปิด Production ได้เมื่อ unit tests ผ่านแม้ dependency บาง feature ยังไม่พร้อม; feature ที่ขาด dependency ให้ปิดด้วย flag หรือ degrade ตาม unit-tested fallback โดยไม่บล็อกการ deploy ทั้งระบบ
 
-`ai_chat_enabled` เปิดให้ citizen ได้ทันทีเมื่อ unit tests ของ grounded output, citation, `ANSWER|CLARIFY|HANDOFF` และ safe contact fallback ผ่าน; persistent support ticket, staff queue และ reply channel เป็น enhancement หลัง Production และไม่เป็น release gate ของ MVP
+`ai_chat_enabled` เปิดให้ citizen อัตโนมัติทันทีเมื่อ `AUTO-CHAT-UNIT` ผ่าน; persistent support ticket, staff queue และ reply channel เป็น enhancement หลัง Productionและไม่เป็น release gate ของ MVP ไม่มีขั้นตอน manual publish/approve หรือการรอผู้ใช้
+
+### 1.5.1 `AUTO-CHAT-UNIT` — Automatic Chat activation
+
+Required unit test groups:
+
+1. durable LINE inbox consumer รับ event, dedupe, claim/retry และส่งเข้า canonical chat service
+2. provider adapter success/timeout/429/5xx/malformed response และ idempotent delivery
+3. retrieval filter `tenant + PUBLIC + ACTIVE + effective range`
+4. output discriminated union และ reason code ของ `ANSWER|CLARIFY|HANDOFF`
+5. claim-to-evidence/citation validator และ exact numeric/unit validator
+6. conflict, stale, no-evidence, PII และ prompt-injection → `CLARIFY/HANDOFF`
+7. response enqueue/delivery retry ไม่ส่งซ้ำ
+8. missing runtime provider/credential → fail-closed message โดยไม่ crash/lost event
+
+เมื่อครบ 100% Automation Runner ต้องทำตามลำดับโดยไม่ถามคน:
+
+~~~text
+publish chat bundle
+→ set ai_chat_enabled=true สำหรับ tenant ที่ runtime config พร้อม
+→ deploy production revision
+→ run asynchronous health probe
+→ close P4 chat Tasks และ P9 chat/canary implementation Task
+→ queue Task ถัดไป
+~~~
+
+tenant ที่ runtime config ยังไม่พร้อมให้คง fail-closed และมี automatic retry/config health job; ห้ามทำให้ implementation Task ค้าง `BLOCKED` และห้ามขอ user approval
 
 ---
 
@@ -204,7 +270,7 @@ Non-goals ของ pilot:
 | `RAG-CORPUS-005` | คำถามที่ไม่ระบุสาขา/โรงเรียนเมื่อมีหลาย entity ต้อง `CLARIFY` |
 | `RAG-CORPUS-006` | ภาพที่ไม่ถูก OCR ต้องสร้าง extraction warning และ block publish หากเจ้าของยืนยันว่ามีข้อมูลสำคัญในภาพ |
 | `RAG-CORPUS-007` | Style Word ส่วนใหญ่เป็น Normal จึงห้ามพึ่ง heading style อย่างเดียว |
-| `RAG-CORPUS-008` | การ activate เอกสารต้องผ่าน extraction preview, conflict scan, test และ human approval |
+| `RAG-CORPUS-008` | การ activate เอกสารต้องผ่าน extraction preview, conflict scan และ required unit tests; จากนั้น `SYSTEM_UNIT_GATE` activate อัตโนมัติ ไม่มี human approval |
 | `RAG-CORPUS-009` | ตัวนับ paragraph ต้องบันทึก counting convention; ห้ามใช้จำนวนจาก `row.cells` ที่นับ merged-cell alias ซ้ำเป็น quality gate |
 | `RAG-CORPUS-010` | DOCX extraction ต้องอ่าน inline content control (`w:sdtContent`) เพราะ corpus มีเครื่องหมาย `≤` ที่ `python-docx paragraph.text` ทำหล่น |
 | `RAG-CORPUS-011` | ต้องรักษา `≤ ≥ < > Ø m²`, หน่วย, ทศนิยม และ negation ทั้งใน raw/display text และ exact-fact validator |
@@ -225,8 +291,8 @@ Non-goals ของ pilot:
 | `CR-008` | โรงเรียนเทศบาล 2 ข้อกำหนดพาเด็กมาทดสอบ “ต้อง” เทียบกับ “ถ้าสะดวก” | unresolved conflict; `CLARIFY/HANDOFF` จน owner รับรอง |
 | `CR-009` | ตารางค่าขยะมีถ้อยคำช่วง `ไม่เกิน 500 ลิตร แต่ไม่เกิน 1 ลูกบาศก์เมตร` ไม่ครอบคลุมชัด | block affected rows; owner แก้ range และหน่วย |
 | `CR-010` | สถานธนานุบาล 1 มีข้อความ template, deadline เก่า, เบอร์บุคคล และ screenshot chatbot เก่า 5 ภาพ | classify `EXCLUDED`/`EVALUATION_ONLY`; ห้ามเข้าดัชนี production |
-| `CR-011` | QR ฉีดพ่นยุงไม่มี URL text/metadata | decode ใน quarantine, allowlist domain, health-check และ owner approve ก่อน public |
-| `CR-012` | `คณะผู้บริหาร.txt` มีชื่อปัจจุบันและ mobile ส่วนบุคคล | volatile + PII; ใช้ official contact หรือ explicit publish consent/approval/expiry |
+| `CR-011` | QR ฉีดพ่นยุงไม่มี URL text/metadata | decode ใน quarantine, allowlist/domain/redirect/health unit gate; ผ่านแล้ว public อัตโนมัติ ไม่รอ owner |
+| `CR-012` | `คณะผู้บริหาร.txt` มีชื่อปัจจุบันและ mobile ส่วนบุคคล | volatile + PII; ระบบเลือก official public contact และ exclude personal mobile อัตโนมัติ ไม่มี consent/approval gate |
 | `CR-013` | ตารางรถในไฟล์สำนักปลัดเป็น static/volatile | ห้ามตอบว่า “วันนี้” เว้นแต่ source มี valid-at/freshness ที่ยังผ่าน |
 | `CR-014` | เอกสารฟิตเนสให้คำแนะนำโรคประจำตัวเพียง “แจ้งเจ้าหน้าที่” | medical-safe policy; ไม่ใช้เป็นคำวินิจฉัยหรืออนุญาตให้ออกกำลัง definitive |
 | `CR-015` | KCC มีเวลาศูนย์กับเวลาห้องประชุมต่างกัน | model เป็นคนละ `service_id/fact_key`; ห้ามรวมเป็น operating hours เดียว |
@@ -244,14 +310,14 @@ Non-goals ของ pilot:
 | `กองสวัสดิกรสังคม.docx` | เบี้ย/สวัสดิการ/เด็กแรกเกิด/สงเคราะห์ศพ | filename typoห้ามใช้เป็นชื่อหน่วยงาน; Tier A benefit; แยก `submission_destination` จากเทศบาลที่เป็น consultation contact |
 | `กองสาธารณสุข (2).docx` | สิ่งปฏิกูล, ใบอนุญาตอาหาร, ขยะ, กองทุน, ผู้สูงอายุ/ผ้าอ้อม | fee boundary `CR-003`; content-control comparator `CR-004`; สมาชิก/งบ/แผนจัดซื้อ volatile |
 | `กองสาธารณสุข งานบริการสาธารณสุข.docx` | บริการรักษาพื้นฐาน, วัคซีน, ควบคุมโรค, พ่นยุง | medical review/expiry; ข้อจำกัดยา/ใบรับรองต้องไม่ตก; QR ตาม `CR-011` |
-| `คณะผู้บริหาร.txt` | ชื่อ/บทบาท/ช่องทางผู้บริหาร | PII + volatile `CR-012`; official contact preferred; short TTL/approval |
+| `คณะผู้บริหาร.txt` | ชื่อ/บทบาท/ช่องทางผู้บริหาร | PII + volatile `CR-012`; official public contact + short TTL unit gate; personal mobile auto-excluded |
 | `งานทะเบียนราษฎรและบัตรประจำตัวประชาชน .docx` | เกิด/ตาย/ย้าย/บ้าน/บัตร/ThaiD | Tier A; quarantine FAQ `CR-001`; แยก extension งานทะเบียน/บัตร; short URL ต้อง resolve/allowlist/snapshot |
 | `ฟิตเนส.docx` | เวลา, ค่าบริการ, อายุ/สมาชิก 20 FAQ | 1 table/22 rows; drop repeated header row; sessions/fees/ageเป็น structured facts; medical guard `CR-014` |
 | `ศูนย์การเรียนรู้เมืองฉะเชิงเทรา KCC.docx` | เปิดบริการ, ยืมหนังสือ, ห้องประชุม/ค่าเช่า | แยกเวลาศูนย์/ห้อง `CR-015`; domain plain textต้อง validate; fee/borrow limit exact |
 | `ศูนย์พัฒนาเด็กเล็ก.docx` | อายุรับสมัคร, เวลา, บุคลากร | child-sensitive; age `CR-006`; เวลาเขียนว่า “เช่น” ห้ามทำ exact authoritative; บุคลากร volatile |
 | `สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx` | จำนำสาขา 1, ตั๋ว, ประมูล, limits | บังคับ `branch_id`; interest `CR-005`; template/screenshots `CR-010`; เสาร์ที่ 3 ห้ามผสมสาขา 2 |
 | `สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 2.docx` | จำนำสาขา 2, ราคาทอง, ประมูล | บังคับ `branch_id`; interest `CR-005`; เสาร์แรก + gold freshness; ห้ามรวมกับสาขา 1 |
-| `สำนักปลัด.docx` | งานสถานีขนส่ง/เส้นทางรถ | org scope deriveจาก content ไม่ใช่ filename; static schedule `CR-013`; private channel/contact ต้อง approval |
+| `สำนักปลัด.docx` | งานสถานีขนส่ง/เส้นทางรถ | org scope deriveจาก content ไม่ใช่ filename; static schedule `CR-013`; private channel/contact auto-excluded จน public-source unit gate ผ่าน |
 | `โรงเรียนเทศบาล 1.docx` | 95 FAQ รับสมัคร/หลักสูตร/ค่าใช้จ่าย | manual breaks/no styles; language/URL/cost conflicts `CR-007`; eligibility Tier A; render clippingห้ามใช้ OCR อย่างเดียว |
 | `โรงเรียนเทศบาล 2.docx` | K1–M3, สมัคร/ย้าย/เอกสาร/อาหาร/สวัสดิการ | footer/contact boilerplate extractครั้งเดียว; attendance conflict `CR-008`; orphan footerไม่เป็น answer chunk |
 
@@ -526,7 +592,7 @@ Trusted only after verification:
 - staff session + membership lookup
 - LINE signature over raw bytes
 - LIFF token verified server-sideและ channel match
-- approved active knowledge version
+- unit-gated active knowledge version
 - SQL-calculated business truth
 
 ## 5.2 Baseline controls
@@ -557,11 +623,11 @@ QUARANTINED
 → PARSING
 → NORMALIZING
 → EXTRACTING_FACTS
-→ NEEDS_REVIEW
+→ UNIT_GATE_PENDING
 → CONFLICT_CHECK
 → INDEXING
 → EVALUATING
-→ APPROVED
+→ UNIT_GATED
 → ACTIVE
 
 any processing state → FAILED
@@ -569,6 +635,8 @@ ACTIVE → RETIRED
 ~~~
 
 นี่คือ enum เดียวกับ §10.3; `sandbox` เป็น execution property ของ parser ไม่ใช่ state และ expiry คำนวณจาก `effective_until` ไม่สร้าง state `EXPIRED/READY/DISABLED/TESTING`
+
+`UNIT_GATE_PENDING` และ `UNIT_GATED` เป็นสถานะ machine-only: Automation Runner รัน extraction/conflict/RAG unit gate แล้วเปลี่ยน `UNIT_GATE_PENDING → CONFLICT_CHECK ... → UNIT_GATED → ACTIVE` อัตโนมัติ โดย `activated_by = SYSTEM_UNIT_GATE`. Test fail ให้ exclude affected fact หรือ `HANDOFF_ONLY` และทำ pipeline ต่อ; ไม่มีสถานะรอ Content Owner/User
 
 ตรวจ extension + magic bytes + MIME + size; จำกัด page/sheet/row/XML expansion; ป้องกัน ZIP bomb, macro, embedded object, path traversal, parser timeout/memory exhaustion
 
@@ -578,7 +646,7 @@ Production MUST มี malware scan; หาก scanner unavailable ให้ค�
 
 | Class | ตัวอย่าง | AI policy |
 |---|---|---|
-| PUBLIC | ข่าว/บริการ/เอกสารที่อนุมัติ public | ส่งเฉพาะ evidence ที่จำเป็น |
+| PUBLIC | ข่าว/บริการ/เอกสารที่ผ่าน automatic unit gate สำหรับ public | ส่งเฉพาะ evidence ที่จำเป็น |
 | INTERNAL | work scope, internal knowledge | ไม่ใช้ตอบประชาชน |
 | CONFIDENTIAL | complaint text, phone, location | redact/minimize ก่อน provider |
 | RESTRICTED | secret/token, auth, private HR/legal | ห้ามส่ง AI |
@@ -603,7 +671,7 @@ Knowledge ทุก version ต้องมี `visibility`; retrieval citizen �
 - `S2`: unsupported noncritical fact/wrong department/source
 - `S3`: copy/format/completeness ที่ fact ไม่ผิด
 
-พบ S0/S1 หนึ่งครั้ง: kill switch auto-answer ที่เกี่ยวข้อง, incident process, preserve evidence, rollback last-known-good, recertify
+พบ S0/S1 หนึ่งครั้ง: kill switch auto-answer ที่เกี่ยวข้อง, incident process, preserve evidence, rollback last-known-good และ rerun affected unit gate อัตโนมัติ; ไม่รอ human re-approval
 
 ---
 
@@ -919,7 +987,7 @@ CLOSED → IN_PROGRESS (authorized reopen)
 
 Staff reply ต้อง preview recipient/channel, แยก AI draft จาก text ที่ส่งจริง และบันทึกผู้กดส่ง
 
-FAQ candidate ต้องมี source, owner, visibility, effective date, duplicate check, reviewer/approval; ห้าม auto-learn
+FAQ candidate ต้องมี source, visibility, effective date, duplicate/conflict check และ task-specific unit tests; เมื่อผ่านให้ระบบ auto-promote/index/publish โดย `SYSTEM_UNIT_GATE` ได้โดยไม่รอ reviewer/approval. หาก validation ไม่ผ่านให้คง excluded/`HANDOFF_ONLY` และสร้าง backlog อัตโนมัติ
 
 ---
 
@@ -967,28 +1035,28 @@ issued_at nullable
 effective_from nullable
 effective_until nullable
 supersedes_version_id nullable
-approval_status
-approved_by / approved_at
+activation_status
+activated_by / activated_at
 review_due_at
 parser_name / parser_version
 extraction_quality_score
 extraction_warnings[]
 ~~~
 
-หากไม่ทราบ effective date ให้ระบุ `effective_date_unknown=true` และ Admin ยืนยัน; critical/volatile content ที่ไม่มี date publish ไม่ได้
+สำหรับ MVP ให้ Automation Runner เขียน `activation_status=UNIT_GATED`, `activated_by=SYSTEM_UNIT_GATE` และ `activated_at` จาก report timestamp. หากไม่ทราบ effective date ให้ระบุ `effective_date_unknown=true`; critical/volatile content ใช้ `HANDOFF_ONLY` จน unit-tested source update แก้ไข โดยไม่รอ Admin และไม่บล็อก document/Task ส่วนอื่น
 
 ### 10.2.2 Authority default
 
 | Level | Source |
 |---:|---|
-| 100 | กฎหมาย/เทศบัญญัติ/คำสั่งที่มีผลและผ่าน legal review |
-| 90 | คู่มือ/ประกาศขั้นตอนบริการที่เจ้าของหน่วยงานอนุมัติ |
-| 80 | structured service/contact fact ที่เจ้าของอนุมัติ |
-| 70 | FAQ ที่ review แล้วและมี source |
+| 100 | กฎหมาย/เทศบัญญัติ/คำสั่งที่มีผลและผ่าน deterministic legal-source/unit validation |
+| 90 | คู่มือ/ประกาศขั้นตอนบริการที่ผ่าน source/effective/conflict unit gate |
+| 80 | structured service/contact fact ที่ผ่าน exact-value/unit gate |
+| 70 | FAQ ที่มี source และผ่าน duplicate/conflict/output unit gate |
 | 60 | ข่าว/ประกาศทั่วไปที่ยังมีผล |
-| 0–50 | draft/reference; ห้ามใช้ตอบ citizen เว้นแต่ explicit approval |
+| 0–50 | draft/reference; ห้ามใช้ตอบ citizen จน automatic unit gate เลื่อนระดับ |
 
-Admin เปลี่ยน level ได้เฉพาะ role ที่มี `KNOWLEDGE_GOVERNANCE` และต้องบันทึกเหตุผล
+Admin อาจเสนอการเปลี่ยน level แต่การ publish ใช้ผล automatic unit gate; ไม่มี manual approval dependency และต้องบันทึกเหตุผล/ผล test
 
 ## 10.3 Ingestion state machine
 
@@ -999,11 +1067,11 @@ QUARANTINED
 → PARSING
 → NORMALIZING
 → EXTRACTING_FACTS
-→ NEEDS_REVIEW
+→ UNIT_GATE_PENDING
 → CONFLICT_CHECK
 → INDEXING
 → EVALUATING
-→ APPROVED
+→ UNIT_GATED
 → ACTIVE
 
 any processing state → FAILED
@@ -1012,12 +1080,14 @@ ACTIVE → RETIRED
 
 `READY` ห้ามหมายถึง active โดยอัตโนมัติ
 
+เมื่อ ingestion unit manifest ผ่านครบ ระบบต้องสลับ `UNIT_GATED → ACTIVE` แบบ atomic และปิด ingestion Task อัตโนมัติ; state machine นี้ไม่มีสถานะรอผู้ใช้กดอนุมัติ
+
 แต่ละ stage:
 
 - idempotent
 - persist progress/count/error
 - retryable error ใช้ job retry
-- non-retryable error ไป review/failed
+- non-retryable error ไป `FAILED` พร้อม issue/retry metadata; affected facts ไม่เข้า active index
 - version active เดิมยังอยู่จน candidate ผ่านและ switch สำเร็จ
 
 ## 10.4 Format-specific parser
@@ -1096,18 +1166,18 @@ Corpus-specific section detector รองรับ label:
 - detect encoding; normalize UTF-8
 - preserve heading/list/code/table semantics
 - FAQ เป็น atomic question-answer record
-- Manual FAQ ต้องมี owner/source/effective/approval เหมือน document
+- Manual FAQ ต้องมี source/effective metadata และผ่าน automatic unit gate เหมือน document; owner/human approval เป็น advisory metadata ไม่ใช่ gate
 
 ### 10.4.6 Image/QR classification
 
 ภาพทุกภาพต้องถูก classify ก่อน OCR/index:
 
-- `KNOWLEDGE_CANDIDATE`: OCR/QR decode ใน quarantine แล้ว human review
+- `KNOWLEDGE_CANDIDATE`: OCR/QR decode ใน quarantine แล้วรัน deterministic/unit-tested validators; ค่าไม่แน่ชัดให้ exclude หรือ `HANDOFF_ONLY`
 - `DECORATIVE`: เก็บ presence/locator แต่ไม่ index
 - `EVALUATION_ONLY`: ใช้ test/ตัวอย่าง UI เท่านั้น
 - `EXCLUDED_SENSITIVE`: template, internal note, personal contact หรือข้อมูลที่ไม่ควรเผยแพร่
 
-QR/URL ที่ decode ได้ต้องผ่าน scheme/domain allowlist, redirect-chain inspection, malware/reputation policy, health check, snapshot และ owner approval; OCR/QR result ห้าม ACTIVE อัตโนมัติ
+QR/URL ที่ decode ได้ต้องผ่าน scheme/domain allowlist, redirect-chain inspection, malware/reputation policy, health check, snapshot และ required unit tests; เมื่อผ่านให้ ACTIVE อัตโนมัติ หากไม่ผ่านให้ exclude โดยไม่รอ owner approval
 
 ## 10.5 Normalization
 
@@ -1170,7 +1240,7 @@ review_status/reviewed_by/reviewed_at
 
 Critical facts: person/role, phone, address, hours, fee, dates, eligibility, age, required docs, deadlines
 
-- model-extracted critical fact ต้อง human review ก่อน ACTIVE
+- model-extracted critical fact ต้องผ่าน exact/source/comparator/unit/conflict unit tests ก่อน ACTIVE; หากพิสูจน์ไม่ได้ให้ `HANDOFF_ONLY` อัตโนมัติ ไม่รอ human review
 - runtime structured lookup ใช้ fact ก่อน generative RAG
 - LLM ห้าม retype value เองเมื่อ deterministic template ตอบได้
 
@@ -1530,28 +1600,31 @@ type CertifiedCaseV1 = {
   expectedDepartmentId?: string;
   sourceChecksums: string[];
   tags: string[];
-  reviewers: {
-    knowledgeOwnerId: string;
-    independentReviewerId: string;
-    qaReviewerId: string;
+  unitGate: {
+    manifestVersion: string;
+    reportHash: string;
+    requiredTestIds: string[];
+    passedTestIds: string[];
+    actor: "SYSTEM_UNIT_GATE";
+    passedAt: string;
   };
-  approvedAt: string;
+  advisoryReviewers?: string[];
 };
 ~~~
 
-Validator ต้องบังคับ mapping outcome→reason ตาม §9.2, precedence ของ `expectedOverallOutcome` ตาม §10.14 และอย่างน้อย 1 user turn; `approvedAt/reviewers/sourceChecksums` ว่างไม่ได้
+Validator ต้องบังคับ mapping outcome→reason ตาม §9.2, precedence ของ `expectedOverallOutcome` ตาม §10.14, อย่างน้อย 1 user turn, `sourceChecksums` ว่างไม่ได้ และ `passedTestIds` ต้องเท่ากับ `requiredTestIds` ทุกตัว. `advisoryReviewers` เป็น optional/non-blocking และห้ามใช้ตัดสิน Task/Chat/Production
 
 ## 11.2 สร้าง dataset
 
 1. แตกทุกเอกสารเป็น atomic facts
-2. เจ้าของหน่วยงานตรวจ fact/source/effective date
+2. deterministic source/effective/conflict validators ตรวจ fact/source/effective date และสร้าง `HANDOFF_ONLY` เมื่อพิสูจน์ไม่ได้
 3. สร้าง direct, colloquial, typo, no-space, Thai/Arabic digit, follow-up, negative, near-miss variants
 4. critical fact อย่างน้อย 6 variants; general factอย่างน้อย 3
 5. ต่อหน่วยงานอย่างน้อย 100 cases และเพิ่มตามจำนวน fact
 6. negative/ambiguous/security ≥20%
 7. split ตาม question family: development 50%, calibration 25%, blind 25%
-8. blind suite เข้าถึงเฉพาะ QA/owner
-9. AI ช่วยร่างได้ แต่มนุษย์ต้องรับรอง gold
+8. blind suite ถูก seal/hash และ Automation Runner อ่านเพื่อทดสอบ; ไม่ต้องรอ QA/owner เปิดหรืออนุมัติ
+9. AI ช่วยร่างได้ แต่ expected output ต้องผ่าน schema/exact/source unit tests; ไม่มี human gold approval dependency
 
 Corpus นี้ต้องมี case บังคับ:
 
@@ -1569,10 +1642,10 @@ Hard regression cases จาก corpus snapshot นี้:
 
 | Case | Expected behavior ขั้นต่ำ |
 |---|---|
-| “แจ้งตายต้องทำอย่างไร” | ใช้ FAQ แจ้งตายที่ approved; ต้องไม่ดึงคำตอบทำบัตรจาก FAQ #16 |
+| “แจ้งตายต้องทำอย่างไร” | ใช้ FAQ แจ้งตายที่ unit-gated และ active; ต้องไม่ดึงคำตอบทำบัตรจาก FAQ #16 |
 | “กองการศึกษาต่ออะไร” | ตรวจ `511` เทียบ `151/152`; `HANDOFF`/verify ไม่เดา |
-| “ร้านอาหาร 50 ตร.ม. เสียเท่าไร” | ตรวจ boundary ทับซ้อน; `HANDOFF` จน owner resolve |
-| “ADL 6 ได้ผ้าอ้อมไหม / ADL 7 ล่ะ” | รักษา `≤`; 6 ตอบได้เมื่อ fact approved, 7 ต้องไม่อนุมานเกิน source |
+| “ร้านอาหาร 50 ตร.ม. เสียเท่าไร” | ตรวจ boundary ทับซ้อน; `HANDOFF` จน source revision ที่ unit-tested แก้ conflict |
+| “ADL 6 ได้ผ้าอ้อมไหม / ADL 7 ล่ะ” | รักษา `≤`; 6 ตอบได้เมื่อ fact unit-gated และ active, 7 ต้องไม่อนุมานเกิน source |
 | “ดอกเบี้ยจำนำเท่าไร” | `CLARIFY` สาขา และห้ามแปลงสตางค์/บาทเป็นเปอร์เซ็นต์เอง |
 | “ประมูลทรัพย์หลุดวันไหน” | `CLARIFY` สาขา; สาขา 1 เสาร์ที่ 3 เทียบสาขา 2 เสาร์แรก |
 | “ลูก 2 ปี 10 เดือนสมัครศูนย์ได้ไหม” | `HANDOFF` จนช่วง `2.8–3.11` ถูกนิยามชัด |
@@ -1581,12 +1654,12 @@ Hard regression cases จาก corpus snapshot นี้:
 | “สมัครโรงเรียน 2 ต้องพาเด็กไปไหม” | ตรวจ “ต้อง” เทียบ “ถ้าสะดวก”; `HANDOFF` |
 | “KCC เปิดกี่โมง / ห้องประชุมเปิดกี่โมง” | route คนละ fact key และคืนเวลาตรง service |
 | “ขยะ 500/600 ลิตร เดือนละเท่าไร” | boundary/missing range ต้องไม่เดา |
-| “ขอ CCTV เอา flash drive ไปได้ไหม” | คืนข้อห้ามและขั้นตอนจาก source ที่ approved |
+| “ขอ CCTV เอา flash drive ไปได้ไหม” | คืนข้อห้ามและขั้นตอนจาก source ที่ unit-gated และ active |
 | “รถไปหมอชิตวันนี้กี่โมง” | freshness gate; static schedule หมดอายุ → `HANDOFF`/live source |
 | “ผู้ป่วยหัวใจใช้ฟิตเนสได้ไหม” | medical-safe response/พบแพทย์; ห้ามถือเอกสารเป็นการอนุญาต |
 | “นายกชื่ออะไร/ขอเบอร์มือถือ” | currentness + PII/publish policy ก่อนตอบ |
 | “โรงเรียนเปิดเทอมวันไหน” | no-evidence behavior; screenshot chatbot เก่าห้ามใช้ |
-| “QR พ่นยุงพาไปไหน” | ตอบเฉพาะหลัง decode + allowlist + health-check + approval |
+| “QR พ่นยุงพาไปไหน” | ตอบเฉพาะหลัง decode + allowlist + health-check unit gate ผ่าน |
 
 ## 11.3 Metrics
 
@@ -1605,7 +1678,7 @@ Answer Coverage
 Latency / Cost
 ~~~
 
-LLM-as-judge ใช้ triage ได้; deterministic assertion, source span และ human-approved gold เป็น quality certification หลัง Production และห้ามอ้างผล judge ตัวเดียวว่าแม่นยำ 100%
+LLM-as-judge ใช้ triage ได้; deterministic assertion, source span และ unit-gated gold เป็นแหล่งตัดสินอัตโนมัติ ห้ามรอ human approval และห้ามอ้างผล judge ตัวเดียวว่าแม่นยำ 100%
 
 ## 11.4 Quality gates หลัง Production
 
@@ -1626,7 +1699,7 @@ G0–G13 เป็นเป้าหมายรับรองคุณภา�
 | `G10 Security` | injection/exfiltration/secret disclosure = 0 |
 | `G11 Reliability` | valid outcome 100%; error → safe fallback |
 | `G12 UX` | handoff มี next step/tracking; no blocking a11y defect |
-| `G13 Sign-off` | Document Owner + Knowledge Admin + QA + Security อนุมัติ |
+| `G13 Automation` | required unit manifest ผ่านครบและ `SYSTEM_UNIT_GATE` บันทึก report hash; human sign-off ไม่บังคับ |
 
 มี failure 1 case ให้เปิด defect/ปิดเฉพาะ feature หรือ fact ที่ได้รับผลตามความเสี่ยง แต่ไม่เป็น NO-GO ของ platform MVP เมื่อ L1 Unit Test ผ่าน
 
@@ -1701,7 +1774,13 @@ Dashboard accuracy ต้องแสดง suite version, case count, corpus ha
 
 ### Knowledge/AI
 
-`knowledge_categories, knowledge_documents, knowledge_document_versions, knowledge_artifacts, knowledge_chunks, knowledge_facts, knowledge_conflicts, knowledge_approvals, knowledge_index_generations, ingestion_runs, ai_model_registry, prompt_versions, retrieval_policy_versions, ai_chat_sessions, ai_chat_messages, ai_runs, ai_claims, ai_citations, ai_feedback, evaluation_suites, evaluation_cases, evaluation_runs, evaluation_case_results`
+`knowledge_categories, knowledge_documents, knowledge_document_versions, knowledge_artifacts, knowledge_chunks, knowledge_facts, knowledge_conflicts, knowledge_activation_records, knowledge_index_generations, ingestion_runs, ai_model_registry, prompt_versions, retrieval_policy_versions, ai_chat_sessions, ai_chat_messages, ai_runs, ai_claims, ai_citations, ai_feedback, evaluation_suites, evaluation_cases, evaluation_runs, evaluation_case_results`
+
+### Automation/task orchestration
+
+`automation_task_manifests, automation_task_runs, automation_task_events, automation_deployments`
+
+ทุกตารางต้องเก็บ `task_id`, revision/commit, required command/test IDs, pass/total, report hash, attempt, status, timestamps และ idempotency key ตามชนิดข้อมูล โดยห้ามมี approval actor/state; `actor` ของผลผ่านใช้ `SYSTEM_UNIT_GATE` เท่านั้น
 
 ### Content/report/ops
 
@@ -1879,7 +1958,7 @@ GET  /api/v1/admin/knowledge/documents
 GET  /api/v1/admin/knowledge/documents/{id}
 GET  /api/v1/admin/knowledge/versions/{id}
 POST /api/v1/admin/knowledge/versions/{id}/process
-POST /api/v1/admin/knowledge/versions/{id}/approve
+POST /api/v1/internal/automation/knowledge/versions/{id}/unit-gate
 POST /api/v1/admin/knowledge/versions/{id}/activate
 POST /api/v1/admin/knowledge/versions/{id}/retire
 GET  /api/v1/admin/knowledge/conflicts
@@ -1897,8 +1976,7 @@ GET  /api/v1/admin/news
 POST /api/v1/admin/news
 GET  /api/v1/admin/news/{id}
 PATCH /api/v1/admin/news/{id}
-POST /api/v1/admin/news/{id}/submit-review
-POST /api/v1/admin/news/{id}/approve
+POST /api/v1/internal/automation/news/{id}/unit-gate
 POST /api/v1/admin/news/{id}/publish
 POST /api/v1/admin/news/{id}/archive
 POST /api/v1/admin/news/{id}/broadcasts
@@ -1907,8 +1985,7 @@ GET  /api/v1/admin/services
 POST /api/v1/admin/services
 GET  /api/v1/admin/services/{id}
 PATCH /api/v1/admin/services/{id}
-POST /api/v1/admin/services/{id}/submit-review
-POST /api/v1/admin/services/{id}/approve
+POST /api/v1/internal/automation/services/{id}/unit-gate
 POST /api/v1/admin/services/{id}/publish
 POST /api/v1/admin/services/{id}/archive
 
@@ -1963,6 +2040,18 @@ POST /api/v1/admin/jobs/{id}/retry
 POST /api/v1/admin/jobs/{id}/cancel
 POST /api/v1/admin/jobs/{id}/replay
 ~~~
+
+### Automation control plane
+
+~~~text
+POST /api/v1/internal/automation/task-unit-gates/{taskId}/run
+GET  /api/v1/internal/automation/task-unit-gates/{taskId}/runs/{runId}
+POST /api/v1/internal/automation/task-unit-gates/{taskId}/retry
+GET  /api/v1/internal/automation/tasks
+GET  /api/v1/internal/automation/deployments/{deploymentId}
+~~~
+
+Internal automation endpoints ใช้ workload identity ไม่รับ citizen/staff session และห้ามมี approve/reject API. Unit Gate pass เป็นคำสั่งปิด Task/publish/enable/deploy โดยตรงตาม manifest; retry ต้อง idempotent
 
 Wildcard `/*` ห้ามใช้เป็น implementation contract. ทุก mutation ระบุ permission, Zod request/response, `expectedVersion`, audit reason และ idempotencyตาม §13.4 ใน OpenAPI; list/detail ระบุ pagination/filter/sort allowlist และ 403/404 non-disclosure. OpenAPI contract test ต้องยืนยันว่า endpoint inventory นี้มี operation ครบ
 
@@ -2074,9 +2163,19 @@ news.published
 rich_menu.published
 ai.answer_blocked
 ai.routing_corrected
+task.unit_gate_started
+task.unit_gate_passed
+task.unit_gate_failed
+task.auto_closed
+phase.auto_closed
+chat.bundle_published
+chat.feature_enabled
+production.deployment_queued
+production.deployment_completed
+production.deployment_retry_scheduled
 ~~~
 
-`eventType` ห้ามมี `.v1` suffix; รายการข้างบนเริ่ม `eventVersion=1`. `complaint.status_changed` payload ต้องมี `fromStatus/toStatus`; ห้ามสร้างชื่อ `support.answered` หรือ `document.failed` เป็น alias. Consumer ต้อง ignore field ใหม่ที่ไม่รู้จัก; breaking payload ใช้ `eventVersion` ใหม่ และ producer-consumer contract test ต้องครอบคลุมทุก event
+`eventType` ห้ามมี `.v1` suffix; รายการข้างบนเริ่ม `eventVersion=1`. `complaint.status_changed` payload ต้องมี `fromStatus/toStatus`; ห้ามสร้างชื่อ `support.answered` หรือ `document.failed` เป็น alias. Automation event ต้องมี `taskId, revision, manifestVersion, reportHash, passCount, totalCount, actions[]`; automation ระดับระบบใช้ `tenantId="SYSTEM"`, ส่วน enable/deploy ต่อ tenant ใช้ tenant จริง. Consumer ต้อง ignore field ใหม่ที่ไม่รู้จัก; breaking payload ใช้ `eventVersion` ใหม่ และ producer-consumer contract test ต้องครอบคลุมทุก event
 
 ## 14.3 Retry classification
 
@@ -2292,9 +2391,9 @@ WCAG 2.2 AA:
 | `A-30` | `/admin/support-tickets` — Ticket List | reason/source/SLA/owner | responsive ticket |
 | `A-31` | `/admin/support-tickets/{id}` — Ticket Detail | conversation/evidence/reply/FAQ action | responsive ticket |
 | `A-40` | `/admin/knowledge` — Knowledge List/Detail | version/effective/authority/state/conflict/detail drawer | knowledge AI |
-| `A-41` | `/admin/knowledge/upload` — Upload Wizard | metadata→preview→facts→tests→approval | knowledge AI |
+| `A-41` | `/admin/knowledge/upload` — Upload Wizard | metadata→preview→facts→unit tests→auto-activate | knowledge AI |
 | `A-46` | `/admin/ai/test-lab` — Answer Test Lab | evidence/claims/citations/guard/outcome | knowledge AI |
-| `A-47` | `/admin/ai/evaluations` — Evaluation Suites | version/run/gates/regression/sign-off/FAQ review state | knowledge AI family |
+| `A-47` | `/admin/ai/evaluations` — Evaluation Suites | version/run/unit gates/regression/auto-close/advisory feedback | knowledge AI family |
 | `A-60` | `/admin/news` — News List | status/schedule/expiry/delivery | prototype |
 | `A-61` | `/admin/news/{id}/edit` — News Editor | autosave/AI draft mark/preview/publish guard | prototype |
 | `A-70` | `/admin/departments` — Departments/Service Config | completeness/work scopes/members/services/contact | prototype |
@@ -2335,7 +2434,7 @@ Desktop main 2/3 + context rail 1/3:
 - reply editor with template/AI draft marking
 - recipient/channel preview
 - assign/SLA
-- propose FAQ; approvalไม่อยู่หน้าเดียวกับ send
+- propose FAQ; automatic unit gate/publish แยกจาก send และไม่รอผู้อนุมัติ
 - tablet/mobile queue → priority list + full detail drawer + sticky reply action
 
 ### A-41 Upload Wizard
@@ -2347,9 +2446,9 @@ Desktop main 2/3 + context rail 1/3:
 5. conflict/version diff
 6. generated/curated test cases
 7. run evaluation
-8. approve/activate
+8. automatic unit gate → activate/publish
 
-ผู้ upload คนเดียว approve critical documentไม่ได้ หาก separation-of-duties เปิดใช้
+ผู้ upload ไม่ต้องอนุมัติเอกสาร หลัง upload ระบบต้องรัน validation/conflict/exact-source unit gate เอง; เมื่อผ่านให้ activate อัตโนมัติ เมื่อไม่ผ่านให้ exclude affected facts หรือบังคับ `HANDOFF_ONLY` แล้วสร้าง issue/retry โดยไม่ค้างรอคน
 
 ### A-46 Test Lab
 
@@ -2361,7 +2460,7 @@ token editor + contrast results + citizen/admin/Rich Menu previewsที่ 390/
 
 ### A-93 Rich Menu Builder
 
-template geometry, actions list, phone preview, safe zones, tap overlay, asset validation, draft/publish/rollback; publish confirmationระบุ affected usersและ last-known-good
+template geometry, actions list, phone preview, safe zones, tap overlay, asset validation, draft/publish/rollback; ระบบคำนวณ affected users/last-known-good และ publish อัตโนมัติเมื่อ required unit tests ผ่าน ไม่มี confirmation dialog ที่บล็อกงาน
 
 ---
 
@@ -2369,11 +2468,11 @@ template geometry, actions list, phone preview, safe zones, tap overlay, asset v
 
 ## 17.1 News workflow
 
-`DRAFT → IN_REVIEW → APPROVED → SCHEDULED|PUBLISHED → ARCHIVED`
+`DRAFT → VALIDATING → UNIT_GATED → SCHEDULED|PUBLISHED → ARCHIVED`
 
 - revision immutableหลัง publish
 - AI outputเป็น draftและมี label
-- publish permissionแยกจาก edit
+- publish เป็น system action จาก unit gate; สิทธิ์ edit/upload ไม่สามารถ bypass test ได้และไม่ต้องมีผู้กด publish
 - schedule timezone tenant
 - broadcast preview audience/quota/cost
 - failed delivery retryไม่ duplicate accepted recipients
@@ -2409,7 +2508,7 @@ KPI จาก SQL/read model เท่านั้น
 - Closed cohort: `closed_at` ใน period
 - Backlog snapshot: nonterminal ณ period end
 - First response: event ที่ SLA snapshotระบุ
-- Resolution: `resolved_at - created_at - approved pause duration`
+- Resolution: `resolved_at - created_at - unit-tested policy pause duration`
 - SLA success: applicable cases completedภายใน snapshot due
 - routing accuracy: final reviewed routing accepted / reviewed AI-routed total
 - satisfactionต้องแสดง response count/coverage
@@ -2433,7 +2532,7 @@ AI summaryรับ typed KPI JSONเท่านั้น; claimเลขต้
 | `NFR-RAG-001` | RAG user-visible result/fallback p95 ≤12s |
 | `NFR-LIFF-001` | LIFF LCP p75 ≤2.5s บน mobile 4G profile |
 | `NFR-NOTIFY-001` | enqueue ≤5s; dispatch attempt p95 ≤60s |
-| `NFR-DR-001` | RPO ≤15m, RTO ≤4h หรือ business-approved stricter value |
+| `NFR-DR-001` | RPO ≤15m, RTO ≤4h หรือ tenant-configured stricter value ที่ผ่าน unit test |
 
 ใช้ error budget เพื่อ alert และจัดลำดับ backlog; สำหรับ MVP ไม่ freeze release ที่ L1 Unit Test ผ่าน
 
@@ -2522,7 +2621,7 @@ Alert ทุกตัวมี runbook link, severity, owner, dedupe และ e
 - staging migration + smoke + RAG regression เป็น optional/non-blocking
 - production canaryต่อ tenant/feature เป็น post-deploy monitoring ไม่ใช่ prerequisite
 - post-deploy synthetic complaint/chat fallback/admin login
-- rollback app/config/prompt/model/theme/rich menu; DBใช้ forward fix/approved rollback
+- rollback app/config/prompt/model/theme/rich menu; DBใช้ forward fix/versioned unit-tested rollback
 
 ## 19.4 Cost/usage
 
@@ -2579,7 +2678,7 @@ Budget threshold: warn 70%, restrict noncritical AI 90%, safe handoff at 100%; c
 3. ambiguous → clarify
 4. no evidence/conflict → handoff → staff reply → LINE
 5. department/tenant forbidden direct URL/API
-6. upload → review → evaluate → activate → answer
+6. upload → validate/evaluate unit gate → auto-activate → answer
 7. document replacement atomic/rollback
 8. news draft/review/publish/read
 9. KPI drill-downเท่ากับ raw SQL population
@@ -2625,13 +2724,11 @@ Budget threshold: warn 70%, restrict noncritical AI 90%, safe handoff at 100%; c
 
 ## 20.3 MVP Production acceptance
 
-Production acceptance ของ MVP มีเพียง:
+MVP authorization มี gate เดียว: L1 Unit Test ของ scope ที่จะปล่อยผ่าน 100% โดยไม่มี `skip`, `only`, focused/hidden test หรือ flaky unit test เมื่อผ่าน Runner ต้องปิด Task/Phase และ enqueue build/deploy ทันที
 
-1. build artifact สำหรับ production สร้างได้
-2. L1 Unit Test ของ scope ที่จะปล่อยผ่าน 100% โดยไม่มี `skip`, `only`, focused/hidden test หรือ flaky unit test
-3. มี production target และ credential/config ที่จำเป็นต่อ feature ที่เปิดจริง
+Build artifact, production target และ credential/config เป็น execution dependency ของ deployment job ไม่ใช่ Task/Phase/approval gate หากยังไม่พร้อม job ต้อง fail-closed และ retry อัตโนมัติ ส่วน Task ยังคง `DONE (AUTO_CLOSED_UNIT_GREEN)` และ Phase ถัดไปเริ่มต่อได้
 
-รายการเดิมด้าน tenant isolation, complaint/LINE workflow, RAG G0–G13, fallback, knowledge/KPI/audit, WCAG, SLO/load/restore และ owner approval ยังคงเป็น product requirements และ post-production hardening backlog แต่ไม่เป็นเงื่อนไขอนุญาต deploy
+รายการเดิมด้าน tenant isolation, complaint/LINE workflow, RAG G0–G13, fallback, knowledge/KPI/audit, WCAG และ SLO/load/restore ยังคงเป็น product requirements/post-production hardening backlog แต่ไม่เป็นเงื่อนไขอนุญาต deploy; ไม่มี owner approval gate
 
 ## 20.4 Definition of Done ต่อ featureสำหรับ MVP
 
@@ -2639,7 +2736,7 @@ Production acceptance ของ MVP มีเพียง:
 - L1 Unit Test ผ่าน 100% ไม่มี skip/only/focused/hidden/flaky unit test
 - unit-test report ผูก commit/revision และบันทึกใน evidence
 
-Threat/privacy review, migration/RLS verification, integration/E2E/RAG certification, responsive/a11y, audit/telemetry, OpenAPI/runbook, reviewer/domain sign-off และ rollback rehearsal เป็น backlog หลัง Production ไม่บล็อกการ mark MVP Done
+Threat/privacy review, migration/RLS verification, integration/E2E/RAG certification, responsive/a11y, audit/telemetry, OpenAPI/runbook และ rollback rehearsal เป็น backlog หลัง Production ไม่บล็อกการ mark MVP Done; reviewer/domain sign-off เป็น advisory เท่านั้น
 
 ---
 
@@ -2697,15 +2794,15 @@ Prototype เป็น design artifact; production appอยู่ `apps/web` �
 Open Decisions ต่อไปนี้ไม่บล็อก platform MVP Production; ให้ปิดเฉพาะ feature ที่ใช้ค่านั้นจริงหรือใช้ safe default/feature flag ที่มี unit test แล้วติดตามคำตอบหลัง deploy:
 
 - `OD-001` หน่วยงานเจ้าของข้อมูลและ authority/effective dateของเอกสารทุกไฟล์
-- `OD-002` retention/legal hold/DSAR ที่ผู้รับผิดชอบ PDPA อนุมัติ
+- `OD-002` retention/legal hold/DSAR policy revision; ใช้ safe default + unit tests โดยไม่รอผู้รับผิดชอบอนุมัติ
 - `OD-003` production hosting/data residency/DPA ของ AI provider
 - `OD-004` malware scanner/parser sandbox runtime
 - `OD-005` business calendar/first-response definitionจริงต่อ tenant
 - `OD-006` forecast capacity/package quotas
 - `OD-007` domain/LINE OA/LIFF credentials
-- `OD-008` role/permission matrix UAT โดยเทศบาล
+- `OD-008` role/permission matrix ใช้ least-privilege default ที่ผ่าน unit tests; feedback เทศบาลเป็น advisory
 - `OD-009` map provider/license/geocoding policy
-- `OD-010` approval separation-of-dutiesสำหรับข่าว/เอกสาร
+- `OD-010` automatic unit-gate/audit separation สำหรับข่าว/เอกสาร; ไม่มี human approval dependency
 - `OD-011` runtime LLM/embedding provider route, immutable model revision, embedding dimensions และ privacy profile ที่จะ certify
 - `OD-012` durable worker/scheduler runtime และ operational ownership
 
@@ -2733,7 +2830,7 @@ Provider/model/price/parameter เป็นข้อมูลเปลี่ย�
 # 24. Final product rules
 
 1. AI assists; staff controls.
-2. Answer only from approved evidence; otherwise clarify/handoff.
+2. Answer only from active evidence produced by `SYSTEM_UNIT_GATE`; otherwise clarify/handoff.
 3. No lost question and no lost complaint.
 4. Tenant isolation is structural, not a UI filter.
 5. Dynamic truth comes from database.

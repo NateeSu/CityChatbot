@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "5c1d47058347ded331ac9a330bbe757d1d2dd1696c5479d7134ff6eeebe3ed22",
+  "executionManifestSha256": "544f8dd64bef2b8d9d3af91dddf3876c30ba48c88c3dace6331d67342804e389",
+  "taskId": "P4-QA-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "6a08e49461bc6b78b8d45c25864661a1b5b766088919b917fba1fe94ffa1cde1",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:43:45Z",
+  "finishedAt": "2026-08-12T15:43:46Z",
+  "requiredTestIds": [
+    "P4-QA-LOCKED-RAG-EVALUATOR",
+    "P4-QA-CITATION-COVERAGE",
+    "P4-QA-CONFLICT-STALE",
+    "P4-QA-TENANT-ISOLATION"
+  ],
+  "passedTestIds": [
+    "P4-QA-LOCKED-RAG-EVALUATOR",
+    "P4-QA-CITATION-COVERAGE",
+    "P4-QA-CONFLICT-STALE",
+    "P4-QA-TENANT-ISOLATION"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/rag_evaluator.py --verify --repeats=5 && python -m unittest scripts.test_rag_evaluator -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "RAG_CERTIFICATION_VERIFIED evidence\\P4-QA-001\\runs\\df468f04a5d7a8cc92ad954b-r5.json cases=108 repeats=5 reportSha256=sha256:c899fa67f5664ca7e4e22e07bdac50df1a0ca77b4bbcb82393052078447a4c24\n",
+      "stderr": "test_canonical_reason_and_outcome_fields_are_only_used (scripts.test_rag_evaluator.RAGEvaluatorTests.test_canonical_reason_and_outcome_fields_are_only_used) ... ok\ntest_checked_in_bundle_is_immutable_and_verified (scripts.test_rag_evaluator.RAGEvaluatorTests.test_checked_in_bundle_is_immutable_and_verified) ... ok\ntest_claim_evidence_and_citation_coverage_is_exact_for_no_active_corpus (scripts.test_rag_evaluator.RAGEvaluatorTests.test_claim_evidence_and_citation_coverage_is_exact_for_no_active_corpus) ... ok\ntest_conflict_stale_injection_and_tenant_cases_use_safe_fallback (scripts.test_rag_evaluator.RAGEvaluatorTests.test_conflict_stale_injection_and_tenant_cases_use_safe_fallback) ... ok\ntest_evaluator_self_tests_reject_known_bad_answers (scripts.test_rag_evaluator.RAGEvaluatorTests.test_evaluator_self_tests_reject_known_bad_answers) ... ok\ntest_locked_evaluator_covers_every_case_five_times (scripts.test_rag_evaluator.RAGEvaluatorTests.test_locked_evaluator_covers_every_case_five_times) ... ok\ntest_report_has_metrics_hash_and_unit_ids (scripts.test_rag_evaluator.RAGEvaluatorTests.test_report_has_metrics_hash_and_unit_ids) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.190s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P6-KB-001"
+    }
+  ],
+  "reportHash": "f032c980710679889c03331177b70c1b9ca1f7c24da3453bad607d0c2b831fda"
+}

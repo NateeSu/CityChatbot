@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "cdc2136302163ef9feb48c764b9721442613fafc01da1d498ef98075e24e2360",
+  "executionManifestSha256": "41ba2873f45efda3fd82d02a67a0942875817acefe96e5039157572f1abbeaee",
+  "taskId": "P8-SEC-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "76254c00f7aac846aa58380da98d273e2a155ab1400189f849061d8e296311ef",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:48:23Z",
+  "finishedAt": "2026-08-12T16:48:29Z",
+  "requiredTestIds": [
+    "P8-SEC-SECRET-SCAN",
+    "P8-SEC-TENANT-ISOLATION",
+    "P8-SEC-REDTEAM-CONTRACT"
+  ],
+  "passedTestIds": [
+    "P8-SEC-SECRET-SCAN",
+    "P8-SEC-TENANT-ISOLATION",
+    "P8-SEC-REDTEAM-CONTRACT"
+  ],
+  "passCount": 3,
+  "totalCount": 3,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm security:scan && python scripts/security_baseline.py --verify && python -m unittest scripts.test_security_baseline -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "SECRET_SCAN_CLEAN\nSECURITY_BASELINE_VERIFIED sha256:52c7346a02707dd92d433008cd90e5185227981916401448c3b63a98c868f2db\n",
+      "stderr": "$ python scripts/secret_scan.py\ntest_all_threats_have_preventive_detective_and_automatic_controls (scripts.test_security_baseline.SecurityBaselineTests.test_all_threats_have_preventive_detective_and_automatic_controls) ... ok\ntest_checked_in_baseline_is_deterministic (scripts.test_security_baseline.SecurityBaselineTests.test_checked_in_baseline_is_deterministic) ... ok\ntest_declared_unit_ids_cover_every_threat (scripts.test_security_baseline.SecurityBaselineTests.test_declared_unit_ids_cover_every_threat) ... ok\ntest_p8_red_team_contract_covers_untrusted_edges_and_fail_closed_boundaries (scripts.test_security_baseline.SecurityBaselineTests.test_p8_red_team_contract_covers_untrusted_edges_and_fail_closed_boundaries) ... ok\ntest_p8_tenant_and_provider_paths_have_no_wildcard_or_browser_secret_contract (scripts.test_security_baseline.SecurityBaselineTests.test_p8_tenant_and_provider_paths_have_no_wildcard_or_browser_secret_contract) ... ok\ntest_privacy_inventory_covers_four_classes_and_synthetic_test_rule (scripts.test_security_baseline.SecurityBaselineTests.test_privacy_inventory_covers_four_classes_and_synthetic_test_rule) ... ok\ntest_tampered_classification_with_approval_dependency_is_rejected (scripts.test_security_baseline.SecurityBaselineTests.test_tampered_classification_with_approval_dependency_is_rejected) ... ok\ntest_tampered_threat_without_detection_is_rejected (scripts.test_security_baseline.SecurityBaselineTests.test_tampered_threat_without_detection_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.085s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P8-UX-001"
+    }
+  ],
+  "reportHash": "1fad6150c3145d5b44a8bac4f6dc8f91c4665170326d71d7e25d889f34e192d3"
+}

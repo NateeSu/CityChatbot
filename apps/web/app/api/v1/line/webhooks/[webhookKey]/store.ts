@@ -2,7 +2,7 @@ import { createCipheriv, randomBytes } from "node:crypto";
 
 import { decryptSecret, type EncryptedSecret } from "@citychatbot/security/secret-vault";
 import type { DurableLineChannel, DurableLineWebhookStore } from "@citychatbot/line/durable-webhook";
-import { Pool } from "pg";
+import { databasePool } from "../../../../../../src/server/runtime-database";
 
 type ChannelRow = {
   tenant_id: string;
@@ -15,15 +15,6 @@ type ChannelRow = {
 
 type IngestRow = { accepted_event_ids: string[] | null; duplicate_event_ids: string[] | null };
 type RuntimeChannel = DurableLineChannel & { webhookKeyHash: string; credentialKeyVersion: string };
-
-let pool: Pool | undefined;
-
-const databasePool = (): Pool => {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) throw new Error("database runtime is not configured");
-  pool ??= new Pool({ connectionString, max: 4, idleTimeoutMillis: 10_000, connectionTimeoutMillis: 3_000, ssl: { rejectUnauthorized: false } });
-  return pool;
-};
 
 const credentialKey = (): Uint8Array => {
   const value = process.env.TENANT_CREDENTIAL_KEY;

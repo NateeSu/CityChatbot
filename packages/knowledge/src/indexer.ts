@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { IngestionState } from "@citychatbot/storage";
 import { normalizeSearchText, type KnowledgeBlock, type ParseResult, type SourceLocator } from "./parsers";
-import type { KnowledgeApprovalStatus, KnowledgeVisibility, RetrievalAudience } from "./documents";
+import type { KnowledgeActivationStatus, KnowledgeApprovalStatus, KnowledgeUnitGateReceipt, KnowledgeVisibility, RetrievalAudience } from "./documents";
 
 export const INDEX_CHUNK_TYPES = [
   "DOCUMENT_SUMMARY",
@@ -134,6 +134,10 @@ export type IndexGeneration = {
   state: IndexGenerationState;
   versionStateAtBuild: IngestionState;
   approvalStatusAtBuild: KnowledgeApprovalStatus;
+  unitGateManifestVersion?: string;
+  unitGateReportHash?: string;
+  unitGatePassedTestIds?: string[];
+  activatedBy?: "SYSTEM_UNIT_GATE";
   visibility: KnowledgeVisibility;
   ownerDepartmentId: string;
   authorityLevel: number;
@@ -553,15 +557,38 @@ export class InMemoryKnowledgeIndexRepository {
     return cloneGeneration(generation);
   }
 
+  unitGateReviewFacts(tenantId: string, generationId: string, factIds: string[], receipt: KnowledgeUnitGateReceipt, now: Date | string = new Date()): IndexGeneration {
+    if (receipt.actor !== "SYSTEM_UNIT_GATE" || !receipt.reportHash || receipt.requiredTestIds.length === 0 || receipt.requiredTestIds.length !== receipt.passedTestIds.length || receipt.requiredTestIds.some((testId) => !receipt.passedTestIds.includes(testId))) {
+      throw new IndexDomainError("FACT_REVIEW_REQUIRED", "unit gate receipt did not pass every required fact test");
+    }
+    const generation = this.requireGeneration(tenantId, generationId);
+    const timestamp = iso(now, "now")!;
+    const requested = new Set(factIds);
+    for (const fact of generation.facts) {
+      if (requested.has(fact.id)) {
+        fact.reviewStatus = "APPROVED";
+        fact.reviewedBy = "SYSTEM_UNIT_GATE";
+        fact.reviewedAt = timestamp;
+      }
+    }
+    generation.unitGateManifestVersion = receipt.manifestVersion;
+    generation.unitGateReportHash = receipt.reportHash;
+    generation.unitGatePassedTestIds = [...receipt.passedTestIds];
+    generation.updatedAt = timestamp;
+    generation.rowVersion += 1;
+    this.generations.set(generation.id, generation);
+    return cloneGeneration(generation);
+  }
+
   activateGeneration(
     tenantId: string,
     generationId: string,
-    context: { versionState: IngestionState; approvalStatus: KnowledgeApprovalStatus; at?: Date | string },
+    context: { versionState: IngestionState; approvalStatus: KnowledgeApprovalStatus; activationStatus?: KnowledgeActivationStatus; at?: Date | string },
   ): IndexGeneration {
     const generation = this.requireGeneration(tenantId, generationId);
     const at = iso(context.at ?? new Date(), "at")!;
     if (generation.state !== "READY") throw new IndexDomainError("INDEX_NOT_READY", "only a READY generation can be activated");
-    if (context.versionState !== "ACTIVE" || context.approvalStatus !== "APPROVED") throw new IndexDomainError("VERSION_NOT_ACTIVE", "index activation requires approved ACTIVE version");
+    if (context.versionState !== "ACTIVE" || (context.approvalStatus !== "APPROVED" && context.activationStatus !== "UNIT_GATED")) throw new IndexDomainError("VERSION_NOT_ACTIVE", "index activation requires unit-gated ACTIVE version");
     if (generation.effectiveFrom && generation.effectiveFrom > at) throw new IndexDomainError("VERSION_NOT_ACTIVE", "effective window has not started");
     if (generation.effectiveUntil && generation.effectiveUntil <= at) throw new IndexDomainError("VERSION_NOT_ACTIVE", "effective window has ended");
     if (generation.facts.some((fact) => fact.reviewStatus !== "APPROVED")) throw new IndexDomainError("FACT_REVIEW_REQUIRED", "all extracted facts require review before active indexing");
@@ -574,6 +601,7 @@ export class InMemoryKnowledgeIndexRepository {
       this.generations.set(previous.id, previous);
     }
     generation.state = "ACTIVE";
+    if (context.activationStatus === "UNIT_GATED") generation.activatedBy = "SYSTEM_UNIT_GATE";
     generation.updatedAt = at;
     generation.rowVersion += 1;
     this.generations.set(generation.id, generation);

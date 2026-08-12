@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "dad6d94fec8e6dd22d68f6495341329d8b0b023151a6258e49deadc87d3d30d5",
+  "executionManifestSha256": "7d67d2a1515951be53c56804841850d578a82488d16bb8090a3bb389d713a372",
+  "taskId": "P8-UX-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "285471f8a424dc4b1129e098c0572f8b5c4a768316233eec69613092eb6f906f",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:53:10Z",
+  "finishedAt": "2026-08-12T16:53:10Z",
+  "requiredTestIds": [
+    "P8-UX-RESPONSIVE",
+    "P8-UX-A11Y",
+    "P8-UX-THEME",
+    "P8-UX-VISUAL-CONTRACT"
+  ],
+  "passedTestIds": [
+    "P8-UX-RESPONSIVE",
+    "P8-UX-A11Y",
+    "P8-UX-THEME",
+    "P8-UX-VISUAL-CONTRACT"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_ui_system scripts.test_gui_inventory -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_admin_dashboard_has_role_scoped_navigation_and_route_guards (scripts.test_ui_system.UiSystemContractTests.test_admin_dashboard_has_role_scoped_navigation_and_route_guards) ... ok\ntest_admin_shell_has_responsive_boundaries_and_no_horizontal_overflow (scripts.test_ui_system.UiSystemContractTests.test_admin_shell_has_responsive_boundaries_and_no_horizontal_overflow) ... ok\ntest_every_required_product_state_has_an_accessible_primitive (scripts.test_ui_system.UiSystemContractTests.test_every_required_product_state_has_an_accessible_primitive) ... ok\ntest_no_unscoped_external_color_or_mock_import_is_added (scripts.test_ui_system.UiSystemContractTests.test_no_unscoped_external_color_or_mock_import_is_added) ... ok\ntest_production_shells_use_the_shared_theme_engine (scripts.test_ui_system.UiSystemContractTests.test_production_shells_use_the_shared_theme_engine) ... ok\ntest_theme_provider_has_canonical_names_and_persisted_scope (scripts.test_ui_system.UiSystemContractTests.test_theme_provider_has_canonical_names_and_persisted_scope) ... ok\ntest_tokens_cover_wcag_aa_pairs_and_required_breakpoints (scripts.test_ui_system.UiSystemContractTests.test_tokens_cover_wcag_aa_pairs_and_required_breakpoints) ... ok\ntest_all_canonical_screens_are_present_in_exact_order (scripts.test_gui_inventory.GuiInventoryTests.test_all_canonical_screens_are_present_in_exact_order) ... ok\ntest_concepts_images_and_prototype_sources_are_covered (scripts.test_gui_inventory.GuiInventoryTests.test_concepts_images_and_prototype_sources_are_covered) ... ok\ntest_generated_artifact_is_stable_and_marks_external_uat (scripts.test_gui_inventory.GuiInventoryTests.test_generated_artifact_is_stable_and_marks_external_uat) ... ok\ntest_manifest_canonical_states_and_viewports_are_complete (scripts.test_gui_inventory.GuiInventoryTests.test_manifest_canonical_states_and_viewports_are_complete) ... ok\ntest_p8_accessibility_contract_covers_language_states_keyboard_and_reflow (scripts.test_gui_inventory.GuiInventoryTests.test_p8_accessibility_contract_covers_language_states_keyboard_and_reflow) ... ok\ntest_p8_responsive_contract_covers_required_widths_orientation_and_reflow (scripts.test_gui_inventory.GuiInventoryTests.test_p8_responsive_contract_covers_required_widths_orientation_and_reflow) ... ok\ntest_p8_theme_contract_covers_light_dark_high_contrast_and_safe_tenant_scope (scripts.test_gui_inventory.GuiInventoryTests.test_p8_theme_contract_covers_light_dark_high_contrast_and_safe_tenant_scope) ... ok\ntest_p8_visual_contract_maps_every_screen_to_reference_and_prototype_source (scripts.test_gui_inventory.GuiInventoryTests.test_p8_visual_contract_maps_every_screen_to_reference_and_prototype_source) ... ok\n\n----------------------------------------------------------------------\nRan 15 tests in 0.215s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P8-RES-001"
+    }
+  ],
+  "reportHash": "fbcdd92f86a82b6e542b9234d223840671ec7c26233ba243339bceec278b605e"
+}

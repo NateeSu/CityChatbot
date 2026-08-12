@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "revision": "governance-role-map.v1",
+  "actor": "SYSTEM_UNIT_GATE",
+  "humanApprovalDependency": false,
+  "roles": {
+    "RF-01": "UX",
+    "RF-02": "UX",
+    "RF-03": "TL",
+    "RF-04": "TL",
+    "RF-05": "BE",
+    "RF-06": "BE",
+    "RF-07": "AI",
+    "RF-08": "AI",
+    "RF-09": "BE",
+    "RF-10": "TL",
+    "RF-11": "CO",
+    "RF-12": "BE",
+    "RF-13": "SEC",
+    "RF-14": "SEC",
+    "RF-15": "SRE",
+    "RF-16": "QA",
+    "RF-17": "TL",
+    "RF-18": "TL"
+  },
+  "roleDefinitions": {
+    "PO": "product scope and outcome steward",
+    "TL": "architecture, tenancy and contract steward",
+    "BE": "backend, integration and workflow steward",
+    "FE": "frontend and interaction steward",
+    "DB": "database, migration and RLS steward",
+    "AI": "AI/RAG policy and grounding steward",
+    "UX": "screen, copy and accessibility steward",
+    "QA": "test, evidence and regression steward",
+    "SEC": "security, privacy and fail-closed steward",
+    "SRE": "deployment, observability and recovery steward",
+    "CO": "source/content classification steward"
+  },
+  "operatingRules": [
+    "SYSTEM_UNIT_GATE is the only actor that closes a unit-gated task.",
+    "A role owns accountability; no personal identity is invented in this repository.",
+    "Advisory feedback can add evidence but cannot reopen a passed unit gate.",
+    "Missing external configuration is isolated as a retryable operational dependency and never becomes an approval state."
+  ]
+}

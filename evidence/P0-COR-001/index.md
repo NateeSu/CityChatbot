@@ -87,3 +87,38 @@ This discrepancy is recorded, not normalized away. An approved renderer and the 
 - Resolve the 81-versus-76 page-rendering discrepancy with the approved renderer, and verify the five blank pages.
 - No source is approved or activated; this evidence intentionally does not claim P0-COR-001 Definition of Done.
 - Next executable task after the blockers are cleared: `P0-GOV-002` (then continue the dependency order; `P0-COR-002` and the external approval portion of `P0-UX-001` remain gated).
+
+## Automated unit gate checkpoint — 2026-08-12T15:20:32Z
+
+<!-- unit-gate-runner -->
+Status: **FAILED**  
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
+Revision: `6d8c4ba311e0943ca66b481f6be05170de5c3bd7`  
+Report hash: `2e2ab65d20d6f6f8130b5b55302ebeee25aeff457e611c409376f36953c0ba7f`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`0aff1fb00bd45428804f987ebaedd674604b5553bdc9f352190a198a4e86c5ce`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `a2ae7bf86e43576b64369db584884ecb9d744fcf7e007bf3eafc256a6fb733f1`
+- Pass/total: `0/5` required test IDs
+- Command pass/total: `0/1`
+
+### Commands
+
+- `python scripts/audit_corpus.py --verify docs/corpus/corpus-manifest.json && python -m unittest scripts.test_corpus_audit -v` → exit `2`
+
+### Acceptance
+
+- Required commands exited with code `0`: **FAIL**
+- No skipped/only/focused/flaky unit signal: **FAIL**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **FAIL**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.

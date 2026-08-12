@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "c771b58adeb8bbbd9e78ea7709ec45c91c90051d00956264ed11f480f321c8b2",
+  "executionManifestSha256": "e5cdc35327f9e8914e9b5751561fb6cb7f518dbeca4aa7dd03fab496ac299798",
+  "taskId": "P7-AIRPT-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "c207eea625fb5f595ad118d9edd1d5e4e0b457db360db9c66a8f9975e033b1bc",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:16:50Z",
+  "finishedAt": "2026-08-12T16:16:51Z",
+  "requiredTestIds": [
+    "P7-AIRPT-SQL-TRUTH",
+    "P7-AIRPT-NO-INVENT",
+    "P7-AIRPT-COST-BOUNDARY"
+  ],
+  "passedTestIds": [
+    "P7-AIRPT-SQL-TRUTH",
+    "P7-AIRPT-NO-INVENT",
+    "P7-AIRPT-COST-BOUNDARY"
+  ],
+  "passCount": 3,
+  "totalCount": 3,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_kpi_report scripts.test_ai_chat_schema -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_a80_ui_covers_states_accessibility_and_responsive_report_layout (scripts.test_kpi_report.KpiReportContractTests.test_a80_ui_covers_states_accessibility_and_responsive_report_layout) ... ok\ntest_ai_quality_report_is_deterministic_and_narrative_is_fail_closed (scripts.test_kpi_report.KpiReportContractTests.test_ai_quality_report_is_deterministic_and_narrative_is_fail_closed) ... ok\ntest_api_is_explicitly_allowlisted_tenant_and_permission_scoped (scripts.test_kpi_report.KpiReportContractTests.test_api_is_explicitly_allowlisted_tenant_and_permission_scoped) ... ok\ntest_report_projection_is_snapshot_definition_and_reconciliation_backed (scripts.test_kpi_report.KpiReportContractTests.test_report_projection_is_snapshot_definition_and_reconciliation_backed) ... ok\ntest_canonical_outcomes_reason_codes_and_session_states_are_constrained (scripts.test_ai_chat_schema.AiChatSchemaContractTests.test_canonical_outcomes_reason_codes_and_session_states_are_constrained) ... ok\ntest_contract_is_real_additive_and_has_no_provider_credential (scripts.test_ai_chat_schema.AiChatSchemaContractTests.test_contract_is_real_additive_and_has_no_provider_credential) ... ok\ntest_idempotency_and_append_only_invariants_exist (scripts.test_ai_chat_schema.AiChatSchemaContractTests.test_idempotency_and_append_only_invariants_exist) ... ok\ntest_required_chat_tables_and_privacy_minimized_identity_exist (scripts.test_ai_chat_schema.AiChatSchemaContractTests.test_required_chat_tables_and_privacy_minimized_identity_exist) ... ok\ntest_rls_is_forced_and_authenticated_writes_are_denied (scripts.test_ai_chat_schema.AiChatSchemaContractTests.test_rls_is_forced_and_authenticated_writes_are_denied) ... ok\ntest_tenant_composite_relationships_and_indexes_exist (scripts.test_ai_chat_schema.AiChatSchemaContractTests.test_tenant_composite_relationships_and_indexes_exist) ... ok\n\n----------------------------------------------------------------------\nRan 10 tests in 0.017s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P7-DR-001"
+    }
+  ],
+  "reportHash": "35d5c95a880c8363e948d23dcaf413ad8afd39bdd5b8e657de8b40db2c7b9442"
+}

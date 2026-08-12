@@ -1,0 +1,162 @@
+{
+  "schemaVersion": "security-threat-model.v1",
+  "revision": "security-baseline-2026-08-12",
+  "actor": "SYSTEM_UNIT_GATE",
+  "releasePolicy": "unit-green-may-proceed; unresolved external configuration remains fail-closed",
+  "citizenAiTraffic": "DISABLED_UNTIL_AUTO_CHAT_UNIT",
+  "trustBoundaries": [
+    {
+      "id": "TB-UNTRUSTED-EDGE",
+      "description": "LINE payloads, LIFF/browser input, uploaded files, extracted text, model output, URLs and webhook retries are untrusted until verified.",
+      "controls": ["raw-byte signature verification", "server-side LIFF channel and expiry verification", "schema validation", "quarantine before parsing/indexing"]
+    },
+    {
+      "id": "TB-APPLICATION",
+      "description": "The application validates identity, tenant membership, authorization, idempotency and canonical outcome policy before side effects.",
+      "controls": ["tenant-scoped authorization", "CSRF/CORS/rate limits", "canonical outcome allowlist", "audit with redaction"]
+    },
+    {
+      "id": "TB-DATA",
+      "description": "Supabase/Postgres, object storage, vector retrieval, cache, job queues and audit data are separate protected stores.",
+      "controls": ["RLS and composite tenant keys", "private object paths", "bounded retrieval filters", "leased jobs and append-only audit"]
+    },
+    {
+      "id": "TB-PROVIDER",
+      "description": "OpenRouter/LINE and other providers receive only an explicitly permitted, minimized payload through server-only adapters.",
+      "controls": ["privacy-profile route checks", "secret vault", "timeout/retry budgets", "no secret or restricted data to public AI routes"]
+    }
+  ],
+  "dataFlows": [
+    {"id": "DF-01", "from": "LINE", "to": "TB-UNTRUSTED-EDGE", "then": ["signature/destination/replay validation", "tenant lookup from webhook key", "atomic inbox transaction"]},
+    {"id": "DF-02", "from": "LIFF browser", "to": "TB-APPLICATION", "then": ["server verifies ID token and channel", "session binds verified LINE identity", "tenant-scoped query"]},
+    {"id": "DF-03", "from": "TB-APPLICATION", "to": "TB-DATA", "then": ["RLS/composite scope", "outbox in same transaction", "worker lease and idempotency"]},
+    {"id": "DF-04", "from": "uploaded file", "to": "TB-DATA", "then": ["private quarantine", "magic/MIME/size/parser controls", "unit gate before active index"]},
+    {"id": "DF-05", "from": "TB-DATA", "to": "TB-PROVIDER", "then": ["public-only or redacted context", "provider privacy profile", "structured verifier and safe fallback"]},
+    {"id": "DF-06", "from": "TB-APPLICATION", "to": "LINE", "then": ["durable delivery job", "encrypted destination binding", "deduplicated provider request"]}
+  ],
+  "threats": [
+    {
+      "id": "SEC-THREAT-001",
+      "name": "LINE spoof and replay",
+      "category": "spoofing/replay",
+      "severity": "S0",
+      "trustBoundary": "TB-UNTRUSTED-EDGE",
+      "preventiveControls": ["verify raw-body HMAC signature before JSON parsing", "verify destination and channel binding", "derive tenant from hashed webhook key, never request body", "unique provider event/replay key"],
+      "detectiveControls": ["signature-failure and redelivery metrics", "inbox duplicate sentinel", "immutable security audit event"],
+      "automaticMitigation": "REPLAY_DENY_AND_FAIL_CLOSED",
+      "requiredUnitTestIds": ["P0-SEC-LINE-SPOOF-REPLAY"]
+    },
+    {
+      "id": "SEC-THREAT-002",
+      "name": "LIFF token misuse",
+      "category": "authentication/session",
+      "severity": "S0",
+      "trustBoundary": "TB-UNTRUSTED-EDGE",
+      "preventiveControls": ["server-side ID token verification", "channel and issuer/audience validation", "expiry and nonce checks", "session binding to verified LINE subject"],
+      "detectiveControls": ["token verification failure metric", "expired-session state", "identity mismatch audit event"],
+      "automaticMitigation": "REVOKE_SESSION_AND_FAIL_CLOSED",
+      "requiredUnitTestIds": ["P0-SEC-LIFF-TOKEN"]
+    },
+    {
+      "id": "SEC-THREAT-003",
+      "name": "IDOR and object identifier tampering",
+      "category": "authorization",
+      "severity": "S0",
+      "trustBoundary": "TB-APPLICATION",
+      "preventiveControls": ["authorize every resource by verified actor and tenant", "opaque identifiers do not replace authorization", "wrong-owner responses do not reveal existence", "side effects require scoped membership"],
+      "detectiveControls": ["cross-citizen and cross-department denial fixtures", "authorization-denial telemetry", "audit of privileged reads and mutations"],
+      "automaticMitigation": "DENY_WITHOUT_EXISTENCE_LEAK",
+      "requiredUnitTestIds": ["P0-SEC-IDOR-RLS"]
+    },
+    {
+      "id": "SEC-THREAT-004",
+      "name": "RLS bypass and tenant-key mismatch",
+      "category": "data isolation",
+      "severity": "S0",
+      "trustBoundary": "TB-DATA",
+      "preventiveControls": ["RLS on tenant-owned tables", "composite foreign keys including tenant_id", "service-role access only in audited server modules", "tenant filters on SQL, storage, jobs, cache and vectors"],
+      "detectiveControls": ["tenant A/B sentinel matrix", "RLS denial anomaly metric", "migration contract checks", "zero cross-tenant result assertion"],
+      "automaticMitigation": "DISABLE_AFFECTED_SCOPE_AND_FREEZE_CACHE",
+      "requiredUnitTestIds": ["P0-SEC-IDOR-RLS", "P0-SEC-TENANT-ISOLATION"]
+    },
+    {
+      "id": "SEC-THREAT-005",
+      "name": "signed URL theft, replay and path confusion",
+      "category": "storage",
+      "severity": "S1",
+      "trustBoundary": "TB-DATA",
+      "preventiveControls": ["private buckets and tenant-bound object paths", "short TTL signed URLs", "resource and purpose binding", "no public listing or client-controlled object keys"],
+      "detectiveControls": ["expired/replayed/wrong-tenant URL fixtures", "storage access audit", "orphan-object reconciliation"],
+      "automaticMitigation": "REVOKE_URL_AND_QUARANTINE_OBJECT",
+      "requiredUnitTestIds": ["P0-SEC-SIGNED-URL"]
+    },
+    {
+      "id": "SEC-THREAT-006",
+      "name": "malicious upload and parser abuse",
+      "category": "untrusted-content",
+      "severity": "S1",
+      "trustBoundary": "TB-UNTRUSTED-EDGE",
+      "preventiveControls": ["extension/MIME/magic-byte/size validation", "macro and embedded-object rejection", "page/sheet/XML expansion limits", "quarantine before parse and active index", "malware scanner required in production"],
+      "detectiveControls": ["parser timeout/memory metrics", "checksum and lineage audit", "injection scan result stored separately from runtime policy"],
+      "automaticMitigation": "QUARANTINE_AND_FAIL_CLOSED",
+      "requiredUnitTestIds": ["P0-SEC-UPLOAD-QUARANTINE"]
+    },
+    {
+      "id": "SEC-THREAT-007",
+      "name": "prompt injection and tool/action exfiltration",
+      "category": "AI safety",
+      "severity": "S1",
+      "trustBoundary": "TB-PROVIDER",
+      "preventiveControls": ["SYSTEM_POLICY/TENANT_POLICY/EVIDENCE/USER_QUERY delimiters", "evidence is data and cannot override policy", "tool/action allowlist with server authorization", "secret/PII redaction", "structured output and claim verifier"],
+      "detectiveControls": ["direct/indirect/encoded injection fixtures", "unsupported-claim and citation verifier", "provider error and safety-block metrics"],
+      "automaticMitigation": "HANDOFF_SECURITY_AND_DISABLE_ROUTE",
+      "requiredUnitTestIds": ["P0-SEC-PROMPT-INJECTION"]
+    },
+    {
+      "id": "SEC-THREAT-008",
+      "name": "cross-tenant vector, cache and log leakage",
+      "category": "data isolation",
+      "severity": "S0",
+      "trustBoundary": "TB-DATA",
+      "preventiveControls": ["tenant_id is mandatory retrieval/cache/log scope", "public citizen retrieval only uses PUBLIC visibility", "cache keys include tenant and policy version", "logs exclude raw prompt/document/PII by default"],
+      "detectiveControls": ["same-ID different-tenant sentinel", "retrieval Recall/precision isolation fixture", "cache and log scope audit", "cross-tenant output assertion"],
+      "automaticMitigation": "ZERO_RESULT_AND_DISABLE_RETRIEVAL_SCOPE",
+      "requiredUnitTestIds": ["P0-SEC-TENANT-ISOLATION"]
+    },
+    {
+      "id": "SEC-THREAT-009",
+      "name": "secret and token leakage",
+      "category": "confidentiality",
+      "severity": "S0",
+      "trustBoundary": "TB-PROVIDER",
+      "preventiveControls": ["server-only environment/vault access", "AES-256-GCM secret storage with key version", "redaction in logs/evidence/client bundles", "provider privacy profile denies restricted data"],
+      "detectiveControls": ["repository secret scan", "response/log redaction assertions", "credential rotation runbook and exposure alert"],
+      "automaticMitigation": "REDACT_REVOKE_AND_ROTATE",
+      "requiredUnitTestIds": ["P0-SEC-SECRET-LEAKAGE"]
+    },
+    {
+      "id": "SEC-THREAT-010",
+      "name": "privileged export and support-access abuse",
+      "category": "privilege escalation",
+      "severity": "S0",
+      "trustBoundary": "TB-APPLICATION",
+      "preventiveControls": ["MFA for privileged roles", "JIT scope/reason/expiry for support access", "re-authentication before citizen data export", "redacted and watermarked export", "signed URL expiry and revoke"],
+      "detectiveControls": ["immutable export audit", "large-export asynchronous job metrics", "formula-injection and tenant-scope fixtures"],
+      "automaticMitigation": "DENY_EXPORT_AND_REVOKE_GRANT",
+      "requiredUnitTestIds": ["P0-SEC-PRIVILEGED-EXPORT"]
+    }
+  ],
+  "severityMatrix": {
+    "S0": {"definition": "tenant, secret or PII leak; authentication/authorization bypass", "automaticResponse": "kill switch affected route, preserve evidence, rollback last-known-good, rerun unit gate"},
+    "S1": {"definition": "critical safety, policy, cost, time or parser risk", "automaticResponse": "safe handoff or quarantine, disable affected slice, preserve evidence"},
+    "S2": {"definition": "unsupported noncritical fact, wrong department or source issue", "automaticResponse": "exclude evidence and return safe fallback"},
+    "S3": {"definition": "copy, format or completeness defect without fact error", "automaticResponse": "record telemetry and queue hardening work"}
+  },
+  "privacyImpact": [
+    {"dataClass": "PUBLIC", "purpose": "answer public civic service questions from active, unit-gated public evidence", "consent": "privacy notice shown; no restricted data", "retention": "versioned retention policy and legal-hold aware", "aiPolicy": "permitted only with claim/evidence verification"},
+    {"dataClass": "INTERNAL", "purpose": "staff work scope and operational configuration", "consent": "staff access notice and membership authorization", "retention": "versioned retention policy and access audit", "aiPolicy": "not sent to citizen AI"},
+    {"dataClass": "CONFIDENTIAL", "purpose": "complaint handling, support and optional contact/location context", "consent": "purpose-specific notice and recorded consent event where required", "retention": "policy-controlled; legal hold pauses purge; no dev/test copy", "aiPolicy": "minimize and redact before provider"},
+    {"dataClass": "RESTRICTED", "purpose": "authentication secrets, provider tokens, private legal/HR data and security traces", "consent": "server authorization only", "retention": "vault/audit policy; no client or AI transfer", "aiPolicy": "never sent to AI"}
+  ],
+  "rollback": {"trigger": "any S0/S1 control failure or missing mandatory scanner/provider control", "action": ["disable affected feature or route", "force HANDOFF or quarantine", "restore last-known-good configuration", "preserve audit evidence", "rerun affected unit gate"], "humanApprovalDependency": false}
+}

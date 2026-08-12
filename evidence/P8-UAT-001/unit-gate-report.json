@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "1a4edcc988458fce8f25fe29a2fc44e7022d3a978f7745529b89b0bb4f73b5ac",
+  "executionManifestSha256": "fac58027b33c2c61609ff561992afb8a3d2267d63e065480c45fbc7ebcf4da8d",
+  "taskId": "P8-UAT-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "e24f105631faf9ca310a8a6d061cfbad38f3d33519a353eae9f3765895c9c01a",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:59:24Z",
+  "finishedAt": "2026-08-12T16:59:24Z",
+  "requiredTestIds": [
+    "P8-UAT-JOURNEYS",
+    "P8-UAT-HANDOFF",
+    "P8-UAT-ROLLBACK",
+    "P8-UAT-ARTIFACT-LINKS"
+  ],
+  "passedTestIds": [
+    "P8-UAT-JOURNEYS",
+    "P8-UAT-HANDOFF",
+    "P8-UAT-ROLLBACK",
+    "P8-UAT-ARTIFACT-LINKS"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_e2e_certification -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_canonical_json_is_stable (scripts.test_e2e_certification.E2ECertificationTests.test_canonical_json_is_stable) ... ok\ntest_external_dependencies_are_explicitly_fail_closed (scripts.test_e2e_certification.E2ECertificationTests.test_external_dependencies_are_explicitly_fail_closed) ... ok\ntest_journey_contract_reconciles_local_checks_and_cleanup (scripts.test_e2e_certification.E2ECertificationTests.test_journey_contract_reconciles_local_checks_and_cleanup) ... ok\ntest_report_is_json_object (scripts.test_e2e_certification.E2ECertificationTests.test_report_is_json_object) ... ok\ntest_report_write_is_immutable (scripts.test_e2e_certification.E2ECertificationTests.test_report_write_is_immutable) ... ok\ntest_uat_artifact_links_resolve_inside_repository (scripts.test_e2e_certification.E2ECertificationTests.test_uat_artifact_links_resolve_inside_repository) ... ok\ntest_uat_role_manifest_and_training_artifact_are_complete (scripts.test_e2e_certification.E2ECertificationTests.test_uat_role_manifest_and_training_artifact_are_complete) ... ok\ntest_unit_gate_ids_cover_journey_and_artifact_boundaries (scripts.test_e2e_certification.E2ECertificationTests.test_unit_gate_ids_cover_journey_and_artifact_boundaries) ... ok\n\n----------------------------------------------------------------------\nRan 8 tests in 0.099s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P8-GO-001"
+    }
+  ],
+  "reportHash": "e7487c5da27ee47b706deb3e80909a1f6d3f113b67aa757a48c2e2a3cf89f774"
+}

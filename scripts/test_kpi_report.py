@@ -13,6 +13,15 @@ PACKAGE_TEST = ROOT / "packages" / "reports-kpi" / "src" / "report.test.ts"
 API = ROOT / "apps" / "web" / "app" / "api" / "v1" / "admin" / "reports" / "kpi" / "route.ts"
 PAGE = ROOT / "apps" / "web" / "app" / "admin" / "reports" / "KpiReportConsole.tsx"
 CSS = ROOT / "apps" / "web" / "app" / "admin" / "reports" / "reports.css"
+AI_PACKAGE = ROOT / "packages" / "reports-kpi" / "src" / "ai-report.ts"
+AI_PACKAGE_TEST = ROOT / "packages" / "reports-kpi" / "src" / "ai-report.test.ts"
+AI_API = ROOT / "apps" / "web" / "app" / "api" / "v1" / "admin" / "reports" / "ai-quality" / "route.ts"
+
+UNIT_TEST_IDS = (
+    "P7-AIRPT-SQL-TRUTH",
+    "P7-AIRPT-NO-INVENT",
+    "P7-AIRPT-COST-BOUNDARY",
+)
 
 
 class KpiReportContractTests(unittest.TestCase):
@@ -76,6 +85,31 @@ class KpiReportContractTests(unittest.TestCase):
             self.assertIn(breakpoint, css, breakpoint)
         for marker in ("focus-visible", "overflow-x: auto", "prefers-reduced-motion"):
             self.assertIn(marker, css, marker)
+
+    def test_ai_quality_report_is_deterministic_and_narrative_is_fail_closed(self) -> None:
+        source = AI_PACKAGE.read_text(encoding="utf-8")
+        tests = AI_PACKAGE_TEST.read_text(encoding="utf-8")
+        route = AI_API.read_text(encoding="utf-8")
+        for marker in (
+            "SQL_PREPARED_AI_RUNS",
+            "outcomeCounts",
+            "citedMaterialClaimCount",
+            "correctionDenominator",
+            "inputTokens",
+            "outputTokens",
+            "costReconciliation",
+            "modelRevisions",
+            "promptVersions",
+            "indexVersions",
+            "verifyExecutiveNarrative",
+            "UNAVAILABLE",
+        ):
+            self.assertIn(marker, source, marker)
+        for marker in ("cost arithmetic", "cross-tenant", "invented numbers"):
+            self.assertIn(marker, tests.lower(), marker)
+        for marker in ("CONFIGURATION_UNAVAILABLE", "allowedFilters", "reportRoles", "buildAiQualityReport"):
+            self.assertIn(marker, route, marker)
+        self.assertNotRegex(source + route, r"OPENROUTER_API_KEY|SUPABASE_SERVICE_ROLE|sk-or-v1-", re.IGNORECASE)
 
 
 if __name__ == "__main__":

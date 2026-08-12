@@ -1,0 +1,1036 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "tasks": [
+    {
+      "taskId": "AUTO-GATE-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_unit_gate -v"
+      ],
+      "requiredTestIds": [
+        "AUTO-GATE-UNIT-MANIFEST",
+        "AUTO-GATE-UNIT-PASS-CLOSE-QUEUE",
+        "AUTO-GATE-UNIT-IDEMPOTENCY",
+        "AUTO-GATE-UNIT-FAIL-CLOSED",
+        "AUTO-GATE-UNIT-NO-APPROVAL"
+      ],
+      "testIdSource": "scripts/test_unit_gate.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-GOV-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_governance -v"
+      ],
+      "requiredTestIds": [
+        "P0-GOV-RESPONSIBILITY-MAP",
+        "P0-GOV-REQUIREMENT-CHANGE",
+        "P0-GOV-CONTRACT-CONFLICT",
+        "P0-GOV-SECURITY-EXCEPTION",
+        "P0-GOV-NO-APPROVAL-STATE"
+      ],
+      "testIdSource": "scripts/test_governance.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-GOV-002",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/requirements_trace.py --verify evidence/traceability.csv && python -m unittest scripts.test_requirements_trace -v"
+      ],
+      "requiredTestIds": [
+        "P0-GOV-TRACE-CANONICAL-COVERAGE",
+        "P0-GOV-TRACE-BIDIRECTIONAL-LINKS",
+        "P0-GOV-TRACE-NO-DUPLICATES",
+        "P0-GOV-TRACE-SOURCE-LOCATORS",
+        "P0-GOV-TRACE-DETERMINISTIC-HASH"
+      ],
+      "testIdSource": "scripts/test_requirements_trace.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-ARCH-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_architecture_contract -v"
+      ],
+      "requiredTestIds": [
+        "P0-ARCH-REQUEST-BACKGROUND",
+        "P0-ARCH-OUTBOX-ATOMICITY",
+        "P0-ARCH-TENANT-SERVICE-ROLE",
+        "P0-ARCH-EXPLICIT-ROUTES",
+        "P0-ARCH-FAIL-CLOSED-ROLLBACK"
+      ],
+      "testIdSource": "scripts/test_architecture_contract.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-COR-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/audit_corpus.py --input doc_rag_test --verify docs/corpus/corpus-manifest.json && python -m unittest scripts.test_corpus_audit -v"
+      ],
+      "requiredTestIds": [
+        "P0-COR-AUDIT-BASELINE",
+        "P0-COR-DETERMINISTIC-MANIFEST",
+        "P0-COR-CONFLICT-QUARANTINE",
+        "P0-COR-OOXML-CONTROL",
+        "P0-COR-MACRO-REJECT"
+      ],
+      "testIdSource": "scripts/test_corpus_audit.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-COR-002",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/build_conflict_ledger.py --verify docs/corpus/conflict-ledger.json && python -m unittest scripts.test_conflict_ledger -v"
+      ],
+      "requiredTestIds": [
+        "P0-COR-CONFLICT-ALL-QUARANTINED",
+        "P0-COR-CONFLICT-SOURCE-MAPPING",
+        "P0-COR-CONFLICT-NO-ACTIVE-FACTS",
+        "P0-COR-CONFLICT-EXCLUDED-EVALUATION",
+        "P0-COR-CONFLICT-DETERMINISTIC"
+      ],
+      "testIdSource": "scripts/test_conflict_ledger.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-QA-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/build_certified_cases.py --verify && python -m unittest scripts.test_certified_cases -v"
+      ],
+      "requiredTestIds": [
+        "P0-QA-CASE-SCHEMA",
+        "P0-QA-OUTCOME-REASON",
+        "P0-QA-SOURCE-CHECKSUM",
+        "P0-QA-SAFETY-COVERAGE",
+        "P0-QA-SPLIT-SEAL"
+      ],
+      "testIdSource": "scripts/build_certified_cases.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-UX-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P0-SEC-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/security_baseline.py --verify && python -m unittest scripts.test_security_baseline -v"
+      ],
+      "requiredTestIds": [
+        "P0-SEC-LINE-SPOOF-REPLAY",
+        "P0-SEC-LIFF-TOKEN",
+        "P0-SEC-IDOR-RLS",
+        "P0-SEC-SIGNED-URL",
+        "P0-SEC-UPLOAD-QUARANTINE",
+        "P0-SEC-PROMPT-INJECTION",
+        "P0-SEC-TENANT-ISOLATION",
+        "P0-SEC-SECRET-LEAKAGE",
+        "P0-SEC-PRIVILEGED-EXPORT"
+      ],
+      "testIdSource": "scripts/security_baseline.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-QA-002",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/qa_harness.py --verify && python scripts/qa_harness.py --assert-intentional-failure && python -m unittest scripts.test_qa_harness -v"
+      ],
+      "requiredTestIds": [
+        "P0-QA-HARNESS-MANIFEST",
+        "P0-QA-HARNESS-FIXTURES",
+        "P0-QA-HARNESS-PROVIDERS",
+        "P0-QA-HARNESS-CLOCK",
+        "P0-QA-HARNESS-EVIDENCE",
+        "P0-QA-HARNESS-FAILURE-PROBE"
+      ],
+      "testIdSource": "scripts/qa_harness.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P0-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-FND-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-DB-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-IAM-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-RLS-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-SEC-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-STO-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-UI-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-OBS-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-CICD-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P1-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-LINE-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-LINE-002",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-LINE-003",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-LIFF-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-RM-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-UX-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-QA-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P2-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-CMP-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-CMP-002",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-CMP-003",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-ADM-002",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-SLA-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-NOTIF-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-DUP-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-RES-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P3-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-DOC-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-PARSE-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-INDEX-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-RET-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-AIGW-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-CHAT-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-AISEC-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-CHAT-002",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-ROUTE-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P4-QA-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python scripts/rag_evaluator.py --verify --repeats=5 && python -m unittest scripts.test_rag_evaluator -v"
+      ],
+      "requiredTestIds": [
+        "P4-QA-LOCKED-RAG-EVALUATOR",
+        "P4-QA-CITATION-COVERAGE",
+        "P4-QA-CONFLICT-STALE",
+        "P4-QA-TENANT-ISOLATION"
+      ],
+      "testIdSource": "scripts/rag_evaluator.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P4-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-HO-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-HO-002",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-HO-003",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-FAQ-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-QA-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-OPS-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P5-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-ADM-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-KB-001",
+      "state": "completed",
+      "requiredCommands": [
+        "pnpm exec tsc -p packages/knowledge/tsconfig.json --noEmit && pnpm exec vitest run packages/knowledge/src/documents.test.ts packages/knowledge/src/indexer.test.ts --reporter=dot && python -m unittest scripts.test_knowledge_schema scripts.test_knowledge_index_schema -v"
+      ],
+      "requiredTestIds": [
+        "P6-KB-DOCUMENT-LIFECYCLE",
+        "P6-KB-UNIT-GATED-ACTIVATION",
+        "P6-KB-REPROCESS-FAIL-CLOSED",
+        "P6-KB-TENANT-SCOPE"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_knowledge_schema.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P6-ORG-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-BOT-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-THEME-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-NEWS-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-SVC-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-USR-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-TEN-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-AUD-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P6-QA-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_ui_system scripts.test_gui_inventory -v"
+      ],
+      "requiredTestIds": [
+        "P6-QA-SCREEN-MANIFEST",
+        "P6-QA-RESPONSIVE-MATRIX",
+        "P6-QA-THEME-MATRIX",
+        "P6-QA-A11Y-STATE-CONTRACT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_gui_inventory.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P6-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-KPI-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-KPI-002",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-RPT-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-AIRPT-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_kpi_report scripts.test_ai_chat_schema -v"
+      ],
+      "requiredTestIds": [
+        "P7-AIRPT-SQL-TRUTH",
+        "P7-AIRPT-NO-INVENT",
+        "P7-AIRPT-COST-BOUNDARY"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_kpi_report.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P7-SLO-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-JOB-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-DR-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_recovery_contract -v"
+      ],
+      "requiredTestIds": [
+        "P7-DR-BACKUP-CONTRACT",
+        "P7-DR-PITR-CONTRACT",
+        "P7-DR-RESTORE-ISOLATION"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_recovery_contract.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P7-PERF-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_pyramid_audit -v"
+      ],
+      "requiredTestIds": [
+        "P7-PERF-LOAD-CONTRACT",
+        "P7-PERF-SOAK-CONTRACT",
+        "P7-PERF-CAPACITY-CONTRACT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_pyramid_audit.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P7-PRIV-001",
+      "state": "completed",
+      "requiredCommands": [
+        "pnpm exec tsc -p packages/security/tsconfig.json --noEmit && pnpm exec vitest run packages/security/src/privacy.test.ts --reporter=dot && python -m unittest scripts.test_recovery_contract -v"
+      ],
+      "requiredTestIds": [
+        "P7-PRIV-RETENTION-CONTRACT",
+        "P7-PRIV-DSAR-CONTRACT",
+        "P7-PRIV-LEGAL-HOLD-CONTRACT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_recovery_contract.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P7-IR-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P7-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P8-RC-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P8-TEST-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P8-RAG-001",
+      "state": "completed",
+      "requiredCommands": [
+        "pnpm exec vitest run packages/knowledge/src/retriever.test.ts packages/chat/src/grounding.test.ts --reporter=dot && python -m unittest scripts.test_corpus_audit scripts.test_rag_evaluator -v"
+      ],
+      "requiredTestIds": [
+        "P8-RAG-PARSER",
+        "P8-RAG-RECALL",
+        "P8-RAG-CITATION",
+        "P8-RAG-CONFLICT-STALE",
+        "P8-RAG-INJECTION-TENANT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_corpus_audit.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-E2E-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_e2e_certification -v"
+      ],
+      "requiredTestIds": [
+        "P8-E2E-LIFF",
+        "P8-E2E-LINE",
+        "P8-E2E-ADMIN",
+        "P8-E2E-CLEANUP"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_e2e_certification.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-SEC-001",
+      "state": "completed",
+      "requiredCommands": [
+        "pnpm security:scan && python scripts/security_baseline.py --verify && python -m unittest scripts.test_security_baseline -v"
+      ],
+      "requiredTestIds": [
+        "P8-SEC-SECRET-SCAN",
+        "P8-SEC-TENANT-ISOLATION",
+        "P8-SEC-REDTEAM-CONTRACT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/security_baseline.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-UX-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_ui_system scripts.test_gui_inventory -v"
+      ],
+      "requiredTestIds": [
+        "P8-UX-RESPONSIVE",
+        "P8-UX-A11Y",
+        "P8-UX-THEME",
+        "P8-UX-VISUAL-CONTRACT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_gui_inventory.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-RES-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_recovery_contract scripts.test_pyramid_audit -v"
+      ],
+      "requiredTestIds": [
+        "P8-RES-FAILURE-MATRIX",
+        "P8-RES-DR",
+        "P8-RES-PERFORMANCE",
+        "P8-RES-ROLLBACK"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_recovery_contract.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-UAT-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_e2e_certification -v"
+      ],
+      "requiredTestIds": [
+        "P8-UAT-JOURNEYS",
+        "P8-UAT-HANDOFF",
+        "P8-UAT-ROLLBACK",
+        "P8-UAT-ARTIFACT-LINKS"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_e2e_certification.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-GO-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_recovery_contract -v"
+      ],
+      "requiredTestIds": [
+        "P8-GO-MIGRATION-REHEARSAL",
+        "P8-GO-BACKUP-READINESS",
+        "P8-GO-ROLLBACK"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_recovery_contract.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P8-GATE",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_pyramid_audit -v"
+      ],
+      "requiredTestIds": [
+        "P8-GATE-UNIT-AGGREGATE",
+        "P8-GATE-EVIDENCE-COMPLETE"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_pyramid_audit.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P9-DEP-001",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    },
+    {
+      "taskId": "P9-CAN-001",
+      "state": "completed",
+      "requiredCommands": [
+        "pnpm exec tsc -p packages/line/tsconfig.json --noEmit",
+        "pnpm exec tsc -p packages/chat/tsconfig.json --noEmit",
+        "pnpm exec tsc -p apps/web/tsconfig.json --noEmit",
+        "pnpm exec vitest run packages/line/src/durable-chat.test.ts packages/chat/src/durable-line-worker.test.ts --reporter=dot",
+        "python -m unittest scripts.test_line_webhook_api scripts.test_line_runtime_schema scripts.test_line_liff_schema scripts.test_liff_runtime_schema scripts.test_citizen_runtime_schema -v"
+      ],
+      "requiredTestIds": [
+        "P9-CAN-LINE-INBOX-DELIVERY",
+        "P9-CAN-LIFF-SESSION",
+        "P9-CAN-COMPLAINT-CREATE",
+        "P9-CAN-IDEMPOTENCY",
+        "P9-CAN-CLEANUP"
+      ],
+      "testIdSource": "scripts/test_line_webhook_api.py:UNIT_TEST_IDS",
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P9-CAN-002",
+      "state": "planned",
+      "requiredCommands": [
+        "pnpm test:unit"
+      ],
+      "requiredTestIds": [
+        "P9-CAN-COHORT",
+        "P9-CAN-RECONCILIATION",
+        "P9-CAN-FAIL-CLOSED"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P9-CAN-003",
+      "state": "planned",
+      "requiredCommands": [
+        "pnpm test:unit"
+      ],
+      "requiredTestIds": [
+        "P9-CAN-ROLLOUT-25",
+        "P9-CAN-ROLLOUT-50",
+        "P9-CAN-ROLLOUT-100",
+        "P9-CAN-ROLLBACK"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P9-HC-001",
+      "state": "planned",
+      "requiredCommands": [
+        "pnpm test:unit"
+      ],
+      "requiredTestIds": [
+        "P9-HC-HEALTH",
+        "P9-HC-SAMPLING",
+        "P9-HC-RECONCILIATION",
+        "P9-HC-ROLLBACK"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P9-KT-001",
+      "state": "planned",
+      "requiredCommands": [
+        "pnpm test:unit"
+      ],
+      "requiredTestIds": [
+        "P9-KT-DOCS",
+        "P9-KT-RUNBOOK",
+        "P9-KT-INVENTORY"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P9-BAU-001",
+      "state": "planned",
+      "requiredCommands": [
+        "pnpm test:unit"
+      ],
+      "requiredTestIds": [
+        "P9-BAU-EXPIRY",
+        "P9-BAU-STALE-SOURCE",
+        "P9-BAU-REGRESSION",
+        "P9-BAU-ALERT"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "QUEUE_NEXT_TASK"
+      ]
+    },
+    {
+      "taskId": "P9-CLOSE-001",
+      "state": "planned",
+      "requiredCommands": [
+        "pnpm test:unit"
+      ],
+      "requiredTestIds": [
+        "P9-CLOSE-EVIDENCE",
+        "P9-CLOSE-TRACE",
+        "P9-CLOSE-IDEMPOTENCY"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "CLOSE_PHASE"
+      ]
+    },
+    {
+      "taskId": "P9-GATE",
+      "state": "completed",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
+    }
+  ]
+}

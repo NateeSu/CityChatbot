@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "4a1deadec51c254466921f835de91938d1d8bc02f13fceb1c74c5b82a9733a15",
+  "executionManifestSha256": "88a919f144dfd35964ab0462711dc3e67c8b1d2e738d3b0f531e4d87661502f4",
+  "taskId": "P0-QA-002",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "98c179b2e4e515b1cc18dadd81f8f130ace10842c2a7cb083612422523db523a",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:40:24Z",
+  "finishedAt": "2026-08-12T15:40:26Z",
+  "requiredTestIds": [
+    "P0-QA-HARNESS-MANIFEST",
+    "P0-QA-HARNESS-FIXTURES",
+    "P0-QA-HARNESS-PROVIDERS",
+    "P0-QA-HARNESS-CLOCK",
+    "P0-QA-HARNESS-EVIDENCE",
+    "P0-QA-HARNESS-FAILURE-PROBE"
+  ],
+  "passedTestIds": [
+    "P0-QA-HARNESS-MANIFEST",
+    "P0-QA-HARNESS-FIXTURES",
+    "P0-QA-HARNESS-PROVIDERS",
+    "P0-QA-HARNESS-CLOCK",
+    "P0-QA-HARNESS-EVIDENCE",
+    "P0-QA-HARNESS-FAILURE-PROBE"
+  ],
+  "passCount": 6,
+  "totalCount": 6,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/qa_harness.py --verify && python scripts/qa_harness.py --assert-intentional-failure && python -m unittest scripts.test_qa_harness -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "QA_HARNESS_VERIFIED evidence\\P0-QA-002\\harness-runs\\399dd55a3c8ec66acefe2744.json reportSha256=sha256:238f714532fc6ecea3160bf4d9a552356629102de285b42e1beb1055be3be9a8\nQA_INTENTIONAL_FAILURE_PROBE_PASSED\n",
+      "stderr": "test_checked_in_manifest_is_readable (scripts.test_qa_harness.QAHarnessTests.test_checked_in_manifest_is_readable) ... ok\ntest_clock_is_fixed_to_bangkok (scripts.test_qa_harness.QAHarnessTests.test_clock_is_fixed_to_bangkok) ... ok\ntest_evidence_report_has_revision_seed_hashes_and_all_unit_ids (scripts.test_qa_harness.QAHarnessTests.test_evidence_report_has_revision_seed_hashes_and_all_unit_ids) ... ok\ntest_manifest_has_canonical_tenants_departments_roles_and_citizens (scripts.test_qa_harness.QAHarnessTests.test_manifest_has_canonical_tenants_departments_roles_and_citizens) ... ok\ntest_manifest_is_synthetic_and_provider_network_is_disabled (scripts.test_qa_harness.QAHarnessTests.test_manifest_is_synthetic_and_provider_network_is_disabled) ... ok\ntest_provider_fixture_has_duplicate_noop_and_system_error_fallback (scripts.test_qa_harness.QAHarnessTests.test_provider_fixture_has_duplicate_noop_and_system_error_fallback) ... ok\ntest_tenant_mismatch_is_rejected (scripts.test_qa_harness.QAHarnessTests.test_tenant_mismatch_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 7 tests in 0.307s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P4-QA-001"
+    }
+  ],
+  "reportHash": "301925b1ba33337eacf70c17b4de790ce538169fb5473ce31e8046b41b641df3"
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { InMemoryKnowledgeIndexRepository, IndexDomainError, buildIndexGeneration } from "./indexer";
+import type { KnowledgeUnitGateReceipt } from "./documents";
 import { parseDocument } from "./parsers";
 
 const TENANT_A = "tenant-a";
@@ -7,6 +8,14 @@ const TENANT_B = "tenant-b";
 const DEPARTMENT_A = "department-a";
 const CATEGORY = "category-civic";
 const NOW = new Date("2026-08-10T00:00:00.000Z");
+const UNIT_GATE_RECEIPT: KnowledgeUnitGateReceipt = {
+  manifestVersion: "task-unit-gates.v1",
+  reportHash: `sha256:${"c".repeat(64)}`,
+  requiredTestIds: ["P6-KB-UNIT-GATED-ACTIVATION", "P6-KB-TENANT-SCOPE"],
+  passedTestIds: ["P6-KB-UNIT-GATED-ACTIVATION", "P6-KB-TENANT-SCOPE"],
+  actor: "SYSTEM_UNIT_GATE",
+  passedAt: NOW.toISOString(),
+};
 
 const parsed = parseDocument(new TextEncoder().encode(
   "# บริการต่อเชื่อมท่อ\n\nถาม : ติดต่อที่ไหน\nตอบ : โทร 02-123-4567\n\nค่าธรรมเนียม: 900 บาท/ม²\n\n| รายการ | ค่าธรรมเนียม |\n| --- | --- |\n| ถนน ค.ส.ล. | 900 บาท/ม² |\n| ท่อ | 1,500 บาท/ม² |\n\nขั้นตอน 1: ยื่นเอกสาร\nขั้นตอน 2: รอตรวจสอบ",
@@ -86,5 +95,21 @@ describe("knowledge semantic index", () => {
     expect(generation.embeddingStatus).toBe("PENDING_MODEL_REGISTRY");
     expect(generation.chunks.every((chunk) => chunk.embedding === undefined)).toBe(true);
   });
-});
 
+  it("reviews facts and activates an index generation with SYSTEM_UNIT_GATE metadata", () => {
+    const repository = new InMemoryKnowledgeIndexRepository();
+    const generation = repository.registerGeneration(build({ approvalStatus: "PENDING" }));
+    repository.unitGateReviewFacts(TENANT_A, generation.id, generation.facts.map((fact) => fact.id), UNIT_GATE_RECEIPT, NOW);
+    const active = repository.activateGeneration(TENANT_A, generation.id, { versionState: "ACTIVE", approvalStatus: "PENDING", activationStatus: "UNIT_GATED", at: NOW });
+    expect(active.state).toBe("ACTIVE");
+    expect(active.activatedBy).toBe("SYSTEM_UNIT_GATE");
+    expect(active.unitGateReportHash).toBe(UNIT_GATE_RECEIPT.reportHash);
+    expect(active.unitGatePassedTestIds).toEqual(UNIT_GATE_RECEIPT.passedTestIds);
+  });
+
+  it("rejects an incomplete fact unit gate before activation", () => {
+    const repository = new InMemoryKnowledgeIndexRepository();
+    const generation = repository.registerGeneration(build({ approvalStatus: "PENDING" }));
+    expect(() => repository.unitGateReviewFacts(TENANT_A, generation.id, generation.facts.map((fact) => fact.id), { ...UNIT_GATE_RECEIPT, passedTestIds: [] }, NOW)).toThrowError(/FACT_REVIEW_REQUIRED/);
+  });
+});

@@ -3,6 +3,15 @@ import { canTransitionIngestionState, type IngestionState } from "@citychatbot/s
 export type KnowledgeDocumentStatus = "ACTIVE" | "RETIRED";
 export type KnowledgeVisibility = "PUBLIC" | "INTERNAL" | "RESTRICTED";
 export type KnowledgeApprovalStatus = "PENDING" | "APPROVED" | "REJECTED";
+export type KnowledgeActivationStatus = "UNIT_GATE_PENDING" | "UNIT_GATED" | "ACTIVE" | "RETIRED";
+export type KnowledgeUnitGateReceipt = {
+  manifestVersion: string;
+  reportHash: string;
+  requiredTestIds: string[];
+  passedTestIds: string[];
+  actor: "SYSTEM_UNIT_GATE";
+  passedAt: string;
+};
 export type IngestionJobStatus = "QUEUED" | "RUNNING" | "SUCCEEDED" | "RETRY_WAIT" | "DEAD" | "CANCELLED";
 export type RetrievalAudience = "CITIZEN" | "STAFF";
 
@@ -51,6 +60,12 @@ export type KnowledgeDocumentVersion = {
   supersedesVersionId?: string;
   state: IngestionState;
   approvalStatus: KnowledgeApprovalStatus;
+  activationStatus: KnowledgeActivationStatus;
+  activatedBy?: "SYSTEM_UNIT_GATE";
+  activatedAt?: string;
+  unitGateManifestVersion?: string;
+  unitGateReportHash?: string;
+  unitGatePassedTestIds: string[];
   approvedBy?: string;
   approvedAt?: string;
   reviewDueAt: string;
@@ -182,6 +197,7 @@ export class KnowledgeDomainError extends Error {
       | "INVALID_TRANSITION"
       | "DIRECT_PUBLISH_FORBIDDEN"
       | "APPROVAL_REQUIRED"
+      | "UNIT_GATE_REQUIRED"
       | "EFFECTIVE_DATE_REQUIRED"
       | "EXPIRED"
       | "IMMUTABLE_VERSION"
@@ -245,9 +261,9 @@ const assertTenant = (expectedTenantId: string, actualTenantId: string): void =>
   if (expectedTenantId !== actualTenantId) throw new KnowledgeDomainError("TENANT_BOUNDARY", "resource belongs to another tenant");
 };
 
-const assertVersionTransition = (from: IngestionState, to: IngestionState): void => {
-  if (to === "ACTIVE") throw new KnowledgeDomainError("DIRECT_PUBLISH_FORBIDDEN", "ACTIVE can only be reached by atomic publish");
-  if (!canTransitionIngestionState(from, to)) {
+const assertVersionTransition = (from: IngestionState, to: IngestionState, unitGate = false): void => {
+  if (to === "ACTIVE" && !unitGate) throw new KnowledgeDomainError("DIRECT_PUBLISH_FORBIDDEN", "ACTIVE can only be reached by atomic publish");
+  if (!unitGate && !canTransitionIngestionState(from, to)) {
     throw new KnowledgeDomainError("INVALID_TRANSITION", `${from} cannot transition to ${to}`);
   }
 };
@@ -382,6 +398,8 @@ export class InMemoryKnowledgeRepository {
       supersedesVersionId: input.supersedesVersionId ?? document.currentActiveVersionId,
       state: "QUARANTINED",
       approvalStatus: "PENDING",
+      activationStatus: "UNIT_GATE_PENDING",
+      unitGatePassedTestIds: [],
       reviewDueAt: iso(input.reviewDueAt, "reviewDueAt") ?? new Date(new Date(now).getTime() + 90 * 24 * 60 * 60 * 1000).toISOString(),
       parserName: input.parserName ? requireText(input.parserName, "parserName", 128) : undefined,
       parserVersion: input.parserVersion ? requireText(input.parserVersion, "parserVersion", 128) : undefined,
@@ -425,6 +443,7 @@ export class InMemoryKnowledgeRepository {
     if (nextState === "APPROVED") throw new KnowledgeDomainError("APPROVAL_REQUIRED", "APPROVED requires an approval record");
     if (version.state === "FAILED" && nextState !== "QUARANTINED") throw new KnowledgeDomainError("INVALID_TRANSITION", "failed versions must be quarantined before retry");
     version.state = nextState;
+    if (nextState !== "ACTIVE" && nextState !== "RETIRED") version.activationStatus = "UNIT_GATE_PENDING";
     if (nextState === "QUARANTINED") {
       version.failureCode = undefined;
       version.failureDetailRedacted = undefined;
@@ -504,6 +523,55 @@ export class InMemoryKnowledgeRepository {
       this.touch(previous, nowIso);
     }
     target.state = "ACTIVE";
+    target.activationStatus = "ACTIVE";
+    target.activeAt = target.activeAt ?? nowIso;
+    target.retiredAt = undefined;
+    this.touch(target, nowIso);
+    document.currentActiveVersionId = target.id;
+    document.status = "ACTIVE";
+    this.touch(document, nowIso);
+    return cloneVersion(target);
+  }
+
+  unitGateAndActivate(
+    tenantId: string,
+    versionId: string,
+    receipt: KnowledgeUnitGateReceipt,
+    now: Date | string = this.clock(),
+  ): KnowledgeDocumentVersion {
+    const nowIso = iso(now, "now")!;
+    const target = this.requireVersion(tenantId, versionId);
+    if (target.state !== "EVALUATING") throw new KnowledgeDomainError("UNIT_GATE_REQUIRED", "only an evaluated version can pass the unit gate");
+    if (receipt.actor !== "SYSTEM_UNIT_GATE" || !receipt.manifestVersion.trim() || !/^sha256:[a-f0-9]{64}$/i.test(receipt.reportHash)) {
+      throw new KnowledgeDomainError("UNIT_GATE_REQUIRED", "unit gate receipt is invalid");
+    }
+    if (!receipt.requiredTestIds.length || receipt.requiredTestIds.some((testId) => !testId.trim())) {
+      throw new KnowledgeDomainError("UNIT_GATE_REQUIRED", "unit gate test IDs are required");
+    }
+    if (receipt.requiredTestIds.length !== receipt.passedTestIds.length || receipt.requiredTestIds.some((testId) => !receipt.passedTestIds.includes(testId))) {
+      throw new KnowledgeDomainError("UNIT_GATE_REQUIRED", "unit gate did not pass every required test");
+    }
+    if (target.extractionQualityScore === undefined) throw new KnowledgeDomainError("UNIT_GATE_REQUIRED", "extraction quality is missing");
+    if (new Date(target.reviewDueAt).getTime() <= new Date(nowIso).getTime()) throw new KnowledgeDomainError("EXPIRED", "review due date has passed");
+    if (target.effectiveFrom && target.effectiveFrom > nowIso) throw new KnowledgeDomainError("EXPIRED", "version is not effective yet");
+    if (target.effectiveUntil && target.effectiveUntil <= nowIso) throw new KnowledgeDomainError("EXPIRED", "version effective period has ended");
+    assertVersionTransition(target.state, "ACTIVE", true);
+    const document = this.requireDocument(tenantId, target.documentId);
+    const previous = document.currentActiveVersionId ? this.requireVersion(tenantId, document.currentActiveVersionId) : undefined;
+    if (previous && previous.id !== target.id) {
+      previous.state = "RETIRED";
+      previous.activationStatus = "RETIRED";
+      previous.retiredAt = nowIso;
+      this.touch(previous, nowIso);
+    }
+    target.state = "ACTIVE";
+    target.approvalStatus = "PENDING";
+    target.activationStatus = "UNIT_GATED";
+    target.activatedBy = "SYSTEM_UNIT_GATE";
+    target.activatedAt = nowIso;
+    target.unitGateManifestVersion = receipt.manifestVersion;
+    target.unitGateReportHash = receipt.reportHash;
+    target.unitGatePassedTestIds = [...receipt.passedTestIds];
     target.activeAt = target.activeAt ?? nowIso;
     target.retiredAt = undefined;
     this.touch(target, nowIso);
@@ -544,6 +612,7 @@ export class InMemoryKnowledgeRepository {
     if (version.state !== "ACTIVE") throw new KnowledgeDomainError("INVALID_TRANSITION", "only an active version can be retired");
     const document = this.requireDocument(tenantId, version.documentId);
     version.state = "RETIRED";
+    version.activationStatus = "RETIRED";
     version.retiredAt = nowIso;
     this.touch(version, nowIso);
     if (document.currentActiveVersionId === version.id) {

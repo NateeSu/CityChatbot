@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "3f8ffa03fbadd9622331d648d0d330ddf53d504a85facfe9c68a6b930a2104c8",
+  "executionManifestSha256": "8f14f83c059336dc1e6f8c641f60166fa561b5e004f0d18aec10660b574fe137",
+  "taskId": "P7-DR-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "849dda311f8818d71ac5ace2985bdda994d71934eef4afcc11b068a7ce38fcaa",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:18:49Z",
+  "finishedAt": "2026-08-12T16:18:49Z",
+  "requiredTestIds": [
+    "P7-DR-BACKUP-CONTRACT",
+    "P7-DR-PITR-CONTRACT",
+    "P7-DR-RESTORE-ISOLATION"
+  ],
+  "passedTestIds": [
+    "P7-DR-BACKUP-CONTRACT",
+    "P7-DR-PITR-CONTRACT",
+    "P7-DR-RESTORE-ISOLATION"
+  ],
+  "passCount": 3,
+  "totalCount": 3,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_recovery_contract -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_backup_manifest_and_pitr_target_are_versioned (scripts.test_recovery_contract.RecoveryContractTests.test_backup_manifest_and_pitr_target_are_versioned) ... ok\ntest_failure_classes_and_safe_commit_boundary_are_implemented (scripts.test_recovery_contract.RecoveryContractTests.test_failure_classes_and_safe_commit_boundary_are_implemented) ... ok\ntest_manifest_example_is_json_safe_when_present (scripts.test_recovery_contract.RecoveryContractTests.test_manifest_example_is_json_safe_when_present) ... ok\ntest_restore_reconciliation_checks_integrity_and_access_boundaries (scripts.test_recovery_contract.RecoveryContractTests.test_restore_reconciliation_checks_integrity_and_access_boundaries) ... ok\ntest_retry_jobs_are_deduplicated_and_raw_provider_errors_are_not_persisted (scripts.test_recovery_contract.RecoveryContractTests.test_retry_jobs_are_deduplicated_and_raw_provider_errors_are_not_persisted) ... ok\ntest_runbook_covers_every_required_failure_and_rollback (scripts.test_recovery_contract.RecoveryContractTests.test_runbook_covers_every_required_failure_and_rollback) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.008s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P7-PERF-001"
+    }
+  ],
+  "reportHash": "b69a20c392fbf41bcf1ecefe9d184366ecd70fd5e6325244dcdb899bf35aba9a"
+}

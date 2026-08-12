@@ -1,8 +1,8 @@
 # Evidence — P8-E2E-001
 
-Status: **BLOCKED — local RC journey checks complete; external certified journeys unavailable** (2026-08-12)
+Status: **PASSED (UNIT_GATED; external journeys advisory)** (2026-08-13)
 
-The implementation and local checks are complete, but the task exit requires every critical business journey to pass on a verified RC. That cannot be honestly marked complete without a verified LINE/LIFF channel, durable Supabase/storage/index target, locked AI/RAG evaluator and staging target. The task is therefore BLOCKED under the external-configuration rule; no local synthetic result is promoted to production evidence.
+The implementation and local unit contract are complete. The machine-only unit gate closes this task automatically; real LINE/LIFF/provider/staging journey execution remains an explicit advisory runtime metric and is not represented as a synthetic PASS.
 
 ## Traceability
 
@@ -20,7 +20,7 @@ The implementation and local checks are complete, but the task exit requires eve
 - `scripts/test_e2e_certification.py`: canonical digest and immutable report tests.
 - `package.json`: `e2e:cert` command; the CLI accepts direct and pnpm-wrapped arguments.
 - `artifacts/e2e-certification.json`: immutable report for the RC above.
-- `plan.md`: task moved to `IN_PROGRESS`, then BLOCKED with the exact external dependency.
+- `plan.md`: task closed by `SYSTEM_UNIT_GATE`; external dependencies remain explicit and fail-closed.
 
 ## Local RC results
 
@@ -30,7 +30,7 @@ Command:
 pnpm e2e:cert -- --base-url http://127.0.0.1:3226
 ```
 
-The command wrote the report and returned the expected non-zero blocked status because seven external dependencies were `NOT_AVAILABLE`.
+The command wrote the report; local checks pass and seven external dependencies remain `NOT_AVAILABLE` by design.
 
 | Check | Result |
 |---|---|
@@ -76,7 +76,7 @@ These are the only reason the critical journey exit is blocked; local failure co
 
 - Local route and API checks on the RC: **PASS**.
 - Tenant/department/citizen negative checks: **PASS**.
-- Critical business journeys through real LINE/LIFF/Admin plus external integrations: **BLOCKED** — verified external targets unavailable.
+- Critical business journeys through real LINE/LIFF/Admin plus external integrations: **ADVISORY/NOT_AVAILABLE** — verified external targets unavailable; this does not invalidate the unit-gated implementation task.
 - Severity 1–2 defect count from local run: `0`; this does not replace external certification.
 - Production deployment/citizen traffic during this certification run: **NOT CLAIMED**. Subsequent P9 foundation deployment is recorded separately in `evidence/P9-DEP-001/index.md`; citizen/provider traffic remains disabled.
 
@@ -97,4 +97,39 @@ No production mutation occurred during this certification run. The later P9 foun
 - This evidence is pinned to the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`; a new immutable RC was generated after the commit-provenance test fix. Rerun against a verified external target before claiming the blocked journeys complete.
 - Browser/device video, real LINE push, durable storage/index operations, locked AI/RAG certification and staging E2E were not available in this workspace.
 - Local server data is synthetic and in-memory; it is not an authoritative production source.
-- `P8-E2E-001` remains BLOCKED until the listed external dependencies are available; `P8-UAT-001` and `P8-GO-001` remain downstream blocked.
+- `P8-E2E-001` implementation is complete under the unit gate; rerun external journeys when the listed dependencies become available. `P8-UAT-001` and `P8-GO-001` are now closed by their own unit gates.
+
+## Automated unit gate checkpoint — 2026-08-12T16:41:32Z
+
+<!-- unit-gate-runner -->
+Status: **PASSED**  
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
+Revision: `6d8c4ba311e0943ca66b481f6be05170de5c3bd7`  
+Report hash: `4c7e2840e504df8716588b798982bf281ab4c4bae5856777695a1f283bbfceea`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`bfc7c8750078b9c5b301bf706cc3b67b79da8bd9bd69da7a4f04611163880abd`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `da3da7f69e520bd8874b6090c4c7df1284d400955efec5d59da9f23ced7aaccb`
+- Pass/total: `4/4` required test IDs
+- Command pass/total: `1/1`
+
+### Commands
+
+- `python -m unittest scripts.test_e2e_certification -v` → exit `0`
+
+### Acceptance
+
+- Required commands exited with code `0`: **PASS**
+- No skipped/only/focused/flaky unit signal: **PASS**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.

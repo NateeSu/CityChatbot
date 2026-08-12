@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "b93ae0a3c9bf2ac4579ff30ca4783bbfb1f9b5c2495d36705a21d03c1d95334c",
+  "executionManifestSha256": "106963e25a8b096c339aa3029c59622c92ba86c18ff09bd98bd087c870e0017a",
+  "taskId": "P0-SEC-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "5382756320908524dc9108329968c31fc7a66dc44cb40a72f689fd8aaf9243e2",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:36:11Z",
+  "finishedAt": "2026-08-12T15:36:12Z",
+  "requiredTestIds": [
+    "P0-SEC-LINE-SPOOF-REPLAY",
+    "P0-SEC-LIFF-TOKEN",
+    "P0-SEC-IDOR-RLS",
+    "P0-SEC-SIGNED-URL",
+    "P0-SEC-UPLOAD-QUARANTINE",
+    "P0-SEC-PROMPT-INJECTION",
+    "P0-SEC-TENANT-ISOLATION",
+    "P0-SEC-SECRET-LEAKAGE",
+    "P0-SEC-PRIVILEGED-EXPORT"
+  ],
+  "passedTestIds": [
+    "P0-SEC-LINE-SPOOF-REPLAY",
+    "P0-SEC-LIFF-TOKEN",
+    "P0-SEC-IDOR-RLS",
+    "P0-SEC-SIGNED-URL",
+    "P0-SEC-UPLOAD-QUARANTINE",
+    "P0-SEC-PROMPT-INJECTION",
+    "P0-SEC-TENANT-ISOLATION",
+    "P0-SEC-SECRET-LEAKAGE",
+    "P0-SEC-PRIVILEGED-EXPORT"
+  ],
+  "passCount": 9,
+  "totalCount": 9,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python scripts/security_baseline.py --verify && python -m unittest scripts.test_security_baseline -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "SECURITY_BASELINE_VERIFIED sha256:52c7346a02707dd92d433008cd90e5185227981916401448c3b63a98c868f2db\n",
+      "stderr": "test_all_threats_have_preventive_detective_and_automatic_controls (scripts.test_security_baseline.SecurityBaselineTests.test_all_threats_have_preventive_detective_and_automatic_controls) ... ok\ntest_checked_in_baseline_is_deterministic (scripts.test_security_baseline.SecurityBaselineTests.test_checked_in_baseline_is_deterministic) ... ok\ntest_declared_unit_ids_cover_every_threat (scripts.test_security_baseline.SecurityBaselineTests.test_declared_unit_ids_cover_every_threat) ... ok\ntest_privacy_inventory_covers_four_classes_and_synthetic_test_rule (scripts.test_security_baseline.SecurityBaselineTests.test_privacy_inventory_covers_four_classes_and_synthetic_test_rule) ... ok\ntest_tampered_classification_with_approval_dependency_is_rejected (scripts.test_security_baseline.SecurityBaselineTests.test_tampered_classification_with_approval_dependency_is_rejected) ... ok\ntest_tampered_threat_without_detection_is_rejected (scripts.test_security_baseline.SecurityBaselineTests.test_tampered_threat_without_detection_is_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.021s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-QA-002"
+    }
+  ],
+  "reportHash": "3b4f161210d8f49200988d3c417fc83a7d5757d88f5f067bf984876f60afc2f3"
+}

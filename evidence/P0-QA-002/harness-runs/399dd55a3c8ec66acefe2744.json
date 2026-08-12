@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "qa-harness-report.v1",
+  "taskId": "P0-QA-002",
+  "status": "PASSED",
+  "actor": "SYSTEM_UNIT_GATE",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "environment": "isolated-synthetic",
+  "seed": "citychatbot-p0-qa-2026-08-12",
+  "manifestSha256": "sha256:09e2c0a2374f33503c9fcc29f17423969d7b0ed1110afd23cbb7042903c21453",
+  "modelConfigSha256": "sha256:9c5e17a04cd31d16a6b503f22c67994df4c24f6e3adb122b4e21772373e142e6",
+  "startedAt": "2026-08-12T15:39:37Z",
+  "finishedAt": "2026-08-12T15:39:37Z",
+  "requiredTestIds": [
+    "P0-QA-HARNESS-MANIFEST",
+    "P0-QA-HARNESS-FIXTURES",
+    "P0-QA-HARNESS-PROVIDERS",
+    "P0-QA-HARNESS-CLOCK",
+    "P0-QA-HARNESS-EVIDENCE",
+    "P0-QA-HARNESS-FAILURE-PROBE"
+  ],
+  "passedTestIds": [
+    "P0-QA-HARNESS-MANIFEST",
+    "P0-QA-HARNESS-FIXTURES",
+    "P0-QA-HARNESS-PROVIDERS",
+    "P0-QA-HARNESS-CLOCK",
+    "P0-QA-HARNESS-EVIDENCE",
+    "P0-QA-HARNESS-FAILURE-PROBE"
+  ],
+  "checks": {
+    "manifest": "PASS",
+    "tenantAndRoleFixtures": "PASS",
+    "providerMocks": {
+      "lineDuplicateDelivery": "NO_OP",
+      "providerFailureOutcome": "HANDOFF",
+      "providerFailureReasonCode": "SYSTEM_ERROR"
+    },
+    "clock": {
+      "now": "2026-08-12T09:30:00+07:00",
+      "timezone": "Asia/Bangkok",
+      "dst": false
+    },
+    "intentionalFailureProbe": "PASS"
+  },
+  "artifactLinks": [
+    "fixtures/qa/harness-manifest.json",
+    "docs/qa/test-harness.md"
+  ],
+  "reportSha256": "sha256:42f957f41438e1e603e24496ee88beaac1fdcc2519398d8d6782a75b95a95432"
+}

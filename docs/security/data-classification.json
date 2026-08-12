@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "data-classification.v1",
+  "revision": "security-baseline-2026-08-12",
+  "actor": "SYSTEM_UNIT_GATE",
+  "classes": {
+    "PUBLIC": {"defaultVisibility": "PUBLIC", "aiPolicy": "PUBLIC_EVIDENCE_ONLY", "clientExposure": "allowlisted excerpts only"},
+    "INTERNAL": {"defaultVisibility": "INTERNAL", "aiPolicy": "NO_CITIZEN_AI", "clientExposure": "authorized staff only"},
+    "CONFIDENTIAL": {"defaultVisibility": "CONFIDENTIAL", "aiPolicy": "REDACT_MINIMIZE", "clientExposure": "verified owner or authorized staff"},
+    "RESTRICTED": {"defaultVisibility": "RESTRICTED", "aiPolicy": "NEVER_SEND_TO_AI", "clientExposure": "never; server-only where required"}
+  },
+  "inventory": [
+    {"field": "line_user_id", "class": "RESTRICTED", "purpose": "verified identity, session binding and notification delivery", "consent": "privacy notice and channel use", "retentionPolicyRef": "retention-policy-versioned", "devTestRule": "synthetic IDs only"},
+    {"field": "complaint_text", "class": "CONFIDENTIAL", "purpose": "receive, route and resolve a citizen complaint", "consent": "complaint privacy notice; purpose-specific consent event", "retentionPolicyRef": "retention-policy-versioned", "devTestRule": "synthetic fixture text only"},
+    {"field": "phone_number", "class": "CONFIDENTIAL", "purpose": "optional contact for complaint follow-up", "consent": "explicit optional contact consent", "retentionPolicyRef": "retention-policy-versioned", "devTestRule": "fake numbers only"},
+    {"field": "precise_location", "class": "CONFIDENTIAL", "purpose": "locate a reported civic issue when the citizen opts in", "consent": "explicit location consent with purpose", "retentionPolicyRef": "retention-policy-versioned", "devTestRule": "synthetic coordinates only"},
+    {"field": "attachment_content", "class": "CONFIDENTIAL", "purpose": "evidence for a complaint or support case", "consent": "attachment notice and user action", "retentionPolicyRef": "retention-policy-versioned", "devTestRule": "sanitized synthetic files only"},
+    {"field": "staff_membership_and_scope", "class": "INTERNAL", "purpose": "authorize staff work and department visibility", "consent": "staff access notice and membership authorization", "retentionPolicyRef": "retention-policy-versioned", "devTestRule": "fixture accounts only"},
+    {"field": "public_service_fact", "class": "PUBLIC", "purpose": "answer a civic service question", "consent": "public source and privacy notice", "retentionPolicyRef": "knowledge-version-retention", "devTestRule": "approved synthetic or public fixture only"},
+    {"field": "provider_token_or_webhook_secret", "class": "RESTRICTED", "purpose": "server-to-server authentication", "consent": "server authorization only", "retentionPolicyRef": "vault-key-policy", "devTestRule": "environment placeholders; never real values"},
+    {"field": "ai_trace_and_security_audit", "class": "RESTRICTED", "purpose": "replay, incident detection and accountability with minimization", "consent": "privacy notice and role-limited trace access", "retentionPolicyRef": "audit-retention-policy", "devTestRule": "redacted synthetic trace only"}
+  ],
+  "rules": [
+    "Citizen retrieval is restricted to PUBLIC visibility unless an authenticated, authorized staff path is used.",
+    "Production PII must never be copied into development, tests, screenshots, fixtures, logs or model prompts.",
+    "Retention, export, delete, anonymize and legal-hold behavior is policy-controlled, auditable and never inferred by AI.",
+    "A missing consent, retention policy, authorization or privacy profile fails closed; it does not create a new approval state."
+  ]
+}

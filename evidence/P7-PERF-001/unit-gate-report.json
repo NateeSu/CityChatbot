@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "28d77676e494be108deb64eba263c0bc81133baf49a59f5c3f01c401f9998907",
+  "executionManifestSha256": "0391c7c99446932f623f01d005955318d3e1ea6aec29f4caf8487c605fc66520",
+  "taskId": "P7-PERF-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "bbfcbfb3ea3513257e67016de5098f1deb64a07f4ad08bc021e9921dce245b0a",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T16:22:36Z",
+  "finishedAt": "2026-08-12T16:22:37Z",
+  "requiredTestIds": [
+    "P7-PERF-LOAD-CONTRACT",
+    "P7-PERF-SOAK-CONTRACT",
+    "P7-PERF-CAPACITY-CONTRACT"
+  ],
+  "passedTestIds": [
+    "P7-PERF-LOAD-CONTRACT",
+    "P7-PERF-SOAK-CONTRACT",
+    "P7-PERF-CAPACITY-CONTRACT"
+  ],
+  "passCount": 3,
+  "totalCount": 3,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_pyramid_audit -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_fullspec_workload_baseline_and_two_x_scenario (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_fullspec_workload_baseline_and_two_x_scenario) ... ok\ntest_headroom_and_cost_ceiling_are_explicit (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_headroom_and_cost_ceiling_are_explicit) ... ok\ntest_slo_backpressure_and_isolation_contract_pass (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_slo_backpressure_and_isolation_contract_pass) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.007s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P7-PRIV-001"
+    }
+  ],
+  "reportHash": "8f8c46b4dbd500e3c5f1caff358ecefe21f26d49d701586acc5a570e30e61cb9"
+}

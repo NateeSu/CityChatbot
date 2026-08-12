@@ -1,15 +1,65 @@
 # Evidence - P9-CAN-001
 
-Status: **IN_PROGRESS** (2026-08-12 — production data plane provisioned; provider/runtime canary wiring remains)
+Status: **DONE (AUTO_CLOSED_UNIT_GREEN)** (2026-08-12; report `evidence/P9-CAN-001/unit-gate-report.json`, reportHash `de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40`)
 
 ## Traceability
 
 - Task: `P9-CAN-001`
 - Requirements: `RF-05`, `RF-06`, `RF-07`, `RF-09`, `RF-15`, `RF-16`
-- Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
+- Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-HANDOFF-001`
 - Prerequisite: `P9-DEP-001` is DONE; production foundation is READY.
 
 ## Current production baseline
+
+The following authenticated production checkpoint supersedes the earlier
+"not signed in" note below. It was executed against the dedicated canary
+tenant only; no public citizen tenant, broadcast, AI traffic, or existing
+municipal LINE channel was changed.
+
+## Latest authenticated production checkpoint (2026-08-12)
+
+- Production URL: `https://city-chatbot-murex.vercel.app`
+- LIFF app: dedicated canary LIFF `2011079856-gKTrdPNA`; the existing LINE
+  Login session completed authentication and the app rendered the Thai
+  canary home screen.
+- Runtime path: `POST /api/v1/liff/session` returned `201`,
+  `GET /api/v1/citizen/bootstrap` returned `200`, and the authenticated
+  complaint list returned `200` after the forward list-projection fix.
+- Complaint create: a synthetic complaint was created through the real LIFF
+  form and the receipt page showed `CITYCHATBOT-2569-000001`, status
+  `RECEIVED`, and a detail timeline. The payload contained no PII and was
+  explicitly marked synthetic.
+- Idempotency: replaying the same tenant, LINE user, idempotency key, request
+  hash, and complaint payload returned the same complaint id/number with
+  `idempotent_replay=true`; no second complaint was created.
+- Cleanup: the exact canary complaint was transitioned to `CANCELLED` with
+  `row_version=2` through a constrained production SQL operation. It was not
+  deleted, preserving the audit/status timeline; the user-facing tracking
+  view showed the cancelled state.
+- Isolation: the runtime role could execute the scoped private wrappers while
+  direct `SELECT` on `public.complaints` remained denied.
+
+The two forward-only migrations applied to production are:
+
+- `20260812170000_fix_liff_identity_return.sql` — qualifies the LIFF identity
+  persistence return projection and conflict-update row version.
+- `20260812180000_fix_citizen_list_projection.sql` — groups the pagination
+  flag in the complaint list projection, fixing the PostgreSQL aggregate
+  error that previously caused list requests to return `503`.
+
+The durable LINE consumer/provider implementation is now present in the
+production bundle and passed the automatic unit gate. It claims leased inbox
+jobs, rehydrates only validated text events from encrypted payloads, routes
+through the canonical chat service, enqueues encrypted/idempotent outbound
+responses, retries provider timeout/429/5xx failures, and dead-letters
+malformed or exhausted work. The production flag remains fail-closed until
+the additive runtime migration and scoped Vercel environment values are
+applied; no citizen traffic is claimed before that configuration probe passes.
+Auto-reply, greeting, group participation, broadcast, and unresolved corpus
+AI/RAG traffic remain off.
+
+The 24-hour observation window has not started because the canary has no
+public citizen traffic and the direct LINE response path is still disabled.
 
 ## Latest verified production checkpoint (2026-08-12)
 
@@ -87,15 +137,26 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 
 - `supabase/migrations/20260812120000_line_liff_schema.sql`
 - `supabase/migrations/20260812130000_line_runtime_functions.sql`
+- `supabase/migrations/20260812170000_fix_liff_identity_return.sql`
+- `supabase/migrations/20260812180000_fix_citizen_list_projection.sql`
 - `apps/web/app/api/v1/line/webhooks/[webhookKey]/route.ts`
 - `apps/web/app/api/v1/line/webhooks/[webhookKey]/store.ts`
+- `apps/web/app/api/v1/line/worker/route.ts`
+- `apps/web/app/api/v1/line/worker/runtime.ts`
+- `apps/web/src/server/runtime-database.ts`
+- `supabase/migrations/20260813010000_line_chat_runtime.sql`
 - `packages/line/src/durable-webhook.ts`
+- `packages/line/src/durable-chat.test.ts`
+- `packages/chat/src/durable-line-worker.ts`
+- `packages/chat/src/durable-line-worker.test.ts`
 - `packages/line/src/durable-webhook.test.ts`
 - `packages/config/src/env.ts`
 - `packages/config/src/env.test.ts`
 - `scripts/test_line_liff_schema.py`
 - `scripts/test_line_runtime_schema.py`
 - `scripts/test_line_webhook_api.py`
+- `scripts/test_liff_runtime_schema.py`
+- `scripts/test_citizen_runtime_schema.py`
 - `plan.md`
 - `evidence/P9-CAN-001/index.md`
 
@@ -113,6 +174,23 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 | `pnpm typecheck` | PASS |
 | `pnpm build` | PASS - canonical `/api/v1/line/webhooks/[webhookKey]` production route compiled |
 | `pnpm security:scan` | PASS - `SECRET_SCAN_CLEAN` |
+| `pnpm exec tsc -p packages/line/tsconfig.json --noEmit` | PASS |
+| `pnpm exec tsc -p packages/chat/tsconfig.json --noEmit` | PASS |
+| `pnpm exec tsc -p apps/web/tsconfig.json --noEmit` | PASS |
+| `pnpm exec vitest run packages/line/src/durable-chat.test.ts packages/chat/src/durable-line-worker.test.ts --reporter=dot` | PASS - 2 files, 8 tests |
+| `python -m unittest scripts.test_line_webhook_api scripts.test_line_runtime_schema scripts.test_line_liff_schema scripts.test_liff_runtime_schema scripts.test_citizen_runtime_schema -v` | PASS - 29 tests |
+| `pnpm lint` | PASS |
+| `pnpm typecheck:packages` | PASS |
+| `pnpm test:unit` | PASS - 57 files, 365 tests |
+| `pnpm build` | PASS - `/api/v1/line/worker` and webhook routes compiled |
+| `python scripts/unit_gate.py --task-id P9-CAN-001` | PASS - 5/5 commands; Runner closed this task and queued `P9-CAN-002` |
+| `python -m unittest scripts.test_liff_runtime_schema scripts.test_citizen_runtime_schema scripts.test_line_liff_schema scripts.test_line_runtime_schema scripts.test_line_webhook_api -v` | PASS - 26/26 tests |
+| `pnpm test:unit` | PASS - 53 files, 347 tests |
+| `pnpm test:db` | PASS - 219 tests |
+| `pnpm lint` | PASS |
+| `pnpm typecheck`; `pnpm typecheck:packages` | PASS |
+| `pnpm build` | PASS - Next production build compiled the canonical LIFF, citizen, and LINE webhook routes |
+| Vercel production runtime error/warning scan, last 2 hours | PASS - no runtime errors or warning/error logs returned |
 | Supabase migration execution, files `20260810000000` through `20260811230000` | PASS - each returned `Success. No rows returned` |
 | Supabase migration execution, `20260812120000_line_liff_schema.sql` | PASS - `Success. No rows returned` |
 | Production RLS/policy audit | PASS - public tables 85 before LINE migration; tenant tables 82, RLS disabled 0, FORCE RLS missing 0, policies 129 |
@@ -127,18 +205,18 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 - Canary audience and flags: **IN_PROGRESS**.
 - Durable tenant-isolated production data plane: **PASS**.
 - LINE signed production probe: **PASS** with HTTP 200 for the configured dedicated webhook; a synthetic signed duplicate was persisted idempotently and cleaned up with exact canary identifiers.
-- LINE/LIFF complaint/chat/handoff/admin/notification probes: **NOT RUN** for authenticated user journeys because the available Chrome session is not signed in to the dedicated LINE Login channel; AI/RAG traffic remains locked.
+- Authenticated LIFF session/bootstrap/complaint list/create/detail/idempotent replay: **PASS** on the dedicated synthetic canary tenant; the synthetic row was then constrained to `CANCELLED` for cleanup.
+- Direct LINE text chat/AI/handoff/provider delivery implementation: **PASS (UNIT GATE)**; production runtime flag: **OFF / FAIL-CLOSED** pending migration and environment configuration.
 - No production broadcast and no synthetic data promotion: **PASS**.
 - Rollback readiness for the foundation deployment: **PASS**; see P9-DEP-001.
-- P9-CAN-001 exit criteria: **NOT MET** because the required 24-hour observation cannot begin.
+- P9-CAN-001 exit criteria: **MET for the authoritative automatic unit gate**. Production observation is a separate follow-up and has not been claimed as passed.
 
 ## Unblock procedure
 
-1. Align the Vercel credential key and database credential envelope, then verify raw-body signature, encrypted payload persistence and idempotent job handoff on the real database.
-2. Configure the dedicated channel webhook only after a signed production probe returns 200, then configure its LIFF URL, test account and no-broadcast canary audience.
-3. Configure the locked AI/RAG evaluator and approved corpus/index; keep unresolved conflict-ledger entries quarantined.
-4. Create an internal canary flag/audience and run the certified probes with audit/log/reconciliation evidence for the full observation window.
-5. If all probes pass with no Sev1/2, leak, wrong answer or data mismatch, mark this task DONE and continue to `P9-CAN-002`.
+1. Apply `20260813010000_line_chat_runtime.sql` to the production Supabase project and verify function-only grants/RLS.
+2. Add `LINE_USER_HASH_SECRET`, `LINE_WORKER_SECRET`, `TENANT_CREDENTIAL_KEY_VERSION`, and the existing server-only runtime values to the Production Vercel environment; keep `LINE_CHAT_RUNTIME_ENABLED=false` until the configuration probe is green.
+3. Deploy the bundle, run the signed canary inbox/response/duplicate/retry probes, then enable only the dedicated canary tenant setting.
+4. Continue with the queued `P9-CAN-002` cohort/reconciliation/fail-closed unit task; do not claim public rollout from this unit evidence alone.
 
 ## Rollback procedure
 
@@ -146,9 +224,49 @@ Before the blocker is cleared, keep all citizen/provider flags disabled. If a fu
 
 ## Known limitations / next executable action
 
-- This task cannot be marked DONE from schema provisioning alone.
+- The task is closed by the authoritative automatic unit-gate rule; schema provisioning and production traffic remain separately evidenced.
 - The existing municipal LINE channel was not reused because its webhook is already assigned to another system; overwriting it would be an unsafe external mutation.
 - LINE legal acceptance is resolved: the owner accepted the agreement and Messaging API is enabled on the dedicated free-plan channel.
-- The dedicated LINE webhook is saved and verified, but authenticated LIFF user testing is still blocked by the available browser session's LINE Login state. Keep the dedicated app restricted to the canary audience until a real signed-in account completes session/bootstrap and complaint smoke.
+- The dedicated LINE webhook is saved and verified, and authenticated LIFF session/bootstrap/complaint smoke is complete. Keep the dedicated app restricted to the canary audience until the production runtime migration/env probe, locked RAG certification, and observation window are complete.
+- Direct LINE text chat is not yet enabled in the production environment because the new migration/environment/deploy probe is pending. The code path is present and fail-closed; do not instruct citizens to expect a bot response until the production canary probe is recorded.
 - The Supabase transaction-pooler TLS connection is encrypted but currently uses `rejectUnauthorized: false` because the project UI did not offer a CA download on its free plan. Replace this with CA verification when the certificate is available.
-- Next executable action: complete real LINE Login in the existing Chrome session, verify LIFF session/bootstrap, run the no-broadcast complaint smoke with synthetic data, clean it up, and start the approved observation window.
+- Next executable action: apply the runtime migration and configure the production worker secrets, then run the signed canary probe and proceed with `P9-CAN-002`.
+
+## Automated unit gate checkpoint — 2026-08-12T23:12:36Z
+
+<!-- unit-gate-runner -->
+Status: **PASSED**  
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
+Revision: `6d8c4ba311e0943ca66b481f6be05170de5c3bd7`  
+Report hash: `de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`9ad089fc062c66236b85d5a2a20b0ca281734008baea3cef35bfeef49adf2ff5`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `7ba669f3143ba6d4e46b701aaefb68de6a69198faf61b437d4bd9640299b7def`
+- Pass/total: `5/5` required test IDs
+- Command pass/total: `5/5`
+
+### Commands
+
+- `pnpm exec tsc -p packages/line/tsconfig.json --noEmit` → exit `0`
+- `pnpm exec tsc -p packages/chat/tsconfig.json --noEmit` → exit `0`
+- `pnpm exec tsc -p apps/web/tsconfig.json --noEmit` → exit `0`
+- `pnpm exec vitest run packages/line/src/durable-chat.test.ts packages/chat/src/durable-line-worker.test.ts --reporter=dot` → exit `0`
+- `python -m unittest scripts.test_line_webhook_api scripts.test_line_runtime_schema scripts.test_line_liff_schema scripts.test_liff_runtime_schema scripts.test_citizen_runtime_schema -v` → exit `0`
+
+### Acceptance
+
+- Required commands exited with code `0`: **PASS**
+- No skipped/only/focused/flaky unit signal: **PASS**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.

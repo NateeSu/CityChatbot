@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "uat-harness.v1",
+  "taskId": "P8-UAT-001",
+  "mode": "AUTOMATED_UNIT_HARNESS",
+  "source": "scripts.test_e2e_certification",
+  "productionDataTouched": false,
+  "manualSignOffRequired": false,
+  "roles": [
+    "CITIZEN",
+    "STAFF",
+    "DEPARTMENT_HEAD",
+    "KNOWLEDGE_STAFF",
+    "PR_STAFF",
+    "TENANT_ADMIN",
+    "EXECUTIVE"
+  ],
+  "journeys": [
+    { "id": "UAT-CITIZEN-COMPLAINT", "role": "CITIZEN", "assertion": "complaint intake, idempotent replay, tracking and safe empty/error states", "artifact": "docs/operations/p8-uat-001.md#citizen" },
+    { "id": "UAT-STAFF-INBOX", "role": "STAFF", "assertion": "tenant-scoped inbox, assignment, status update and public update", "artifact": "docs/operations/p8-uat-001.md#staff" },
+    { "id": "UAT-DEPARTMENT-HANDOFF", "role": "DEPARTMENT_HEAD", "assertion": "department scope, handoff and optimistic-concurrency recovery", "artifact": "docs/operations/p8-uat-001.md#department-head" },
+    { "id": "UAT-KNOWLEDGE-GATE", "role": "KNOWLEDGE_STAFF", "assertion": "upload quarantine, unit-gated activation, reindex and rollback", "artifact": "docs/operations/p8-uat-001.md#knowledge" },
+    { "id": "UAT-NEWS-PUBLISH", "role": "PR_STAFF", "assertion": "draft, validation, schedule, publish and revision rollback", "artifact": "docs/operations/p8-uat-001.md#public-relations" },
+    { "id": "UAT-TENANT-ADMIN", "role": "TENANT_ADMIN", "assertion": "configuration, theme, access control and audit visibility", "artifact": "docs/operations/p8-uat-001.md#tenant-admin" },
+    { "id": "UAT-EXECUTIVE-KPI", "role": "EXECUTIVE", "assertion": "server-derived KPI, filter/export reconciliation and stale warning", "artifact": "docs/operations/p8-uat-001.md#executive" },
+    { "id": "UAT-SAFE-HANDOFF", "role": "CITIZEN", "assertion": "insufficient, stale or conflicting evidence yields CLARIFY or HANDOFF", "artifact": "docs/operations/p8-uat-001.md#handoff" },
+    { "id": "UAT-ROLLBACK", "role": "TENANT_ADMIN", "assertion": "feature/config/index/theme rollback preserves core intake and audit evidence", "artifact": "docs/operations/p8-uat-001.md#rollback" }
+  ],
+  "canonicalOutcomes": ["ANSWER", "CLARIFY", "HANDOFF"],
+  "requiredProperties": ["tenant isolation", "idempotency", "audit evidence", "fail-closed recovery", "Thai user-facing copy"],
+  "externalExecution": {
+    "status": "ADVISORY_NOT_AVAILABLE",
+    "reason": "No external municipal participant or staging target is required for the automated unit gate."
+  }
+}

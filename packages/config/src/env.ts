@@ -12,6 +12,9 @@ const serverEnvSchema = z
     OPENROUTER_MODEL: z.string().min(1).optional(),
     DATABASE_URL: z.string().url().optional(),
     LINE_WEBHOOK_HASH_SECRET: z.string().min(32).optional(),
+    LINE_USER_HASH_SECRET: z.string().min(32).optional(),
+    LINE_WORKER_SECRET: z.string().min(32).optional(),
+    LINE_CHAT_RUNTIME_ENABLED: z.enum(["true", "false"]).default("false"),
     CSRF_SECRET: z.string().min(32).optional(),
     TENANT_CREDENTIAL_KEY: z.string().min(32).optional(),
     TENANT_CREDENTIAL_KEY_VERSION: z.string().min(1).optional(),
@@ -45,6 +48,13 @@ const serverEnvSchema = z
         code: "custom",
         path: ["DATABASE_URL"],
         message: "DATABASE_URL, LINE_WEBHOOK_HASH_SECRET and TENANT_CREDENTIAL_KEY must be configured together",
+      });
+    }
+    if (value.LINE_CHAT_RUNTIME_ENABLED === "true" && (!value.DATABASE_URL || !value.TENANT_CREDENTIAL_KEY || !value.TENANT_CREDENTIAL_KEY_VERSION || !value.LINE_WORKER_SECRET || (!value.LINE_USER_HASH_SECRET && !value.LINE_WEBHOOK_HASH_SECRET))) {
+      context.addIssue({
+        code: "custom",
+        path: ["LINE_CHAT_RUNTIME_ENABLED"],
+        message: "LINE chat runtime requires database, credential, worker and user-hash configuration",
       });
     }
   });

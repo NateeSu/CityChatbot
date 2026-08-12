@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "d4ec49bfeb3839e826601b9498ac9cab6a66c1e5a35f6ccfada24f0d38d84b7e",
+  "executionManifestSha256": "531b479a811f4ce0a2c47be2a24ccfb7f5dbec89f5e2674ca94e6fd139ec29ed",
+  "taskId": "P8-GATE",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "0c46a684e61d58ecdb5f715d27840136161e96196995c11f6044dd5c9ad81a70",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T17:04:26Z",
+  "finishedAt": "2026-08-12T17:04:26Z",
+  "requiredTestIds": [
+    "P8-GATE-UNIT-AGGREGATE",
+    "P8-GATE-EVIDENCE-COMPLETE"
+  ],
+  "passedTestIds": [
+    "P8-GATE-UNIT-AGGREGATE",
+    "P8-GATE-EVIDENCE-COMPLETE"
+  ],
+  "passCount": 2,
+  "totalCount": 2,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_pyramid_audit -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_fullspec_workload_baseline_and_two_x_scenario (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_fullspec_workload_baseline_and_two_x_scenario) ... ok\ntest_headroom_and_cost_ceiling_are_explicit (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_headroom_and_cost_ceiling_are_explicit) ... ok\ntest_p8_gate_evidence_is_complete_and_external_limits_are_explicit (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_p8_gate_evidence_is_complete_and_external_limits_are_explicit) ... ok\ntest_p8_gate_unit_aggregate_is_complete_and_hash_linked (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_p8_gate_unit_aggregate_is_complete_and_hash_linked) ... ok\ntest_slo_backpressure_and_isolation_contract_pass (scripts.test_pyramid_audit.PerformanceProfileContractTests.test_slo_backpressure_and_isolation_contract_pass) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.044s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-CAN-001"
+    }
+  ],
+  "reportHash": "41da91e4dd8d5831a871e5a23396768add7c4f4647eba509fa8e9fcd7d9fdc74"
+}

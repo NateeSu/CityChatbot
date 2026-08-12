@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "c94e9a7aa0cf4de71f090f90a288499f42b05b93ba468ec4dc451fd465b35a48",
+  "executionManifestSha256": "4ee35090b4143e03f871232097b1dd200ad932a76397d82ce22ae284f9da32c7",
+  "taskId": "P0-GOV-001",
+  "revision": "6d8c4ba311e0943ca66b481f6be05170de5c3bd7",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "69b136e4e5c81821d3e0cab58e1ce50ffa7ee48da91b59257ebb4aca56b53d92",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T15:12:07Z",
+  "finishedAt": "2026-08-12T15:12:07Z",
+  "requiredTestIds": [
+    "P0-GOV-RESPONSIBILITY-MAP",
+    "P0-GOV-REQUIREMENT-CHANGE",
+    "P0-GOV-CONTRACT-CONFLICT",
+    "P0-GOV-SECURITY-EXCEPTION",
+    "P0-GOV-NO-APPROVAL-STATE"
+  ],
+  "passedTestIds": [
+    "P0-GOV-RESPONSIBILITY-MAP",
+    "P0-GOV-REQUIREMENT-CHANGE",
+    "P0-GOV-CONTRACT-CONFLICT",
+    "P0-GOV-SECURITY-EXCEPTION",
+    "P0-GOV-NO-APPROVAL-STATE"
+  ],
+  "passCount": 5,
+  "totalCount": 5,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "python -m unittest scripts.test_governance -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "",
+      "stderr": "test_contract_conflict_is_quarantined (scripts.test_governance.GovernanceTests.test_contract_conflict_is_quarantined) ... ok\ntest_requirement_change_creates_versioned_safe_queue (scripts.test_governance.GovernanceTests.test_requirement_change_creates_versioned_safe_queue) ... ok\ntest_responsibility_map_covers_every_requirement_family_once (scripts.test_governance.GovernanceTests.test_responsibility_map_covers_every_requirement_family_once) ... ok\ntest_security_exception_disables_and_rolls_back (scripts.test_governance.GovernanceTests.test_security_exception_disables_and_rolls_back) ... ok\ntest_unknown_case_does_not_create_an_approval_state (scripts.test_governance.GovernanceTests.test_unknown_case_does_not_create_an_approval_state) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.016s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P0-GOV-002"
+    }
+  ],
+  "reportHash": "01f56262bc2d2f5f0abb0b367ac781c0f1957bacc9541f8993525cba6d0a3e58"
+}
