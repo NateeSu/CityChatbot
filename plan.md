@@ -1389,6 +1389,7 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
 - [ ] `P9-CAN-001` เปิด internal canary ด้วยบัญชี/หน่วยงานทดสอบ
   - สถานะ: IN_PROGRESS (2026-08-12 — provisioned dedicated Supabase production target, applied all reviewed migrations plus canonical durable LINE/LIFF schema, and verified production RLS/FK/grants; LINE channel/runtime wiring and locked AI/RAG canary remain in progress; production stays fail-closed until those checks pass)
   - เริ่มทำต่อ: 2026-08-12 — Supabase project `CityChatbot Production` (`qiaklpfojbdajpskmjze`, Singapore) healthy; 26 migrations applied without production seed; 88/88 tenant-owned tables have RLS enabled and forced; tenant-to-tenant FK missing tenant pair = 0; dedicated LINE/LIFF tables expose zero anon grants and zero authenticated write grants.
+  - ความคืบหน้า: 2026-08-12 — added server-only canonical webhook route and transactional encrypted inbox/job persistence through a no-table-access runtime role; commit `e192c66` deployed READY as Vercel production deployment `4QGgHZXqfMmLAnZqeHcG6VaA9Ztt`; health 200 and invalid webhook 403 fail-closed smoke passed with zero Vercel runtime errors.
   - เจ้าของ: SRE + QA; ผู้ร่วม: UAT, AI
   - Prerequisites: P9-DEP-001
   - Deliverables: canary flags/audience; synthetic and manual journeys; live dashboards; incident log; cleanup

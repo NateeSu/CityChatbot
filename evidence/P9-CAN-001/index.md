@@ -39,7 +39,16 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 ## Files changed
 
 - `supabase/migrations/20260812120000_line_liff_schema.sql`
+- `supabase/migrations/20260812130000_line_runtime_functions.sql`
+- `apps/web/app/api/v1/line/webhooks/[webhookKey]/route.ts`
+- `apps/web/app/api/v1/line/webhooks/[webhookKey]/store.ts`
+- `packages/line/src/durable-webhook.ts`
+- `packages/line/src/durable-webhook.test.ts`
+- `packages/config/src/env.ts`
+- `packages/config/src/env.test.ts`
 - `scripts/test_line_liff_schema.py`
+- `scripts/test_line_runtime_schema.py`
+- `scripts/test_line_webhook_api.py`
 - `plan.md`
 - `evidence/P9-CAN-001/index.md`
 
@@ -48,12 +57,19 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 | Command / check | Actual result |
 |---|---|
 | `python -m unittest scripts.test_line_liff_schema -v` | PASS - 6/6 tests |
+| `python -m unittest scripts.test_line_webhook_api scripts.test_line_runtime_schema scripts.test_line_liff_schema -v` | PASS - 15/15 tests |
+| `pnpm exec vitest run packages/config/src/env.test.ts packages/line/src/durable-webhook.test.ts` | PASS - 2 files, 9 tests |
+| `pnpm typecheck` | PASS |
+| `pnpm build` | PASS - canonical `/api/v1/line/webhooks/[webhookKey]` production route compiled |
 | `pnpm security:scan` | PASS - `SECRET_SCAN_CLEAN` |
 | Supabase migration execution, files `20260810000000` through `20260811230000` | PASS - each returned `Success. No rows returned` |
 | Supabase migration execution, `20260812120000_line_liff_schema.sql` | PASS - `Success. No rows returned` |
 | Production RLS/policy audit | PASS - public tables 85 before LINE migration; tenant tables 82, RLS disabled 0, FORCE RLS missing 0, policies 129 |
 | Production composite FK audit | PASS - tenant tables 82, tenant-bearing FKs 195, missing tenant pair 0, tenant unique constraints 146 |
 | Production LINE/LIFF schema audit | PASS - tables present 6, RLS disabled 0, FORCE RLS missing 0, scoped policies 6, anon grants 0, authenticated write grants 0 |
+| Production runtime role audit | PASS - `citychatbot_app` login is non-superuser with connection limit 12; direct public table access denied; only two private functions executable |
+| Git/Vercel deployment | PASS - commit `e192c66`; deployment `4QGgHZXqfMmLAnZqeHcG6VaA9Ztt` READY in Production |
+| Production webhook fail-closed smoke | PASS - invalid key/signature returned HTTP 403 `FORBIDDEN`; Vercel logs show request and Error count 0 |
 
 ## Acceptance status
 
