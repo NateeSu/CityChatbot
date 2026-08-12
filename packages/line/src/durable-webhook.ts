@@ -38,6 +38,12 @@ export const sameWebhookHash = (left: string, right: string): boolean => {
   return leftBytes.length === rightBytes.length && timingSafeEqual(leftBytes, rightBytes);
 };
 
+const logRejectedWebhook = (requestId: string, stage: "configuration" | "resolve_error" | "resolve_miss" | "inactive_channel" | "signature_invalid" | "parse_error" | "persist_error"): void => {
+  // Deliberately log only a non-sensitive stage and request correlation id.
+  // Never include the webhook key, signature, raw body, destination, or credentials.
+  console.warn("line_webhook_rejected", { requestId, stage });
+};
+
 export const processDurableLineWebhook = async (input: {
   webhookKey: string;
   webhookHashSecret: string;
@@ -55,16 +61,28 @@ export const processDurableLineWebhook = async (input: {
   try {
     webhookKeyHash = constantTimeWebhookHash(input.webhookKey, input.webhookHashSecret);
   } catch {
+    logRejectedWebhook(input.requestId, "configuration");
     return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
   }
   let channel: DurableLineChannel | undefined;
   try {
     channel = await input.store.resolve(webhookKeyHash);
   } catch {
+    logRejectedWebhook(input.requestId, "resolve_error");
     return { accepted: false, status: 503, reasonCode: "DEPENDENCY_NOT_READY", requestId: input.requestId };
   }
-  if (!channel || channel.state !== "ACTIVE") return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
-  if (!verifyLineSignature(input.rawBody, input.signature, channel.channelSecret)) return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
+  if (!channel) {
+    logRejectedWebhook(input.requestId, "resolve_miss");
+    return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
+  }
+  if (channel.state !== "ACTIVE") {
+    logRejectedWebhook(input.requestId, "inactive_channel");
+    return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
+  }
+  if (!verifyLineSignature(input.rawBody, input.signature, channel.channelSecret)) {
+    logRejectedWebhook(input.requestId, "signature_invalid");
+    return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
+  }
   let events: NormalizedLineEvent[];
   try {
     if (isLineWebhookVerificationProbe(input.rawBody, channel.destination)) {
@@ -74,12 +92,14 @@ export const processDurableLineWebhook = async (input: {
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     const reasonCode = message.startsWith("CONFLICT:") ? "CONFLICT" : message.startsWith("FORBIDDEN:") ? "FORBIDDEN" : "VALIDATION_ERROR";
+    logRejectedWebhook(input.requestId, "parse_error");
     return { accepted: false, status: reasonCode === "CONFLICT" ? 409 : reasonCode === "FORBIDDEN" ? 403 : 400, reasonCode, requestId: input.requestId };
   }
   try {
     const persisted = await input.store.persist({ channel, events, rawBody: input.rawBody, payloadSha256: createHash("sha256").update(input.rawBody).digest("hex"), requestId: input.requestId, correlationId: input.correlationId, receivedAt: now });
     return { accepted: true, status: 200, requestId: input.requestId, correlationId: input.correlationId, ...persisted };
   } catch {
+    logRejectedWebhook(input.requestId, "persist_error");
     return { accepted: false, status: 503, reasonCode: "DEPENDENCY_NOT_READY", requestId: input.requestId };
   }
 };
