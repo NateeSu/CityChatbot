@@ -1492,8 +1492,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: M (3) | Trace: RF-03, RF-15, RF-16, RF-18
   - หลักฐาน: [Evidence](./evidence/P9-CAN-003/index.md)
 
-- [ ] `P9-HC-001` ทำ 14-day hypercare และ daily certified sampling
-  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
+- [x] `P9-HC-001` ทำ 14-day hypercare และ daily certified sampling
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=f963cd37cfc06fed67acfb8d8374b69c2cad509b002b65316e8925109fbe9788; revision=97ffbb824dd3de0bb9a89f0c95e4509e7db3db68)
   - เจ้าของ: SRE + QA + AI + CO
   - Prerequisites: เริ่มเมื่อ P9-CAN-002; ต่อเนื่องหลัง 100%
   - Deliverables: daily health/correctness/cost report; sampled answer review; failed/handoff query triage; corpus gap register; incident/problem log; on-call rota
@@ -1504,7 +1504,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-HC-001/index.md)
 
 - [ ] `P9-KT-001` ส่งมอบ operations, content governance และ training
-  - สถานะ: TODO
+  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
   - เจ้าของ: PO + SRE + CO; ผู้ร่วม: TL, QA, SEC
   - Prerequisites: P9-HC-001
   - Deliverables: admin/user manuals; architecture/ADRs; runbooks; source update/certification cadence; access/asset inventory; vendor renewals; support SLA; ownership calendar
@@ -2097,6 +2097,8 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 `P9-CAN-002` is now DONE via automatic unit gate report `06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0` at revision `6c0a95116477c3c0c2200dcaddff6b0d94d01593`; cohort, reconciliation, fail-closed/rollback and sampling controls passed `4/4`. The next executable task is `P9-CAN-003`, queued automatically. Production LINE chat remains fail-closed until the separately evidenced Supabase migration and scoped Vercel environment configuration are applied.
 
 `P9-CAN-003` is now DONE via automatic unit gate report `63bae804aad3789db0b7baf66cbfd6ea5b34572a4f72dae3fdf8b6a7fe74d398` at revision `4605a6b3e8e3157af3e84c412769853fc75764f0`; rollout checkpoints, thresholds, tenant scope and rollback passed `4/4`. The next executable task is `P9-HC-001`, queued automatically. Production LINE chat remains fail-closed until the separately evidenced Supabase migration and scoped Vercel environment configuration are applied.
+
+`P9-HC-001` is now DONE via automatic unit gate report `f963cd37cfc06fed67acfb8d8374b69c2cad509b002b65316e8925109fbe9788` at revision `97ffbb824dd3de0bb9a89f0c95e4509e7db3db68`; health, certified sampling coverage, reconciliation and rollback controls passed `4/4`. The next executable task is `P9-KT-001`, queued automatically. The monitor is scheduler-ready; it does not claim a completed 14-day external observation window.
 
 # Final Release Rule
 

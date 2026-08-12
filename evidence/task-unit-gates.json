@@ -964,7 +964,7 @@
     },
     {
       "taskId": "P9-HC-001",
-      "state": "ready",
+      "state": "completed",
       "requiredCommands": [
         "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_hypercare_monitor -v"
       ],

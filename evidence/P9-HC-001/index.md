@@ -1,6 +1,6 @@
 # P9-HC-001 — Hypercare health and certified sampling monitor
 
-Status: **IN_PROGRESS — unit gate ready**  
+Status: **DONE (AUTO_CLOSED_UNIT_GREEN)**  
 Requirement IDs: `SPEC-MVP-001`, `SPEC-AUTO-001`, `RF-07`, `RF-08`, `RF-09`, `RF-15`, `RF-16`  
 Task: `P9-HC-001`  
 Owner: `SYSTEM_UNIT_GATE`
@@ -29,7 +29,7 @@ The authoritative automatic unit-gate command is:
 pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_hypercare_monitor -v
 ```
 
-Focused verification passed before entering the gate: TypeScript compilation passed and Vitest passed `4` files / `21` tests. The runner must append the immutable report and change this status to `DONE (AUTO_CLOSED_UNIT_GREEN)` only after every required command passes.
+TypeScript compilation passed; Vitest passed `4` files / `21` tests`; Python contract tests passed `4/4`; the unit-gate report passed all required test IDs `4/4` and updated `plan.md` to queue `P9-KT-001`.
 
 ## Acceptance criteria
 
@@ -50,5 +50,39 @@ Use the idempotent manual rollback operation for the tenant, keep the last-known
 
 ## Next executable task
 
-After the automatic unit gate passes, continue with `P9-KT-001` operations/content governance delivery.
+The next executable task is queued `P9-KT-001` operations/content governance delivery.
 
+## Automated unit gate checkpoint — 2026-08-12T23:43:25Z
+
+<!-- unit-gate-runner -->
+Status: **PASSED**  
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
+Revision: `97ffbb824dd3de0bb9a89f0c95e4509e7db3db68`  
+Report hash: `f963cd37cfc06fed67acfb8d8374b69c2cad509b002b65316e8925109fbe9788`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`c27fdade9073f282378b7738c05bb71619cf4cd2e1343044af8dce6ced37278f`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `a9c14e497dae71181fb4a23357327074fa15658953f7ce4cf92822d20718420a`
+- Pass/total: `4/4` required test IDs
+- Command pass/total: `1/1`
+
+### Commands
+
+- `pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_hypercare_monitor -v` → exit `0`
+
+### Acceptance
+
+- Required commands exited with code `0`: **PASS**
+- No skipped/only/focused/flaky unit signal: **PASS**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.

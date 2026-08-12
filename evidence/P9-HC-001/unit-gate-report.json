@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "c27fdade9073f282378b7738c05bb71619cf4cd2e1343044af8dce6ced37278f",
+  "executionManifestSha256": "60d9c823ea5e41aefd0e866b662c38ae0d8cf64dc384b158c46ef36fdcdd83b8",
+  "taskId": "P9-HC-001",
+  "revision": "97ffbb824dd3de0bb9a89f0c95e4509e7db3db68",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "a9c14e497dae71181fb4a23357327074fa15658953f7ce4cf92822d20718420a",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:43:21Z",
+  "finishedAt": "2026-08-12T23:43:25Z",
+  "requiredTestIds": [
+    "P9-HC-HEALTH",
+    "P9-HC-SAMPLING",
+    "P9-HC-RECONCILIATION",
+    "P9-HC-ROLLBACK"
+  ],
+  "passedTestIds": [
+    "P9-HC-HEALTH",
+    "P9-HC-SAMPLING",
+    "P9-HC-RECONCILIATION",
+    "P9-HC-ROLLBACK"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_hypercare_monitor -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n·····················\n\n Test Files  4 passed (4)\n      Tests  21 passed (21)\n   Start at  06:43:24\n   Duration  605ms (transform 386ms, setup 0ms, import 628ms, tests 35ms, environment 0ms)\n\n",
+      "stderr": "test_health_and_daily_schedule_contract (scripts.test_hypercare_monitor.HypercareMonitorContractTests.test_health_and_daily_schedule_contract) ... ok\ntest_reconciliation_and_budget_alerts_are_checked (scripts.test_hypercare_monitor.HypercareMonitorContractTests.test_reconciliation_and_budget_alerts_are_checked) ... ok\ntest_rollback_is_idempotent_and_handoff_safe (scripts.test_hypercare_monitor.HypercareMonitorContractTests.test_rollback_is_idempotent_and_handoff_safe) ... ok\ntest_sampling_review_coverage_is_required (scripts.test_hypercare_monitor.HypercareMonitorContractTests.test_sampling_review_coverage_is_required) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-KT-001"
+    }
+  ],
+  "reportHash": "f963cd37cfc06fed67acfb8d8374b69c2cad509b002b65316e8925109fbe9788"
+}
