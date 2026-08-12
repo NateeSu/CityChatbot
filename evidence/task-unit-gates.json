@@ -964,9 +964,9 @@
     },
     {
       "taskId": "P9-HC-001",
-      "state": "planned",
+      "state": "ready",
       "requiredCommands": [
-        "pnpm test:unit"
+        "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_hypercare_monitor -v"
       ],
       "requiredTestIds": [
         "P9-HC-HEALTH",
@@ -977,7 +977,8 @@
       "onPass": [
         "CLOSE_TASK",
         "QUEUE_NEXT_TASK"
-      ]
+      ],
+      "testIdSource": "scripts/test_hypercare_monitor.py:UNIT_TEST_IDS"
     },
     {
       "taskId": "P9-KT-001",
