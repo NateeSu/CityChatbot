@@ -1,0 +1,38 @@
+{
+  "name": "@citychatbot/web",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1 --port 3100",
+    "build": "next build",
+    "start": "next start --hostname 127.0.0.1 --port 3100",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@citychatbot/audit-observability": "workspace:*",
+    "@citychatbot/bot-settings": "workspace:*",
+    "@citychatbot/theme-settings": "workspace:*",
+    "@citychatbot/news": "workspace:*",
+    "@citychatbot/services": "workspace:*",
+    "@citychatbot/user-management": "workspace:*",
+    "@citychatbot/tenant-provisioning": "workspace:*",
+    "@citychatbot/complaints": "workspace:*",
+    "@citychatbot/config": "workspace:*",
+    "@citychatbot/knowledge": "workspace:*",
+    "@citychatbot/org-config": "workspace:*",
+    "@citychatbot/reports-kpi": "workspace:*",
+    "@citychatbot/slo": "workspace:*",
+    "@citychatbot/job-ops": "workspace:*",
+    "@citychatbot/incident-ops": "workspace:*",
+    "@citychatbot/line": "workspace:*",
+    "@citychatbot/rich-menu": "workspace:*",
+    "@citychatbot/security": "workspace:*",
+    "@citychatbot/support-handoff": "workspace:*",
+    "@citychatbot/support-delivery": "workspace:*",
+    "next": "16.3.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  }
+}

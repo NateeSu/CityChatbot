@@ -1,0 +1,12 @@
+{
+  "name": "@citychatbot/audit-observability",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/audit-operations.ts",
+      "default": "./src/audit-operations.ts"
+    }
+  }
+}

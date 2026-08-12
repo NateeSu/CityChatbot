@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="1686" viewBox="0 0 2500 1686" role="img" aria-labelledby="title desc">
+  <title id="title">Rich Menu หลัก 5 รายการ</title>
+  <desc id="desc">แจ้งปัญหา ติดตามสถานะ ข่าวสาร บริการ และติดต่อ</desc>
+  <defs>
+    <linearGradient id="primarySurface" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E9F6F7"/>
+      <stop offset="1" stop-color="#F5FBFC"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#0F2742" flood-opacity=".10"/>
+    </filter>
+    <style>
+      .label{font-family:"Noto Sans Thai",Tahoma,Arial,sans-serif;font-weight:700;fill:#0F2742;text-anchor:middle}
+      .sub{font-family:"Noto Sans Thai",Tahoma,Arial,sans-serif;font-weight:500;fill:#52657A;text-anchor:middle}
+      .icon{fill:none;stroke:#006B73;stroke-width:34;stroke-linecap:round;stroke-linejoin:round}
+      .icon-blue{fill:none;stroke:#0B5CAD;stroke-width:30;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="2500" height="1686" fill="#F4F8FB"/>
+
+  <!-- Primary action: x=0 y=0 w=1667 h=1000 -->
+  <rect x="28" y="28" width="1611" height="944" rx="42" fill="url(#primarySurface)" stroke="#9ECFD2" stroke-width="4" filter="url(#soft)"/>
+  <circle cx="833" cy="360" r="150" fill="#006B73"/>
+  <path d="M735 370l70-64 42 38 86-79 0 197H735zM765 468h136" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="925" cy="245" r="24" fill="#FFB020"/>
+  <text class="label" x="833" y="650" font-size="96">แจ้งปัญหา</text>
+  <text class="sub" x="833" y="735" font-size="50">แจ้งเรื่องพร้อมรูปและตำแหน่ง</text>
+
+  <!-- Tracking: x=1667 y=0 w=833 h=1000 -->
+  <rect x="1695" y="28" width="777" height="944" rx="42" fill="#FFFFFF" stroke="#C8D6E2" stroke-width="4"/>
+  <rect x="1952" y="235" width="265" height="315" rx="28" class="icon-blue"/>
+  <path d="M2010 325h150M2010 400h95M2020 515l58 55 114-132" class="icon-blue"/>
+  <text class="label" x="2083" y="690" font-size="78">ติดตามสถานะ</text>
+  <text class="sub" x="2083" y="775" font-size="46">ดูความคืบหน้าของคุณ</text>
+
+  <!-- Bottom actions -->
+  <rect x="28" y="1028" width="777" height="630" rx="42" fill="#FFFFFF" stroke="#C8D6E2" stroke-width="4"/>
+  <rect x="861" y="1028" width="777" height="630" rx="42" fill="#FFFFFF" stroke="#C8D6E2" stroke-width="4"/>
+  <rect x="1695" y="1028" width="777" height="630" rx="42" fill="#FFFFFF" stroke="#C8D6E2" stroke-width="4"/>
+
+  <!-- News icon -->
+  <path d="M240 1180h330v260H240zM300 1245h90v80h-90zM430 1245h80M430 1310h80M300 1378h210" class="icon-blue"/>
+  <text class="label" x="417" y="1540" font-size="68">ข่าวสาร</text>
+
+  <!-- Services icon -->
+  <path d="M1055 1395h390M1095 1395v-210h310v210M1140 1185v-82h220v82M1165 1265h55v55h-55M1280 1265h55v55h-55" class="icon"/>
+  <text class="label" x="1250" y="1540" font-size="68">บริการ</text>
+
+  <!-- Contact icon -->
+  <path d="M1958 1280c0-105 85-190 190-190s190 85 190 190M1958 1280v120M2338 1280v120M1958 1400h85v-130h-85zM2253 1400h85v-130h-85zM2253 1400c0 70-45 105-130 105" class="icon-blue"/>
+  <circle cx="2110" cy="1505" r="24" fill="#0B5CAD"/>
+  <text class="label" x="2083" y="1590" font-size="68">ติดต่อ</text>
+</svg>

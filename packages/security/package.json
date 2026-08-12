@@ -1,0 +1,32 @@
+{
+  "name": "@citychatbot/security",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    "./headers": {
+      "types": "./src/headers.ts",
+      "default": "./src/headers.ts"
+    },
+    "./rate-limit": {
+      "types": "./src/rate-limit.ts",
+      "default": "./src/rate-limit.ts"
+    },
+    "./csrf": {
+      "types": "./src/csrf.ts",
+      "default": "./src/csrf.ts"
+    },
+    "./cookies": {
+      "types": "./src/cookies.ts",
+      "default": "./src/cookies.ts"
+    },
+    "./secret-vault": {
+      "types": "./src/secret-vault.ts",
+      "default": "./src/secret-vault.ts"
+    },
+    "./ai-safety": {
+      "types": "./src/ai-safety.ts",
+      "default": "./src/ai-safety.ts"
+    }
+  }
+}

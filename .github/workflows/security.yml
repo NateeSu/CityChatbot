@@ -1,0 +1,32 @@
+name: Security baseline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm security:scan
+      - run: pnpm audit --prod --audit-level=high
+      - run: pnpm security:sbom
+        working-directory: .
+      - run: pnpm test:all
+      - uses: actions/upload-artifact@v4
+        with:
+          name: citychatbot-sbom
+          path: artifacts/sbom.cdx.json

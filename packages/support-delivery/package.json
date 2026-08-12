@@ -1,0 +1,16 @@
+{
+  "name": "@citychatbot/support-delivery",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@citychatbot/line": "workspace:*",
+    "@citychatbot/support-handoff": "workspace:*"
+  }
+}

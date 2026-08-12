@@ -1,0 +1,39 @@
+{
+  "name": "citychatbot",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@11.16.0",
+  "engines": {
+    "node": ">=20.9.0",
+    "pnpm": ">=9 <12"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @citychatbot/web dev",
+    "build": "pnpm --filter @citychatbot/web build",
+    "start": "pnpm --filter @citychatbot/web start",
+    "lint": "pnpm --filter @citychatbot/web lint",
+    "typecheck": "pnpm --filter @citychatbot/web typecheck",
+    "typecheck:packages": "pnpm exec tsc -p packages/authz/tsconfig.json --noEmit && pnpm exec tsc -p packages/security/tsconfig.json --noEmit && pnpm exec tsc -p packages/storage/tsconfig.json --noEmit && pnpm exec tsc -p packages/telemetry/tsconfig.json --noEmit && pnpm exec tsc -p packages/line/tsconfig.json --noEmit && pnpm exec tsc -p packages/liff/tsconfig.json --noEmit && pnpm exec tsc -p packages/complaints/tsconfig.json --noEmit && pnpm exec tsc -p packages/knowledge/tsconfig.json --noEmit && pnpm exec tsc -p packages/ai-gateway/tsconfig.json --noEmit && pnpm exec tsc -p packages/chat/tsconfig.json --noEmit && pnpm exec tsc -p packages/support-handoff/tsconfig.json --noEmit && pnpm exec tsc -p packages/support-ops/tsconfig.json --noEmit && pnpm exec tsc -p packages/support-delivery/tsconfig.json --noEmit && pnpm exec tsc -p packages/rich-menu/tsconfig.json --noEmit && pnpm exec tsc -p packages/org-config/tsconfig.json --noEmit && pnpm exec tsc -p packages/bot-settings/tsconfig.json --noEmit && pnpm exec tsc -p packages/theme-settings/tsconfig.json --noEmit && pnpm exec tsc -p packages/news/tsconfig.json --noEmit && pnpm exec tsc -p packages/services/tsconfig.json --noEmit && pnpm exec tsc -p packages/user-management/tsconfig.json --noEmit && pnpm exec tsc -p packages/tenant-provisioning/tsconfig.json --noEmit && pnpm exec tsc -p packages/audit-observability/tsconfig.json --noEmit && pnpm exec tsc -p packages/reports-kpi/tsconfig.json --noEmit && pnpm exec tsc -p packages/slo/tsconfig.json --noEmit && pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec tsc -p packages/incident-ops/tsconfig.json --noEmit",
+    "test:unit": "vitest run",
+      "test:db": "python -m unittest discover -s scripts -p \"test_*.py\" -v",
+    "security:scan": "python scripts/secret_scan.py",
+    "security:sbom": "python scripts/generate_sbom.py",
+    "release:manifest": "python scripts/release_manifest.py",
+    "release:verify": "python scripts/release_manifest.py --verify artifacts/release-manifest.json",
+    "release:rc": "python scripts/release_candidate.py",
+    "release:rc:verify": "python scripts/release_candidate.py --verify artifacts/release-candidate.json",
+    "test:pyramid": "python scripts/test_pyramid_audit.py",
+    "e2e:cert": "python scripts/e2e_certification.py",
+    "test:all": "pnpm lint && pnpm typecheck && pnpm typecheck:packages && pnpm test:unit && pnpm security:scan && pnpm security:sbom && pnpm build && pnpm release:manifest && pnpm release:verify && pnpm test:db"
+  },
+  "devDependencies": {
+    "@types/node": "26.2.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.0",
+    "typescript": "5.7.3",
+    "vitest": "4.1.10"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@citychatbot/line",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./channel": {
+      "types": "./src/channel.ts",
+      "default": "./src/channel.ts"
+    },
+    "./complaint-notifications": {
+      "types": "./src/complaint-notifications.ts",
+      "default": "./src/complaint-notifications.ts"
+    },
+    "./messaging": {
+      "types": "./src/messaging.ts",
+      "default": "./src/messaging.ts"
+    },
+    "./webhook": {
+      "types": "./src/webhook.ts",
+      "default": "./src/webhook.ts"
+    }
+  },
+  "dependencies": {
+    "@citychatbot/security": "workspace:*",
+    "@citychatbot/telemetry": "workspace:*"
+  }
+}

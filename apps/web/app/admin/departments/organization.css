@@ -1,0 +1,55 @@
+.organization-heading { align-items: flex-start; display: flex; gap: 16px; justify-content: space-between; margin-bottom: 18px; }
+.organization-heading h1 { font-size: clamp(1.65rem, 3vw, 2.4rem); line-height: 1.15; margin: 5px 0 8px; }
+.organization-heading p, .organization-section-heading p, .organization-card p, .organization-panel p { color: var(--cc-text-muted); margin: 0; }
+.organization-heading__actions { align-items: flex-end; display: flex; flex-direction: column; gap: 8px; }
+.organization-kicker { color: var(--cc-primary); font-size: .74rem; font-weight: 850; letter-spacing: .08em; }
+.organization-role, .organization-status { background: var(--cc-primary-soft); border: 1px solid var(--cc-border); border-radius: 999px; color: var(--cc-primary); font-size: .76rem; font-weight: 750; padding: 6px 9px; }
+.organization-status--inactive { background: var(--cc-surface-muted); color: var(--cc-text-muted); }
+.organization-layout { align-items: start; display: grid; gap: 14px; grid-template-columns: minmax(0, 1.3fr) minmax(280px, .7fr); }
+.organization-main, .organization-sidebar { min-width: 0; }
+.organization-section-heading { align-items: center; display: flex; justify-content: space-between; margin-bottom: 10px; }
+.organization-section-heading h2, .organization-panel h2 { font-size: 1.05rem; margin: 0 0 4px; }
+.organization-section-heading > span { color: var(--cc-text-muted); font-size: .78rem; }
+.organization-cards { display: grid; gap: 12px; }
+.organization-card, .organization-panel { background: var(--cc-surface); border: 1px solid var(--cc-border); border-radius: 12px; padding: 16px; }
+.organization-card__header { align-items: flex-start; display: flex; gap: 10px; justify-content: space-between; }
+.organization-card__header h2 { font-size: 1.1rem; margin: 3px 0; }
+.organization-card__header p { font-size: .78rem; }
+.organization-facts { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 16px 0; }
+.organization-facts div { background: var(--cc-surface-muted); border-radius: 8px; min-width: 0; padding: 10px; }
+.organization-facts dt { color: var(--cc-text-muted); font-size: .72rem; }
+.organization-facts dd { font-size: .82rem; margin: 3px 0 0; overflow-wrap: anywhere; }
+.organization-drafts { border-top: 1px solid var(--cc-border); display: grid; gap: 7px; padding-top: 11px; }
+.organization-drafts > strong { font-size: .8rem; }
+.organization-draft { align-items: center; display: flex; gap: 8px; justify-content: space-between; }
+.organization-draft span { font-size: .78rem; overflow-wrap: anywhere; }
+.organization-details { border-top: 1px solid var(--cc-border); margin-top: 12px; padding-top: 11px; }
+.organization-details summary { cursor: pointer; font-size: .8rem; font-weight: 750; }
+.organization-detail-grid { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 10px; }
+.organization-detail-grid div { min-width: 0; }
+.organization-detail-grid strong { font-size: .72rem; }
+.organization-detail-grid p { font-size: .76rem; margin-top: 3px; overflow-wrap: anywhere; }
+.organization-sidebar { display: grid; gap: 12px; }
+.organization-form { display: grid; gap: 9px; }
+.organization-form label, .organization-panel > label { color: var(--cc-text-muted); display: grid; font-size: .75rem; gap: 4px; }
+.organization-form input, .organization-form select, .organization-panel > label input { background: var(--cc-bg); border: 1px solid var(--cc-border); border-radius: 7px; color: var(--cc-text); font: inherit; min-height: 40px; min-width: 0; padding: 7px 9px; }
+.organization-form input:focus-visible, .organization-form select:focus-visible, .organization-panel > label input:focus-visible, .organization-button:focus-visible, .organization-details summary:focus-visible, .organization-footer a:focus-visible { outline: 3px solid var(--cc-focus); outline-offset: 2px; }
+.organization-button { align-items: center; border: 1px solid transparent; border-radius: 7px; cursor: pointer; display: inline-flex; font: inherit; font-size: .78rem; font-weight: 750; justify-content: center; min-height: 40px; padding: 7px 11px; text-decoration: none; }
+.organization-button:disabled { cursor: not-allowed; opacity: .55; }
+.organization-button--primary { background: var(--cc-primary); color: var(--cc-primary-contrast); }
+.organization-button--secondary { background: var(--cc-surface); border-color: var(--cc-border); color: var(--cc-text); }
+.organization-muted { color: var(--cc-text-muted); font-size: .76rem; }
+.organization-alert { background: var(--cc-danger-soft); border: 1px solid var(--cc-danger); border-radius: 8px; color: var(--cc-text); margin-bottom: 12px; padding: 10px 12px; }
+.organization-alert--success { background: var(--cc-success-soft); border-color: var(--cc-success); }
+.organization-preview-list { display: grid; gap: 5px; list-style: none; margin: 10px 0 0; padding: 0; }
+.organization-preview-list li { background: var(--cc-primary-soft); border-radius: 6px; font-size: .78rem; padding: 7px 8px; }
+.organization-footer { border-top: 1px solid var(--cc-border); color: var(--cc-text-muted); display: flex; font-size: .76rem; gap: 12px; justify-content: space-between; margin-top: 18px; padding-top: 12px; }
+.organization-category-panel { margin-top: 12px; }
+.organization-category-list { display: grid; gap: 7px; }
+.organization-category-list > div { align-items: center; border-top: 1px solid var(--cc-border); display: grid; gap: 4px; grid-template-columns: minmax(80px, .25fr) minmax(0, 1fr) auto; padding-top: 8px; }
+.organization-category-list strong { color: var(--cc-primary); font-size: .78rem; }
+.organization-category-list span, .organization-category-list small { color: var(--cc-text-muted); font-size: .75rem; overflow-wrap: anywhere; }
+.organization-footer a { color: var(--cc-primary); font-weight: 750; }
+@media (max-width: 900px) { .organization-layout { grid-template-columns: 1fr; } .organization-sidebar { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .organization-heading { flex-direction: column; } .organization-heading__actions { align-items: stretch; width: 100%; } .organization-layout, .organization-sidebar { grid-template-columns: 1fr; } .organization-facts, .organization-detail-grid { grid-template-columns: 1fr; } .organization-card, .organization-panel { padding: 13px; } }
+@media (max-width: 320px) { .organization-card__header, .organization-draft, .organization-footer { align-items: stretch; flex-direction: column; } }

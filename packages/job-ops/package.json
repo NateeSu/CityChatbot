@@ -1,0 +1,12 @@
+{
+  "name": "@citychatbot/job-ops",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/job-ops.ts",
+      "default": "./src/job-ops.ts"
+    }
+  }
+}

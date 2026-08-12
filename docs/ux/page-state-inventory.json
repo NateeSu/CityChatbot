@@ -1,0 +1,2140 @@
+{
+  "schemaVersion": "gui-page-state-inventory.v1",
+  "taskId": "P0-UX-001",
+  "sourceOfTruth": [
+    "fullspec.md §7, §15, §16",
+    "plan.md Appendix F",
+    "gui-prototype/screen-manifest.json",
+    "gui-designs/screens/",
+    "gui-designs/concepts/"
+  ],
+  "screenCount": 41,
+  "canonicalScreenIds": [
+    "RM-01",
+    "CHAT-01",
+    "CHAT-02",
+    "CHAT-03",
+    "CHAT-04",
+    "C-01",
+    "C-02",
+    "C-03",
+    "C-04",
+    "C-05",
+    "C-07",
+    "C-08",
+    "C-09",
+    "C-10",
+    "C-13",
+    "C-14",
+    "C-15",
+    "C-16",
+    "C-18",
+    "C-19",
+    "C-20",
+    "A-10",
+    "A-20",
+    "A-25",
+    "A-30",
+    "A-31",
+    "A-40",
+    "A-41",
+    "A-46",
+    "A-47",
+    "A-60",
+    "A-61",
+    "A-70",
+    "A-74",
+    "A-75",
+    "A-80",
+    "A-91",
+    "A-93",
+    "A-97",
+    "S-01",
+    "S-02"
+  ],
+  "requiredViewportWidths": [
+    320,
+    360,
+    390,
+    480,
+    768,
+    834,
+    1024,
+    1440
+  ],
+  "requiredThemes": [
+    "light",
+    "dark",
+    "contrast"
+  ],
+  "requiredProductStates": [
+    "loading",
+    "empty",
+    "success",
+    "validation_error",
+    "server_error",
+    "offline_timeout",
+    "permission_denied",
+    "expired_session",
+    "partial_stale",
+    "destructive_confirmation",
+    "concurrent_update",
+    "feature_disabled"
+  ],
+  "commonStatePolicy": {
+    "canonicalPrototypeQueryStates": [
+      "ready",
+      "loading",
+      "empty",
+      "error"
+    ],
+    "productionMustAdd": [
+      "loading",
+      "empty",
+      "success",
+      "validation_error",
+      "server_error",
+      "offline_timeout",
+      "permission_denied",
+      "expired_session",
+      "partial_stale",
+      "destructive_confirmation",
+      "concurrent_update",
+      "feature_disabled"
+    ],
+    "note": "Prototype state query coverage is design evidence; it is not production API/state completion."
+  },
+  "richMenuSafeArea": {
+    "required": true,
+    "status": "DESIGN_ACCEPTANCE_REQUIRED",
+    "note": "Keep tap geometry/readability and LINE/mobile safe-area acceptance in UX/UAT evidence; no dimensions are invented here."
+  },
+  "screens": [
+    {
+      "id": "RM-01",
+      "title": "LINE Rich Menu",
+      "path": "/screen/RM-01",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/rm-01-rich-menu-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "CHAT-01",
+      "title": "LINE Welcome",
+      "path": "/screen/CHAT-01",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/chat-01-welcome-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "CHAT-02",
+      "title": "Grounded Answer",
+      "path": "/screen/CHAT-02",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/chat-02-grounded-answer-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "CHAT-03",
+      "title": "Clarify",
+      "path": "/screen/CHAT-03",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/chat-03-clarify-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "CHAT-04",
+      "title": "Human Handoff",
+      "path": "/screen/CHAT-04",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/chat-04-handoff-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-01",
+      "title": "หน้าแรก LIFF และทางลัดหลัก",
+      "path": "/screen/C-01",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-01-liff-home-contrast-mobile.png",
+        "gui-designs/screens/c-01-liff-home-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 6,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-02",
+      "title": "แจ้งปัญหา — ขั้นตอนที่ 1",
+      "path": "/screen/C-02",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-02-complaint-step-1-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 6,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-03",
+      "title": "แจ้งปัญหา — รูปภาพและตำแหน่ง",
+      "path": "/screen/C-03",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-03-complaint-media-location-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-04",
+      "title": "แจ้งปัญหา — ผู้ติดต่อและความยินยอม",
+      "path": "/screen/C-04",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-04-contact-consent-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-05",
+      "title": "แจ้งปัญหา — ตรวจสอบและส่ง",
+      "path": "/screen/C-05",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-05-complaint-review-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-07",
+      "title": "ส่งเรื่องสำเร็จ",
+      "path": "/screen/C-07",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-mobile.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-07-complaint-success-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 5,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-08",
+      "title": "รายการติดตามสถานะ",
+      "path": "/screen/C-08",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-08-tracking-list-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 6,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-09",
+      "title": "รายละเอียดการติดตาม",
+      "path": "/screen/C-09",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-09-tracking-detail-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-10",
+      "title": "ส่งข้อมูลเพิ่มเติม",
+      "path": "/screen/C-10",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-10-additional-info-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-13",
+      "title": "ข่าวประชาสัมพันธ์",
+      "path": "/screen/C-13",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-13-news-list-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-14",
+      "title": "รายละเอียดข่าวประชาสัมพันธ์",
+      "path": "/screen/C-14",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-14-news-detail-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-15",
+      "title": "ค้นหาบริการเทศบาล",
+      "path": "/screen/C-15",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-15-service-search-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-16",
+      "title": "รายละเอียดบริการเทศบาล",
+      "path": "/screen/C-16",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-16-service-detail-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-18",
+      "title": "ติดต่อหน่วยงาน",
+      "path": "/screen/C-18",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-18-contact-directory-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 5,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-19",
+      "title": "ตัวแสดงแหล่งอ้างอิง",
+      "path": "/screen/C-19",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-knowledge-ai.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-19-citation-viewer-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "C-20",
+      "title": "ความช่วยเหลือและความเป็นส่วนตัว",
+      "path": "/screen/C-20",
+      "roles": [
+        "citizen"
+      ],
+      "manifestViewports": [
+        "mobile",
+        "tablet",
+        "desktop"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-citizen-services-tracking.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/c-20-help-privacy-mobile.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-10",
+      "title": "Dashboard ตามบทบาท",
+      "path": "/screen/A-10",
+      "roles": [
+        "staff",
+        "department_head",
+        "tenant_admin",
+        "executive"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-admin-dashboard.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-10-role-dashboard-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-20",
+      "title": "รายการเรื่องร้องเรียน",
+      "path": "/screen/A-20",
+      "roles": [
+        "staff",
+        "department_head",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-complaint-operations.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-20-complaint-list-desktop.png",
+        "gui-designs/screens/a-20-complaint-list-filtered-desktop.png",
+        "gui-designs/screens/a-20-complaint-list-mobile.png",
+        "gui-designs/screens/a-20-complaint-list-tablet.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-25",
+      "title": "รายละเอียดเรื่องร้องเรียน",
+      "path": "/screen/A-25",
+      "roles": [
+        "staff",
+        "department_head",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-complaint-operations.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-25-complaint-detail-desktop.png",
+        "gui-designs/screens/a-25-complaint-detail-mobile.png",
+        "gui-designs/screens/a-25-complaint-detail-tablet.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-30",
+      "title": "คิวคำถามประชาชน",
+      "path": "/screen/A-30",
+      "roles": [
+        "staff",
+        "department_head"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-responsive-support-ticket.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-30-support-ticket-list-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-31",
+      "title": "ตอบคำถามประชาชน",
+      "path": "/screen/A-31",
+      "roles": [
+        "staff",
+        "department_head"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-responsive-support-ticket.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-31-ticket-reply-desktop.png",
+        "gui-designs/screens/a-31-ticket-reply-mobile.png",
+        "gui-designs/screens/a-31-ticket-reply-tablet.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-40",
+      "title": "คลังความรู้",
+      "path": "/screen/A-40",
+      "roles": [
+        "knowledge_officer",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-knowledge-ai.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-40-knowledge-list-desktop.png",
+        "gui-designs/screens/a-40-knowledge-list-error-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-41",
+      "title": "อัปโหลดเอกสารเข้าคลังความรู้",
+      "path": "/screen/A-41",
+      "roles": [
+        "knowledge_officer",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-knowledge-ai.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-41-knowledge-upload-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-46",
+      "title": "ห้องทดลองคำตอบ AI",
+      "path": "/screen/A-46",
+      "roles": [
+        "knowledge_officer",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-knowledge-ai.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-46-ai-test-lab-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-47",
+      "title": "ชุดประเมินความแม่นยำ",
+      "path": "/screen/A-47",
+      "roles": [
+        "knowledge_officer",
+        "tenant_admin",
+        "qa"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-knowledge-ai.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-47-evaluation-suites-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-60",
+      "title": "รายการข่าวประชาสัมพันธ์",
+      "path": "/screen/A-60",
+      "roles": [
+        "public_relations",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-60-news-list-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-61",
+      "title": "ตัวแก้ไขข่าวประชาสัมพันธ์",
+      "path": "/screen/A-61",
+      "roles": [
+        "public_relations",
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-61-news-editor-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-70",
+      "title": "หน่วยงานและผู้รับผิดชอบ",
+      "path": "/screen/A-70",
+      "roles": [
+        "tenant_admin",
+        "department_head"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-70-department-list-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-74",
+      "title": "ตัวสร้างกฎ SLA",
+      "path": "/screen/A-74",
+      "roles": [
+        "tenant_admin",
+        "department_head"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-74-sla-rule-builder-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-75",
+      "title": "เจ้าหน้าที่และสิทธิ์",
+      "path": "/screen/A-75",
+      "roles": [
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-75-staff-rbac-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-80",
+      "title": "รายงาน KPI และ SLA",
+      "path": "/screen/A-80",
+      "roles": [
+        "executive",
+        "tenant_admin",
+        "department_head"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-admin-dashboard.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-80-kpi-report-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-91",
+      "title": "ธีมและการเข้าถึง",
+      "path": "/screen/A-91",
+      "roles": [
+        "tenant_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-91-theme-accessibility-dark-desktop.png",
+        "gui-designs/screens/a-91-theme-accessibility-desktop.png",
+        "gui-designs/screens/a-91-theme-accessibility-mobile.png",
+        "gui-designs/screens/a-91-theme-accessibility-tablet.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-93",
+      "title": "ตัวออกแบบ Rich Menu",
+      "path": "/screen/A-93",
+      "roles": [
+        "tenant_admin",
+        "public_relations"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-93-rich-menu-builder-desktop.png",
+        "gui-designs/screens/a-93-rich-menu-builder-mobile.png",
+        "gui-designs/screens/a-93-rich-menu-builder-tablet.png"
+      ],
+      "prototypeSourceOccurrences": 2,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "A-97",
+      "title": "บันทึก Audit",
+      "path": "/screen/A-97",
+      "roles": [
+        "tenant_admin",
+        "auditor"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/a-97-audit-log-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "S-01",
+      "title": "รายการ Tenant",
+      "path": "/screen/S-01",
+      "roles": [
+        "super_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/s-01-tenant-list-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 3,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    },
+    {
+      "id": "S-02",
+      "title": "ตัวช่วยสร้าง Tenant",
+      "path": "/screen/S-02",
+      "roles": [
+        "super_admin"
+      ],
+      "manifestViewports": [
+        "desktop",
+        "tablet",
+        "mobile"
+      ],
+      "manifestStates": [
+        "ready",
+        "loading",
+        "empty",
+        "error"
+      ],
+      "concept": "../gui-designs/concepts/concept-settings-richmenu-theme.png",
+      "conceptExists": true,
+      "referenceImages": [
+        "gui-designs/screens/s-02-tenant-provision-desktop.png"
+      ],
+      "prototypeSourceOccurrences": 4,
+      "stateMatrix": {
+        "canonicalPrototypeStates": [
+          "ready",
+          "loading",
+          "empty",
+          "error"
+        ],
+        "requiredProductStates": [
+          "loading",
+          "empty",
+          "success",
+          "validation_error",
+          "server_error",
+          "offline_timeout",
+          "permission_denied",
+          "expired_session",
+          "partial_stale",
+          "destructive_confirmation",
+          "concurrent_update",
+          "feature_disabled"
+        ],
+        "needsProductionStateValidation": true
+      }
+    }
+  ],
+  "checks": {
+    "manifestScreenCount": true,
+    "manifestIdsExact": true,
+    "uniqueIds": true,
+    "allConceptsExist": true,
+    "allHaveReferenceImage": true,
+    "allHavePrototypeSourceOccurrence": true,
+    "allCanonicalStatesPresent": true,
+    "allManifestViewportsPresent": true
+  },
+  "allAutomatedChecksPass": true,
+  "externalAcceptance": {
+    "taskBasedUsabilityStudy": "NOT_AVAILABLE_IN_REPOSITORY",
+    "requiredParticipants": "at least 5 per persona",
+    "requiredSignOff": [
+      "UX",
+      "PO",
+      "UAT",
+      "QA"
+    ],
+    "status": "BLOCKED_PENDING_EXTERNAL_UAT"
+  }
+}

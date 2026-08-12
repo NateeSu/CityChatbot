@@ -1,0 +1,15 @@
+{
+  "name": "@citychatbot/authz",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/policy.ts",
+      "default": "./src/policy.ts"
+    }
+  },
+  "dependencies": {
+    "zod": "4.4.3"
+  }
+}

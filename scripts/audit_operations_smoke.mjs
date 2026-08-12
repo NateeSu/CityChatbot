@@ -1,0 +1,53 @@
+const BASE = process.env.CITYCHATBOT_BASE_URL ?? "http://127.0.0.1:3223";
+const TENANT = "00000000-0000-4000-8000-000000000001";
+const OTHER_TENANT = "00000000-0000-4000-8000-000000000002";
+const ADMIN = "10000000-0000-4000-8000-000000000003";
+const STAFF = "10000000-0000-4000-8000-000000000002";
+
+const query = (role, accountId, stepUp = true, tenantId = TENANT) => new URLSearchParams({ tenantId, role, accountId, stepUp: stepUp ? "1" : "0" });
+const read = async (path, init = {}) => {
+  const response = await fetch(`${BASE}${path}`, { ...init, headers: { ...(init.body ? { "content-type": "application/json" } : {}), ...(init.headers ?? {}) } });
+  const contentType = response.headers.get("content-type") ?? "";
+  const body = contentType.includes("json") ? await response.json().catch(() => ({})) : await response.text();
+  return { status: response.status, body, headers: response.headers };
+};
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const errorCode = (result) => result.body?.error?.code ?? result.body?.error?.reasonCode;
+const adminQuery = query("TENANT_ADMIN", ADMIN);
+
+const health = await read("/api/health");
+assert(health.status === 200, `health=${health.status}`);
+const audit = await read(`/api/v1/admin/audit-logs?${adminQuery}`);
+assert(audit.status === 200 && audit.body.data.integrityValid === true, `audit=${audit.status}`);
+const firstAuditId = audit.body.data.items[0]?.id;
+assert(firstAuditId, "audit fixture missing");
+const auditDetail = await read(`/api/v1/admin/audit-logs/${firstAuditId}?${adminQuery}`);
+assert(auditDetail.status === 200 && auditDetail.body.data.integrityHash, `audit-detail=${auditDetail.status}`);
+const noStep = await read(`/api/v1/admin/audit-logs?${query("TENANT_ADMIN", ADMIN, false)}`);
+assert(noStep.status === 403 && errorCode(noStep) === "FORBIDDEN", `no-step=${noStep.status}`);
+const staffExport = await read(`/api/v1/admin/audit-log-exports?${query("STAFF", STAFF)}`, { method: "POST", body: JSON.stringify({ format: "CSV", filters: {}, reason: "staff must not export", idempotencyKey: "audit-smoke-staff-001", expectedVersion: 1 }) });
+assert(staffExport.status === 403 && errorCode(staffExport) === "FORBIDDEN", `staff-export=${staffExport.status}`);
+const notifications = await read(`/api/v1/admin/notifications?${adminQuery}`);
+assert(notifications.status === 200 && notifications.body.data.items.length >= 1, `notifications=${notifications.status}`);
+const notification = notifications.body.data.items.find((item) => !item.readAt) ?? notifications.body.data.items[0];
+const notificationRead = await read(`/api/v1/admin/notifications/${notification.id}/read?${adminQuery}`, { method: "POST", body: JSON.stringify({ expectedVersion: notification.rowVersion }) });
+assert(notificationRead.status === 200 && notificationRead.body.data.readAt, `notification-read=${notificationRead.status}`);
+const exportBody = { format: "CSV", filters: { action: "EXPORT" }, reason: "P6 audit evidence export", idempotencyKey: "audit-smoke-export-001", expectedVersion: 1, estimatedRows: 2 };
+const created = await read(`/api/v1/admin/audit-log-exports?${adminQuery}`, { method: "POST", headers: { "idempotency-key": exportBody.idempotencyKey }, body: JSON.stringify(exportBody) });
+assert(created.status === 201 && created.body.data.status === "READY" && created.body.data.signedUrl, `export=${created.status}`);
+const replay = await read(`/api/v1/admin/audit-log-exports?${adminQuery}`, { method: "POST", headers: { "idempotency-key": exportBody.idempotencyKey }, body: JSON.stringify(exportBody) });
+assert(replay.status === 201 && replay.body.data.id === created.body.data.id, "export idempotency failed");
+const detail = await read(`/api/v1/admin/exports/${created.body.data.id}?${adminQuery}`);
+assert(detail.status === 200 && detail.body.data.status === "READY", `export-detail=${detail.status}`);
+const downloadPath = new URL(created.body.data.signedUrl, BASE).pathname + new URL(created.body.data.signedUrl, BASE).search;
+const downloaded = await read(downloadPath + `&${adminQuery}`);
+assert(downloaded.status === 200 && downloaded.headers.get("content-type")?.includes("text/csv") && downloaded.body.includes("CityChatbot export="), `download=${downloaded.status}`);
+const jobs = await read(`/api/v1/admin/jobs?${adminQuery}`);
+assert(jobs.status === 200 && Array.isArray(jobs.body.data.items), `jobs=${jobs.status}`);
+const wrongTenant = await read(`/api/v1/admin/audit-logs?${query("TENANT_ADMIN", ADMIN, true, OTHER_TENANT)}`);
+assert(wrongTenant.status === 404 && errorCode(wrongTenant) === "NOT_FOUND", `wrong-tenant=${wrongTenant.status}`);
+const auditPage = await read("/admin/audit?role=TENANT_ADMIN");
+const executivePage = await read("/admin/audit?role=EXECUTIVE");
+assert(auditPage.status === 200 && executivePage.status === 200, `pages=${auditPage.status}/${executivePage.status}`);
+
+console.log(`health=${health.status} audit=${audit.status}:integrity=${audit.body.data.integrityValid} detail=${auditDetail.status} no_step=${noStep.status}:${errorCode(noStep)} staff_export=${staffExport.status}:${errorCode(staffExport)} notifications=${notifications.status} read=${notificationRead.status} export=${created.status}:READY replay=${replay.status}:same_id download=${downloaded.status}:CSV jobs=${jobs.status} wrong_tenant=${wrongTenant.status}:${errorCode(wrongTenant)} pages=${auditPage.status}/${executivePage.status}`);

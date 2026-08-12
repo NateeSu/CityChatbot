@@ -1,0 +1,1121 @@
+{
+  "schemaVersion": "corpus-manifest.v1",
+  "toolVersion": "1.0.0",
+  "snapshotId": "corpus-2026-08-10",
+  "sourceRoot": "doc_rag_test",
+  "countingConvention": {
+    "bodyParagraphsNonEmpty": "direct w:body/w:p for DOCX; non-empty UTF-8 lines for TXT",
+    "sourceParagraphOccurrencesNonEmpty": "all non-empty w:p descendants under w:body, including table cells; plus non-empty TXT lines",
+    "tableRows": "all w:tr descendants of direct document body tables",
+    "embeddedImages": "files under word/media excluding directory entries",
+    "mergedCells": "counted by source paragraph occurrence; merged-cell aliases are not duplicated by row.cells iteration",
+    "text": "NFC-normalized extracted text; w:sdtContent is traversed; displayTextSha256 is retained per file"
+  },
+  "summary": {
+    "fileCount": 17,
+    "formatCounts": {
+      "DOCX": 16,
+      "TXT": 1
+    },
+    "totalSizeBytes": 1701883,
+    "bodyParagraphsNonEmpty": 1322,
+    "sourceParagraphOccurrencesNonEmpty": 1578,
+    "tableCount": 6,
+    "tableRowCount": 74,
+    "embeddedImageCount": 6,
+    "textCharacterCount": 107150
+  },
+  "frozenBaseline": {
+    "source": "fullspec.md §2.1 and plan.md Appendix C",
+    "expected": {
+      "fileCount": 17,
+      "formatCounts": {
+        "DOCX": 16,
+        "TXT": 1
+      },
+      "totalSizeBytes": 1701883,
+      "bodyParagraphsNonEmpty": 1322,
+      "sourceParagraphOccurrencesNonEmpty": 1578,
+      "tableCount": 6,
+      "tableRowCount": 74,
+      "embeddedImageCount": 6
+    },
+    "checks": {
+      "fileCount": true,
+      "formatCounts": true,
+      "totalSizeBytes": true,
+      "bodyParagraphsNonEmpty": true,
+      "sourceParagraphOccurrencesNonEmpty": true,
+      "tableCount": true,
+      "tableRowCount": true,
+      "embeddedImageCount": true
+    },
+    "allChecksPass": true
+  },
+  "renderingReference": {
+    "referenceRenderedDocxPages": 76,
+    "referenceBlankPages": 5,
+    "auditStatus": "NOT_RUN_BY_STRUCTURE_AUDITOR",
+    "note": "Page layout must be verified with an approved renderer; parser output must not infer page counts."
+  },
+  "governanceSummary": {
+    "ownerAssignmentsComplete": false,
+    "authorityAssignmentsComplete": false,
+    "effectiveDateAssignmentsComplete": false,
+    "activeIndexEligibleFileCount": 0,
+    "dispositionCounts": {
+      "ACCEPT": 0,
+      "REMEDIATE": 17,
+      "REJECT": 0
+    },
+    "blockedBy": [
+      "CR-001",
+      "CR-002",
+      "CR-003",
+      "CR-004",
+      "CR-005",
+      "CR-006",
+      "CR-007",
+      "CR-008",
+      "CR-009",
+      "CR-010",
+      "CR-011",
+      "CR-012",
+      "CR-013",
+      "CR-014",
+      "CR-015",
+      "OD-001"
+    ]
+  },
+  "files": [
+    {
+      "relativePath": "กองการศึกษา.docx",
+      "filename": "กองการศึกษา.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 14960,
+      "sha256": "sha256:b3ecb9c5fd0d95d1ea88e9fac38fa8f7e01582bf699a320beea95d1e13846f05",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-002"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 14,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 85,
+        "sourceParagraphOccurrencesNonEmpty": 85,
+        "bodyParagraphCount": 93,
+        "sourceParagraphOccurrenceCount": 93,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 6742,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:f86b11eaf8475ed1ff0f39d63c7a55188d1a17ae1e5149311715b62afcad9af0"
+      }
+    },
+    {
+      "relativePath": "กองคลัง.docx",
+      "filename": "กองคลัง.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 20236,
+      "sha256": "sha256:9d857494deca7feb1c40d8b59ae41b9badc993442ec62c2dd0587cf060bd1660",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-009"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 13,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 138,
+        "sourceParagraphOccurrencesNonEmpty": 195,
+        "bodyParagraphCount": 180,
+        "sourceParagraphOccurrenceCount": 242,
+        "tableCount": 2,
+        "tableRowCount": 20,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 14355,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:c4bf54cab5bd1e71ca5d0efd68428b24f5023408b674c488884a0de939e075fd"
+      }
+    },
+    {
+      "relativePath": "กองช่างสุขาภิบาล.docx",
+      "filename": "กองช่างสุขาภิบาล.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 16592,
+      "sha256": "sha256:cb8e979819b081cbdf72b96fdb00242f015571b662854d14ef125141874c9d78",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 13,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 42,
+        "sourceParagraphOccurrencesNonEmpty": 188,
+        "bodyParagraphCount": 76,
+        "sourceParagraphOccurrenceCount": 224,
+        "tableCount": 3,
+        "tableRowCount": 32,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 3982,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 1,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:ed724ab497720fbf1803eadf76eabd53b01175cdd9e12e58c672b6d853f4c2e8"
+      }
+    },
+    {
+      "relativePath": "กองยุทธศาสตร์และงบประมาณ 2.docx",
+      "filename": "กองยุทธศาสตร์และงบประมาณ 2.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 14229,
+      "sha256": "sha256:8d4c481df194bbcd99f226cd9776c20a0a570f50009a43d355a9a3327f4e639d",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 11,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 13,
+        "sourceParagraphOccurrencesNonEmpty": 13,
+        "bodyParagraphCount": 26,
+        "sourceParagraphOccurrenceCount": 26,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 2025,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:31c194d20ac91bddd26f74cbf35d63f73e063bd536022f163922e49cceb72cb2"
+      }
+    },
+    {
+      "relativePath": "กองสวัสดิกรสังคม.docx",
+      "filename": "กองสวัสดิกรสังคม.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 203155,
+      "sha256": "sha256:52c0870d0eba171c08cd944249aef477bf5f79cdec3d6a211eba9b861190a4d2",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 16,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 124,
+        "sourceParagraphOccurrencesNonEmpty": 124,
+        "bodyParagraphCount": 134,
+        "sourceParagraphOccurrenceCount": 134,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 8144,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:57c233be30ee9698a7d9bdd8b19820beb159fabde864b78a35f08f682545a091"
+      }
+    },
+    {
+      "relativePath": "กองสาธารณสุข (2).docx",
+      "filename": "กองสาธารณสุข (2).docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 19161,
+      "sha256": "sha256:43e70a8b26cd76d7efbb576a9aebd5ea07888b49634a8728042dbc1fb957ac47",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-003",
+          "CR-004"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 13,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": true,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 163,
+        "sourceParagraphOccurrencesNonEmpty": 163,
+        "bodyParagraphCount": 193,
+        "sourceParagraphOccurrenceCount": 193,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 14010,
+        "criticalSymbolCounts": {
+          "≤": 1,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:53db13dae48a954849c3ed9a4352a8037847cfe9115b5c250f0bd1e3a0eb8cd2",
+        "requiredComparatorRegression": "ADL ≤ 6 present in extracted text"
+      }
+    },
+    {
+      "relativePath": "กองสาธารณสุข งานบริการสาธารณสุข.docx",
+      "filename": "กองสาธารณสุข งานบริการสาธารณสุข.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 202194,
+      "sha256": "sha256:943741dde3865ac5aca447078988ee4662617b6c9aaa0c2260413210af1382da",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-011"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 19,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 40,
+        "sourceParagraphOccurrencesNonEmpty": 40,
+        "bodyParagraphCount": 46,
+        "sourceParagraphOccurrenceCount": 46,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 1,
+        "textCharacterCount": 3370,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:3dbc6f3dfe0a2796a7607f94256909c376c6f4b2009d3f1051ad291c5cf84b07"
+      }
+    },
+    {
+      "relativePath": "คณะผู้บริหาร.txt",
+      "filename": "คณะผู้บริหาร.txt",
+      "format": "TXT",
+      "mimeType": "text/plain; charset=utf-8",
+      "sizeBytes": 1089,
+      "sha256": "sha256:63702df0dd8f6a55b358b5cf4e94e57c28514ec92efd6e09799522bb5fb99633",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-012"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "encoding": "UTF-8",
+        "xmlParseable": null,
+        "bodyParagraphsNonEmpty": 7,
+        "sourceParagraphOccurrencesNonEmpty": 7,
+        "bodyParagraphCount": 7,
+        "sourceParagraphOccurrenceCount": 7,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 467,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:63702df0dd8f6a55b358b5cf4e94e57c28514ec92efd6e09799522bb5fb99633"
+      }
+    },
+    {
+      "relativePath": "งานทะเบียนราษฎรและบัตรประจำตัวประชาชน .docx",
+      "filename": "งานทะเบียนราษฎรและบัตรประจำตัวประชาชน .docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 15831,
+      "sha256": "sha256:52344bddadcec6753cd1b1d5a22437ba0a67c40b68b1d10aac1d9553ba6ce200",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-001"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 13,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 3,
+        "bodyParagraphsNonEmpty": 219,
+        "sourceParagraphOccurrencesNonEmpty": 219,
+        "bodyParagraphCount": 235,
+        "sourceParagraphOccurrenceCount": 235,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 11682,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:3134380dda9f1e26529fa49926ff04aed665ea0d0494959a23d5f6a4d170c1f8"
+      }
+    },
+    {
+      "relativePath": "ฟิตเนส.docx",
+      "filename": "ฟิตเนส.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 12789,
+      "sha256": "sha256:c454ba18143a0a93e5d92ea7f0632a5d891a0f14505e3f6e309cb7d4b63ae599",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-014"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 14,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 2,
+        "sourceParagraphOccurrencesNonEmpty": 55,
+        "bodyParagraphCount": 5,
+        "sourceParagraphOccurrenceCount": 59,
+        "tableCount": 1,
+        "tableRowCount": 22,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 1577,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:517bca37323fd677c8f12fcef99dc0f6ac8be89d9e149e35274413f9c4cdce36"
+      }
+    },
+    {
+      "relativePath": "ศูนย์การเรียนรู้เมืองฉะเชิงเทรา KCC.docx",
+      "filename": "ศูนย์การเรียนรู้เมืองฉะเชิงเทรา KCC.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 20909,
+      "sha256": "sha256:c248e53dd989cfe6d23025ff70b51112dd5fcb1eee4f5639bfdbd5b25bad1058",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-015"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 13,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 53,
+        "sourceParagraphOccurrencesNonEmpty": 53,
+        "bodyParagraphCount": 74,
+        "sourceParagraphOccurrenceCount": 74,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 4678,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:db6f1275f39e228d00f844725b78de01b40bfda5e5f3328cb7d145a465afd364"
+      }
+    },
+    {
+      "relativePath": "ศูนย์พัฒนาเด็กเล็ก.docx",
+      "filename": "ศูนย์พัฒนาเด็กเล็ก.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 186940,
+      "sha256": "sha256:2a03b44a9f1a276b5e38273ff7df1501212eb1f55efc03d7e72c1961a222243e",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-006"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 19,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 45,
+        "sourceParagraphOccurrencesNonEmpty": 45,
+        "bodyParagraphCount": 68,
+        "sourceParagraphOccurrenceCount": 68,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 4188,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:a85d5b661124db4e5384ab3eadb7a63f24c67bf549ab5f782ecf5a68f76b5e44"
+      }
+    },
+    {
+      "relativePath": "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx",
+      "filename": "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 565301,
+      "sha256": "sha256:5c7e332d20c8d9ac0751a0a7d662f799b72a86340b49bf7a25c8e68c653aa9be",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-005",
+          "CR-010"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 20,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 74,
+        "sourceParagraphOccurrencesNonEmpty": 74,
+        "bodyParagraphCount": 113,
+        "sourceParagraphOccurrenceCount": 113,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 5,
+        "textCharacterCount": 4976,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:5162ec708e03f83b1e6e04eb8189b49f08d9d307caea7127aa26f2467b793185"
+      }
+    },
+    {
+      "relativePath": "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 2.docx",
+      "filename": "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 2.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 11338,
+      "sha256": "sha256:5c804eb1535d3bed41031c79de2d10e40db1dd6bf005bb064df5216c64c689f6",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-005"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 13,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 0,
+        "bodyParagraphsNonEmpty": 50,
+        "sourceParagraphOccurrencesNonEmpty": 50,
+        "bodyParagraphCount": 111,
+        "sourceParagraphOccurrenceCount": 111,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 2735,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:19d45f8aa4046608e81e92bd4185eabd9037bd27fade432872c4a1588c192843"
+      }
+    },
+    {
+      "relativePath": "สำนักปลัด.docx",
+      "filename": "สำนักปลัด.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 17747,
+      "sha256": "sha256:54c100620b6366283aba0a2ba2e75846cfdeec716ec6d72cc6a2955eb694ac60",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-013"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 11,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 1,
+        "bodyParagraphsNonEmpty": 44,
+        "sourceParagraphOccurrencesNonEmpty": 44,
+        "bodyParagraphCount": 48,
+        "sourceParagraphOccurrenceCount": 48,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 2951,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:b90096c6052e519c1caac31b91a66b3e8373fa38207c15cfb253849872a0161e"
+      }
+    },
+    {
+      "relativePath": "โรงเรียนเทศบาล 1.docx",
+      "filename": "โรงเรียนเทศบาล 1.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 192344,
+      "sha256": "sha256:c18999b1266b3841640e81984c4125ce2aa60886463abbbbfc59f80ed4a7da83",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-007"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 18,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 1,
+        "bodyParagraphsNonEmpty": 178,
+        "sourceParagraphOccurrencesNonEmpty": 178,
+        "bodyParagraphCount": 186,
+        "sourceParagraphOccurrenceCount": 186,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 12254,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:6c25358884a864b2861dc2a3d54ae95e3fa75e30d20959a2d549bf620fd47c36"
+      }
+    },
+    {
+      "relativePath": "โรงเรียนเทศบาล 2.docx",
+      "filename": "โรงเรียนเทศบาล 2.docx",
+      "format": "DOCX",
+      "mimeType": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "sizeBytes": 187068,
+      "sha256": "sha256:375295b28342375d3ef8dcd82cc825bc8cc4d4e187bcc0f821bda3194adddb48",
+      "governance": {
+        "owner": null,
+        "ownerStatus": "PENDING_OD-001",
+        "sourceAgency": null,
+        "sourceAgencyStatus": "PENDING_OD-001",
+        "classification": "RESTRICTED",
+        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
+        "authorityLevel": null,
+        "effectiveFrom": null,
+        "effectiveUntil": null,
+        "disposition": "REMEDIATE",
+        "activeIndexEligible": false,
+        "blockedBy": [
+          "OD-001",
+          "CR-008"
+        ],
+        "remediationReasons": [
+          "AUTHORITY_NOT_ASSIGNED",
+          "CORPUS_REMEDIATION_LEDGER",
+          "EFFECTIVE_DATE_NOT_ASSIGNED",
+          "OWNER_NOT_ASSIGNED"
+        ]
+      },
+      "audit": {
+        "zipEntryCount": 18,
+        "zipPathWarnings": [],
+        "hasContentTypes": true,
+        "hasDocumentXml": true,
+        "xmlParseable": true,
+        "hasMacro": false,
+        "macroEntries": [],
+        "embeddedObjectEntries": [],
+        "containsTrackedRevisionMarkup": false,
+        "containsInlineContentControls": false,
+        "hyperlinkCount": 20,
+        "bodyParagraphsNonEmpty": 45,
+        "sourceParagraphOccurrencesNonEmpty": 45,
+        "bodyParagraphCount": 53,
+        "sourceParagraphOccurrenceCount": 53,
+        "tableCount": 0,
+        "tableRowCount": 0,
+        "embeddedImageCount": 0,
+        "textCharacterCount": 9014,
+        "criticalSymbolCounts": {
+          "≤": 0,
+          "≥": 0,
+          "<": 0,
+          ">": 0,
+          "Ø": 0,
+          "m²": 0
+        },
+        "displayTextSha256": "sha256:e547d53337c95e0f29cedc0c47ac30d2b86e1171d34e2540233df2b044986039"
+      }
+    }
+  ],
+  "integrity": {
+    "manifestDigest": "sha256:53d5313b3cdbcc00f79596c4804f3a630afbb6fadbf50b147336cd1f7108ace1",
+    "sourceSetDigest": "sha256:4ea0b5bf3e4c279d027903531356a090109ded34dfbe8871078aab24afa5edaf"
+  }
+}

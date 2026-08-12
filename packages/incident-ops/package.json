@@ -1,0 +1,12 @@
+{
+  "name": "@citychatbot/incident-ops",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/incident-ops.ts",
+      "default": "./src/incident-ops.ts"
+    }
+  }
+}

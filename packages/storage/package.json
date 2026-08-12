@@ -1,0 +1,12 @@
+{
+  "name": "@citychatbot/storage",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/storage.ts",
+      "default": "./src/storage.ts"
+    }
+  }
+}

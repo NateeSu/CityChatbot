@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="1686" viewBox="0 0 2500 1686">
+  <rect width="2500" height="1686" fill="#FFFFFF"/>
+  <g font-family="Tahoma,Arial,sans-serif" font-weight="700" text-anchor="middle">
+    <rect x="0" y="0" width="1667" height="1000" fill="#D7F0F2" stroke="#006B73" stroke-width="12"/>
+    <text x="833" y="450" font-size="70" fill="#0F2742">แจ้งปัญหา</text>
+    <text x="833" y="550" font-size="42" fill="#52657A">x 0 · y 0 · w 1667 · h 1000</text>
+    <rect x="1667" y="0" width="833" height="1000" fill="#E8F1FB" stroke="#0B5CAD" stroke-width="12"/>
+    <text x="2083" y="450" font-size="70" fill="#0F2742">ติดตามสถานะ</text>
+    <text x="2083" y="550" font-size="42" fill="#52657A">x 1667 · y 0 · w 833 · h 1000</text>
+    <rect x="0" y="1000" width="833" height="686" fill="#F7FAFC" stroke="#52657A" stroke-width="12"/>
+    <text x="416" y="1300" font-size="70" fill="#0F2742">ข่าวสาร</text>
+    <text x="416" y="1400" font-size="38" fill="#52657A">x 0 · y 1000 · w 833 · h 686</text>
+    <rect x="833" y="1000" width="834" height="686" fill="#F7FAFC" stroke="#52657A" stroke-width="12"/>
+    <text x="1250" y="1300" font-size="70" fill="#0F2742">บริการ</text>
+    <text x="1250" y="1400" font-size="38" fill="#52657A">x 833 · y 1000 · w 834 · h 686</text>
+    <rect x="1667" y="1000" width="833" height="686" fill="#F7FAFC" stroke="#52657A" stroke-width="12"/>
+    <text x="2083" y="1300" font-size="70" fill="#0F2742">ติดต่อ</text>
+    <text x="2083" y="1400" font-size="38" fill="#52657A">x 1667 · y 1000 · w 833 · h 686</text>
+  </g>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2500" height="1686" viewBox="0 0 2500 1686" role="img" aria-labelledby="title desc">
+  <title id="title">Rich Menu บริการเพิ่มเติม</title>
+  <desc id="desc">บริการเด่นสี่รายการ บริการทั้งหมด และกลับหน้าหลัก</desc>
+  <defs>
+    <style>
+      .cell{fill:#fff;stroke:#C8D6E2;stroke-width:4}
+      .label{font-family:"Noto Sans Thai",Tahoma,Arial,sans-serif;font-weight:700;fill:#0F2742;text-anchor:middle}
+      .sub{font-family:"Noto Sans Thai",Tahoma,Arial,sans-serif;font-weight:500;fill:#52657A;text-anchor:middle}
+      .icon{fill:none;stroke:#006B73;stroke-width:30;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <rect width="2500" height="1686" fill="#F4F8FB"/>
+  <rect x="28" y="28" width="1194" height="760" rx="42" class="cell"/>
+  <rect x="1278" y="28" width="1194" height="760" rx="42" class="cell"/>
+  <rect x="28" y="844" width="1194" height="814" rx="42" class="cell"/>
+  <rect x="1278" y="844" width="1194" height="814" rx="42" class="cell"/>
+  <g class="icon">
+    <path d="M485 220h280v260H485zM545 280h160M545 350h160M545 420h90"/>
+    <path d="M1740 220h280v260h-280zM1800 280h160M1800 350h160M1800 420h90"/>
+    <path d="M485 1030h280v260H485zM545 1090h160M545 1160h160M545 1230h90"/>
+    <path d="M1740 1030h280v260h-280zM1800 1090h160M1800 1160h160M1800 1230h90"/>
+  </g>
+  <text class="label" x="625" y="590" font-size="76">งานทะเบียน</text>
+  <text class="sub" x="625" y="665" font-size="42">ข้อมูลและเอกสารที่ใช้</text>
+  <text class="label" x="1875" y="590" font-size="76">ภาษีและค่าธรรมเนียม</text>
+  <text class="sub" x="1875" y="665" font-size="42">กำหนดเวลาและช่องทาง</text>
+  <text class="label" x="625" y="1400" font-size="76">บริการทั้งหมด</text>
+  <text class="sub" x="625" y="1480" font-size="42">ค้นหาบริการของเทศบาล</text>
+  <text class="label" x="1875" y="1400" font-size="76">กลับหน้าหลัก</text>
+  <text class="sub" x="1875" y="1480" font-size="42">กลับไปยังเมนูหลัก</text>
+</svg>

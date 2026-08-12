@@ -1,0 +1,48 @@
+const BASE = process.env.CITYCHATBOT_BASE_URL ?? "http://127.0.0.1:3223";
+const SYSTEM_QUERY = "systemRole=SUPER_ADMIN&accountId=90000000-0000-4000-8000-000000000001&stepUp=1";
+const NO_STEP_QUERY = "systemRole=SUPER_ADMIN&accountId=90000000-0000-4000-8000-000000000001&stepUp=0";
+const read = async (path, init = {}) => { const response = await fetch(`${BASE}${path}`, { ...init, headers: { ...(init.body ? { "content-type": "application/json" } : {}), ...(init.headers ?? {}) } }); const body = await response.json().catch(() => ({})); return { status: response.status, body }; };
+const assert = (condition, message) => { if (!condition) throw new Error(message); };
+const bodyError = (result, code) => assert(result.body?.error?.reasonCode === code, `expected ${code}, got ${JSON.stringify(result.body)}`);
+const key = "tenant-smoke-idempotency-001";
+const slug = `smoke-${Date.now().toString(36)}`;
+
+const health = await read("/api/health");
+assert(health.status === 200, `health=${health.status}`);
+const initial = await read(`/api/v1/system/tenants?${SYSTEM_QUERY}`);
+assert(initial.status === 200 && initial.body.tenants.length >= 1, `initial=${initial.status}`);
+const noStep = await read(`/api/v1/system/tenants?${NO_STEP_QUERY}`);
+bodyError(noStep, "FORBIDDEN");
+const badSlug = await read(`/api/v1/system/tenants?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ slug: "INVALID SLUG", displayName: "bad", reason: "validation", idempotencyKey: "tenant-bad-slug-001" }) });
+bodyError(badSlug, "VALIDATION_ERROR");
+
+const input = { slug, displayName: "Smoke Tenant", packageCode: "PILOT", isTestTenant: true, reason: "S-02 production-artifact smoke", idempotencyKey: key };
+const created = await read(`/api/v1/system/tenants?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify(input) });
+assert(created.status === 201 && created.body.tenant.status === "ACTIVE" && created.body.run.status === "COMPLETE", `create=${created.status}`);
+assert(created.body.run.steps.length === 9 && created.body.run.steps.every((step) => step.status === "SUCCEEDED"), "provision steps incomplete");
+const replay = await read(`/api/v1/system/tenants?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify(input) });
+assert(replay.status === 201 && replay.body.tenant.id === created.body.tenant.id, "provision idempotency failed");
+const tenantId = created.body.tenant.id;
+const detail = await read(`/api/v1/system/tenants/${tenantId}?${SYSTEM_QUERY}`);
+assert(detail.status === 200 && detail.body.tenant.slug === slug, `detail=${detail.status}`);
+const flag = await read(`/api/v1/system/tenants/${tenantId}/feature-flags?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ key: "ai_chat_enabled", enabled: true, reason: "certified smoke flag", idempotencyKey: "tenant-flag-smoke-001" }) });
+assert(flag.status === 200 && flag.body.flag.enabled === true, `flag=${flag.status}`);
+const flags = await read(`/api/v1/system/tenants/${tenantId}/feature-flags?${SYSTEM_QUERY}`);
+assert(flags.status === 200 && flags.body.flags.some((item) => item.key === "ai_chat_enabled" && item.enabled), `flags=${flags.status}`);
+const limit = await read(`/api/v1/system/tenants/${tenantId}/usage-limits?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ key: "ai_runs_monthly", window: "MONTH", limit: 1, reason: "smoke limit", idempotencyKey: "tenant-limit-smoke-001" }) });
+assert(limit.status === 200 && limit.body.limit.limit === 1, `limit=${limit.status}`);
+const suspended = await read(`/api/v1/system/tenants/${tenantId}/suspend?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ expectedVersion: detail.body.tenant.rowVersion, reason: "smoke suspension", idempotencyKey: "tenant-suspend-smoke-001" }) });
+assert(suspended.status === 200 && suspended.body.tenant.status === "SUSPENDED", `suspend=${suspended.status}`);
+const flagWhileSuspended = await read(`/api/v1/system/tenants/${tenantId}/feature-flags?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ key: "gold_price_enabled", enabled: true, reason: "should deny while suspended", idempotencyKey: "tenant-flag-deny-001" }) });
+bodyError(flagWhileSuspended, "INVALID_STATE");
+const reactivated = await read(`/api/v1/system/tenants/${tenantId}/reactivate?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ expectedVersion: suspended.body.tenant.rowVersion, reason: "smoke recovery", idempotencyKey: "tenant-reactivate-smoke-001" }) });
+assert(reactivated.status === 200 && reactivated.body.tenant.status === "ACTIVE", `reactivate=${reactivated.status}`);
+const archived = await read(`/api/v1/system/tenants/${tenantId}/archive?${SYSTEM_QUERY}`, { method: "POST", body: JSON.stringify({ expectedVersion: reactivated.body.tenant.rowVersion, verificationText: slug, reason: "verified smoke rollback", idempotencyKey: "tenant-archive-smoke-001" }) });
+assert(archived.status === 200 && archived.body.tenant.status === "ARCHIVED", `archive=${archived.status}`);
+const wrongTenant = await read(`/api/v1/system/tenants/00000000-0000-4000-8000-000000000002?${SYSTEM_QUERY}`);
+bodyError(wrongTenant, "NOT_FOUND");
+const listPage = await read("/system/tenants");
+const newPage = await read("/system/tenants/new");
+assert(listPage.status === 200 && newPage.status === 200, `pages=${listPage.status}/${newPage.status}`);
+
+console.log(`health=${health.status} initial=${initial.status} no_step_up=${noStep.status}:${noStep.body.error.reasonCode} bad_slug=${badSlug.status}:${badSlug.body.error.reasonCode} create=${created.status}:COMPLETE replay=${replay.status}:same_tenant detail=${detail.status} flag=${flag.status}:ENABLED flags=${flags.status} limit=${limit.status}:1 suspend=${suspended.status}:SUSPENDED flag_while_suspended=${flagWhileSuspended.status}:${flagWhileSuspended.body.error.reasonCode} reactivate=${reactivated.status}:ACTIVE archive=${archived.status}:ARCHIVED other_tenant=${wrongTenant.status}:${wrongTenant.body.error.reasonCode} list_page=${listPage.status} new_page=${newPage.status}`);

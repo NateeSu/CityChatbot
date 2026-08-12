@@ -1,0 +1,90 @@
+name: CI and immutable artifact
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: citychatbot-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.16.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.14.0
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:all
+      - run: pnpm security:sbom
+      - run: pnpm release:manifest
+      - run: pnpm release:verify
+      - uses: actions/upload-artifact@v4
+        with:
+          name: citychatbot-web-release-${{ github.sha }}
+          if-no-files-found: error
+          path: |
+            artifacts/release-manifest.json
+            artifacts/sbom.cdx.json
+            apps/web/.next/BUILD_ID
+            apps/web/.next/required-server-files.json
+            apps/web/.next/standalone/**
+            apps/web/.next/static/**
+
+  migration-dry-run:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_PASSWORD: citychatbot_ci_only
+          POSTGRES_DB: citychatbot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d citychatbot"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply migrations and synthetic seed
+        env:
+          PGPASSWORD: citychatbot_ci_only
+        run: |
+          for migration in supabase/migrations/*.sql; do
+            psql --host=127.0.0.1 --username=postgres --dbname=citychatbot --set=ON_ERROR_STOP=1 --file="$migration"
+          done
+          psql --host=127.0.0.1 --username=postgres --dbname=citychatbot --set=ON_ERROR_STOP=1 --file=supabase/seed.sql
+          psql --host=127.0.0.1 --username=postgres --dbname=citychatbot --set=ON_ERROR_STOP=1 --file=supabase/tests/core_schema_contract.sql
+          psql --host=127.0.0.1 --username=postgres --dbname=citychatbot --set=ON_ERROR_STOP=1 --file=supabase/tests/core_rls_contract.sql
+          psql --host=127.0.0.1 --username=postgres --dbname=citychatbot --set=ON_ERROR_STOP=1 --file=supabase/tests/rls_policy_contract.sql
+          psql --host=127.0.0.1 --username=postgres --dbname=citychatbot --set=ON_ERROR_STOP=1 --file=supabase/tests/complaint_schema_contract.sql
+
+  provenance:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: unit-build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: citychatbot-web-release-${{ github.sha }}
+          path: release-artifact
+      - uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: release-artifact/**

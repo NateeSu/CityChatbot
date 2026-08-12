@@ -1,0 +1,12 @@
+{
+  "name": "@citychatbot/telemetry",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/telemetry.ts",
+      "default": "./src/telemetry.ts"
+    }
+  }
+}
