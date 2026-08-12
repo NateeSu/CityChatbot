@@ -42,10 +42,19 @@ This is an external-authentication blocker, not a reason to enable public
 traffic or to fabricate a user identity.
 
 Latest local verification after the row-version change: `pnpm test:unit`
-PASS (53 files, 347 tests); `pnpm test:db` PASS (214 tests); `pnpm lint`
+PASS (53 files, 347 tests); `pnpm test:db` PASS (215 tests); `pnpm lint`
 PASS; `pnpm typecheck` and `pnpm typecheck:packages` PASS; `pnpm build` PASS;
 release manifest and release-candidate verification PASS; `pnpm
 security:scan` PASS (`SECRET_SCAN_CLEAN`).
+
+The latest production deployment for commit `2771f66` is READY. Production
+smoke on `https://city-chatbot-murex.vercel.app` returned health `200`,
+unauthenticated citizen bootstrap/complaint requests returned `401`, and the
+LIFF session route rejected `GET` with `405` as designed. The production CSP
+contains `api.line.me`, `access.line.me`, `liff.line.me`, and
+`static.line-scdn.net`, while production `unsafe-eval` is absent. The LIFF
+browser smoke reached the LINE Login page; it did not proceed to session or
+bootstrap because the available Chrome session is not signed in.
 
 The authenticated Supabase organization now owns a dedicated `CityChatbot Production` project in Singapore. All 25 existing reviewed migrations were applied in timestamp order through the authenticated SQL editor without running `supabase/seed.sql`. A production-gap audit found that the six canonical LINE/LIFF tables required by `fullspec.md` were absent, so additive migration `20260812120000_line_liff_schema.sql` and its static contract test were implemented, tested, and applied as migration 26.
 

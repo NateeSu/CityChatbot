@@ -1402,6 +1402,7 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
 
 - Latest verified checkpoint (2026-08-12): production CSP deployment is READY and LIFF reaches LINE Login authorization; Supabase row-version projection migration `20260812160000_citizen_public_row_version.sql` is applied. Runtime-role checks pass (`citychatbot_app` can execute only the wrapper, cannot execute the base projection, and has no direct complaint-table SELECT). Unit/static/build/security verification is green. The task remains IN_PROGRESS because the available Chrome session is not authenticated to the dedicated LINE Login channel and the required 24-hour no-Sev1/2 observation window has not started.
 - Next executable action: complete real LINE Login in the existing Chrome session, verify session/bootstrap and synthetic complaint create/list/idempotent replay/cleanup, then begin the observation window. Keep AI/RAG, broadcast, and general citizen traffic disabled.
+- Documentation correction: the earlier LINE baseline above is historical. The current verified state is a saved dedicated webhook with HTTP 200 signed synthetic delivery and an enabled dedicated LIFF app; only the authenticated user journey and 24-hour observation remain open.
 
 - [ ] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
   - สถานะ: TODO
