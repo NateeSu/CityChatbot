@@ -17,7 +17,13 @@ class ReleaseCandidateTests(unittest.TestCase):
         self.assertEqual(candidate["schemaVersion"], 1)
         self.assertTrue(str(candidate["rcId"]).startswith("citychatbot-rc-2026-08-12-"))
         self.assertEqual(verify_candidate(root, candidate), candidate["rcSha256"])
-        self.assertIsNone(candidate["source"]["commit"])
+        source_commit = candidate["source"]["commit"]
+        source_state = candidate["source"]["state"]
+        if source_commit is None:
+            self.assertEqual(source_state, "workspace-snapshot")
+        else:
+            self.assertRegex(str(source_commit), r"^[0-9a-f]{7,64}$")
+            self.assertEqual(source_state, "commit-pinned")
         self.assertFalse(candidate["environmentSchema"]["valuesIncluded"])
         self.assertNotIn("sk-or-v1-", json.dumps(candidate))
 
