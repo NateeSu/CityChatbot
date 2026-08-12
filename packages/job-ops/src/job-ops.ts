@@ -366,3 +366,5 @@ export const verifyCronRequest = (input: { secret: string; timestamp: string; bo
 };
 
 export const jobDefinition = (jobType: string): JobDefinition => definitionFor(jobType);
+
+export * from "./canary-rollout";

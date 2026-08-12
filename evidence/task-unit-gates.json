@@ -928,19 +928,21 @@
     },
     {
       "taskId": "P9-CAN-002",
-      "state": "planned",
+      "state": "ready",
       "requiredCommands": [
-        "pnpm test:unit"
+        "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_canary_rollout -v"
       ],
       "requiredTestIds": [
         "P9-CAN-COHORT",
         "P9-CAN-RECONCILIATION",
-        "P9-CAN-FAIL-CLOSED"
+        "P9-CAN-FAIL-CLOSED",
+        "P9-CAN-SAMPLING"
       ],
       "onPass": [
         "CLOSE_TASK",
         "QUEUE_NEXT_TASK"
-      ]
+      ],
+      "testIdSource": "scripts/test_canary_rollout.py:UNIT_TEST_IDS"
     },
     {
       "taskId": "P9-CAN-003",
