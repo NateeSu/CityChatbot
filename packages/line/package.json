@@ -16,6 +16,10 @@
       "types": "./src/complaint-notifications.ts",
       "default": "./src/complaint-notifications.ts"
     },
+    "./durable-webhook": {
+      "types": "./src/durable-webhook.ts",
+      "default": "./src/durable-webhook.ts"
+    },
     "./messaging": {
       "types": "./src/messaging.ts",
       "default": "./src/messaging.ts"

@@ -1387,7 +1387,8 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
   - Active RC: `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`; digest `a083bb6eb030363086855ee694b9527a9f5be74bef64d33fda8c3d92539548ca`; source commit `f9f2650b046c4282cf937c7c499bbcb56caac2b0`.
 
 - [ ] `P9-CAN-001` เปิด internal canary ด้วยบัญชี/หน่วยงานทดสอบ
-  - สถานะ: BLOCKED (2026-08-12 — LINE/LIFF, dedicated Supabase durable target and locked AI/RAG evaluator are unavailable; production remains fail-closed)
+  - สถานะ: IN_PROGRESS (2026-08-12 — provisioned dedicated Supabase production target, applied all reviewed migrations plus canonical durable LINE/LIFF schema, and verified production RLS/FK/grants; LINE channel/runtime wiring and locked AI/RAG canary remain in progress; production stays fail-closed until those checks pass)
+  - เริ่มทำต่อ: 2026-08-12 — Supabase project `CityChatbot Production` (`qiaklpfojbdajpskmjze`, Singapore) healthy; 26 migrations applied without production seed; 88/88 tenant-owned tables have RLS enabled and forced; tenant-to-tenant FK missing tenant pair = 0; dedicated LINE/LIFF tables expose zero anon grants and zero authenticated write grants.
   - เจ้าของ: SRE + QA; ผู้ร่วม: UAT, AI
   - Prerequisites: P9-DEP-001
   - Deliverables: canary flags/audience; synthetic and manual journeys; live dashboards; incident log; cleanup

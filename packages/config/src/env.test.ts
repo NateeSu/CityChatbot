@@ -40,6 +40,22 @@ describe("environment validation", () => {
     expect(env.TENANT_CREDENTIAL_KEY_VERSION).toBe("key-v1");
   });
 
+  it("requires the durable LINE dependency set atomically", () => {
+    expect(() => parseServerEnv({
+      CITYCHATBOT_ENV: "production",
+      APP_BASE_URL: "https://city.example",
+      DATABASE_URL: "postgresql://runtime@example.invalid/postgres",
+    })).toThrow(/DATABASE_URL/u);
+    expect(parseServerEnv({
+      CITYCHATBOT_ENV: "production",
+      APP_BASE_URL: "https://city.example",
+      DATABASE_URL: "postgresql://runtime@example.invalid/postgres",
+      LINE_WEBHOOK_HASH_SECRET: "h".repeat(32),
+      TENANT_CREDENTIAL_KEY: "k".repeat(32),
+      TENANT_CREDENTIAL_KEY_VERSION: "line-key-v1",
+    }).DATABASE_URL).toContain("example.invalid");
+  });
+
   it("parses public environment separately", () => {
     expect(parsePublicEnv({ NEXT_PUBLIC_APP_ENV: "test" })).toEqual({
       NEXT_PUBLIC_APP_ENV: "test",

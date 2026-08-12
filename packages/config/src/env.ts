@@ -10,6 +10,8 @@ const serverEnvSchema = z
     TENANT_ID: z.string().uuid().optional(),
     OPENROUTER_API_KEY: z.string().min(1).optional(),
     OPENROUTER_MODEL: z.string().min(1).optional(),
+    DATABASE_URL: z.string().url().optional(),
+    LINE_WEBHOOK_HASH_SECRET: z.string().min(32).optional(),
     CSRF_SECRET: z.string().min(32).optional(),
     TENANT_CREDENTIAL_KEY: z.string().min(32).optional(),
     TENANT_CREDENTIAL_KEY_VERSION: z.string().min(1).optional(),
@@ -27,6 +29,14 @@ const serverEnvSchema = z
         code: "custom",
         path: ["TENANT_CREDENTIAL_KEY_VERSION"],
         message: "TENANT_CREDENTIAL_KEY_VERSION is required when credential encryption is enabled",
+      });
+    }
+    const lineDependencies = [value.DATABASE_URL, value.LINE_WEBHOOK_HASH_SECRET, value.TENANT_CREDENTIAL_KEY];
+    if ((value.DATABASE_URL || value.LINE_WEBHOOK_HASH_SECRET) && !lineDependencies.every(Boolean)) {
+      context.addIssue({
+        code: "custom",
+        path: ["DATABASE_URL"],
+        message: "DATABASE_URL, LINE_WEBHOOK_HASH_SECRET and TENANT_CREDENTIAL_KEY must be configured together",
       });
     }
   });
