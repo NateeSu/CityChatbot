@@ -41,15 +41,14 @@ P8 is a non-blocking post-production hardening phase under `SPEC-MVP-001`, but i
 
 - Local unit and artifact safety: **PASS**.
 - Hardening completion: **BLOCKED**, not waived.
-- Production authorization: independent of P8; `P9-DEP-001` remains BLOCKED by the missing verified Vercel deployment target/configuration.
+- Production authorization: independent of P8; `P9-DEP-001` subsequently passed its MVP deployment gate. P8 hardening remains blocked by the external certification/provider prerequisites listed above.
 - Project completion: **NOT CLAIMED**; P8/P9 tasks and gates remain open.
 
 ## Unblock and rollback
 
-Unblock the listed prerequisites through authorized content/security/municipal/provider owners, configure a verified staging target, rerun the affected certification tasks, and create new immutable RC/evidence when inputs change. No production mutation occurred in this gate attempt, so there is nothing to roll back. Keep traffic disabled and retain this blocked evidence for traceability.
+Unblock the listed prerequisites through authorized content/security/municipal/provider owners, configure a verified staging target, rerun the affected certification tasks, and create new immutable RC/evidence when inputs change. No production mutation occurred in this gate attempt; the later P9 foundation deployment is covered by `evidence/P9-DEP-001/index.md`. Keep citizen/provider traffic disabled and retain this blocked evidence for traceability.
 
 ## Known limitations
 
 - No external credentials, browser session, production database, LINE channel, AI provider route or staging deployment was used to manufacture a pass.
 - P8 hardening failure/blocker does not revoke the separate MVP unit-test authorization, but it prevents this hardening gate from being reported as complete.
-

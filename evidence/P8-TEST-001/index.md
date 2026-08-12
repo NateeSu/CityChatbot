@@ -60,7 +60,7 @@ During the first final regression, three RC unit tests correctly detected a stal
 - Ten repeated synthetic smoke runs: **PASS**.
 - RC-to-report identity and digest linkage: **PASS**.
 - Staging E2E and coverage gates: **DEFERRED/NOT_AVAILABLE**, explicitly not converted to a green result.
-- Production deployment/citizen traffic: **NOT CLAIMED**; `P9-DEP-001` remains blocked.
+- Production deployment/citizen traffic was **NOT CLAIMED** by this test-pyramid run. The later foundation deployment is recorded in `evidence/P9-DEP-001/index.md`; citizen/provider traffic remains disabled.
 
 ## Rollback procedure
 

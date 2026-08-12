@@ -78,7 +78,7 @@ These are the only reason the critical journey exit is blocked; local failure co
 - Tenant/department/citizen negative checks: **PASS**.
 - Critical business journeys through real LINE/LIFF/Admin plus external integrations: **BLOCKED** — verified external targets unavailable.
 - Severity 1–2 defect count from local run: `0`; this does not replace external certification.
-- Production deployment/citizen traffic: **NOT CLAIMED**; `P9-DEP-001` remains BLOCKED.
+- Production deployment/citizen traffic during this certification run: **NOT CLAIMED**. Subsequent P9 foundation deployment is recorded separately in `evidence/P9-DEP-001/index.md`; citizen/provider traffic remains disabled.
 
 ## Unblock procedure
 
@@ -90,11 +90,10 @@ These are the only reason the critical journey exit is blocked; local failure co
 
 ## Rollback procedure
 
-No production mutation occurred. Keep production traffic disabled for this certification. If a future external run creates partial data, use the provider-approved test-tenant cleanup and preserve audit evidence; discard the failed RC/report pair and promote only a newly verified immutable artifact.
+No production mutation occurred during this certification run. The later P9 foundation deployment did not run migrations or enable citizen traffic. Keep production traffic disabled for this certification. If a future external run creates partial data, use the provider-approved test-tenant cleanup and preserve audit evidence; discard the failed RC/report pair and promote only a newly verified immutable artifact.
 
 ## Known limitations
 
 - Browser/device video, real LINE push, durable storage/index operations, locked AI/RAG certification and staging E2E were not available in this workspace.
 - Local server data is synthetic and in-memory; it is not an authoritative production source.
 - `P8-E2E-001` remains BLOCKED until the listed external dependencies are available; `P8-UAT-001` and `P8-GO-001` remain downstream blocked.
-

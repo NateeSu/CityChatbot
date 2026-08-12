@@ -1,59 +1,97 @@
-# Evidence — P9-DEP-001
+# Evidence - P9-DEP-001
 
-สถานะ: **IN_PROGRESS** (2026-08-12 — production configuration resumed)
+Status: **DONE** (2026-08-12)
 
-## Current execution
+## Scope and traceability
 
-The previously observed external blocker is being resolved through the authenticated provider sessions explicitly supplied for this task. The Vercel project and the empty GitHub repository were re-verified before any mutation; no provider secret has been written to the repository or printed to logs. Deployment remains open until the provider configuration, immutable RC deployment, smoke checks and rollback handle are all verified.
-
-## Blocker
-
-P9-DEP-001 มี prerequisite ด้าน code ผ่านแล้ว แต่ยังขาด production target/configuration ที่ยืนยันได้และ deployment credential/configuration ที่จำเป็น จึงยัง deploy หรือเปิด citizen traffic อย่างปลอดภัยไม่ได้
-
-Concrete external state:
-
-- Vercel team: `nateesu's projects` (`team_DlgaumeAT37hdSSsxmEu2BZA`)
-- Vercel project: `city-chatbot` (`prj_6X89yOQgVVlbR48TCrQ6by9ELdjz`)
-- Project state from connected Vercel read API: `live=false`, `latestDeployment=null`, `domains=[]`, `framework=null`.
-- Deployment list: `count=0`.
-- Repository state: no `.vercel/project.json`, no `vercel.json`, no Vercel CLI in PATH, and `docs/operations/release.md` explicitly says project linkage/deployment credentials are external configuration.
-- `.env.example` contains empty placeholders only. No production Supabase/LINE/secret-vault session configuration is committed or inferred.
-
-This is the exact dependency named by `plan.md`: `build artifact/production target/credentials ที่จำเป็นมีจริง`. The blocker is not a test failure and must not be bypassed with local/test mode or synthetic data.
-
-## Traceability
-
-- Requirement IDs: `RF-13`, `RF-15`, `RF-16`, `RF-17`
+- Task: `P9-DEP-001`
+- Requirements: `RF-13`, `RF-15`, `RF-16`, `RF-17`
 - Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
-- Related gate: `P7-GATE` passed under `SPEC-MVP-001`.
-- Task: `P9-DEP-001`; plan status remains open and blocked.
+- Prerequisites: MVP L1 unit tests green; active immutable RC verified.
+- Gate rule: production deployment is allowed after the MVP unit gate; hardening/canary work remains follow-up and is not reported as complete here.
 
-## Checks completed
+## Production target and configuration
 
-| Check | Result |
+| Item | Verified value/state |
 |---|---|
-| `pnpm test:unit` | PASS — 51 files / 339 tests |
-| Latest `pnpm test:all` | PASS — 51 Vitest files / 339 tests, 193/193 static, lint/typecheck/package typecheck/secret scan/SBOM/build/release manifest verify |
-| `pnpm release:rc:verify` | PASS — verified final RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`, digest `7706868aa2f8022f17032578c95b280a8a4922bcc4a5640b8e5e740f01033873` |
-| Vercel connected read: list teams/projects/get project/list deployments | PASS — account/project found, but no deployable live target or deployment exists |
-| Connected Vercel deploy preflight | **NOT RUN** — connector requires a target/name/file payload; no payload was submitted and no state was mutated |
-| Production-mode local fail-closed smoke | PASS — HTTP 503 `CONFIGURATION_UNAVAILABLE` when trusted server session/durable store is absent |
-| Production deployment | **NOT RUN** — blocked before mutation |
+| Git repository | `https://github.com/NateeSu/CityChatbot` |
+| Branch and code commit | `main` / `961655e745088bc5d802f69b3ef647f06b512008` |
+| Vercel team | `nateesu's projects` (`team_DlgaumeAT37hdSSsxmEu2BZA`) |
+| Vercel project | `city-chatbot` (`prj_6X89yOQgVVlbR48TCrQ6by9ELdjz`) |
+| Framework | Next.js `16.3.0` |
+| Root Directory | `apps/web` |
+| Build command | `pnpm build` |
+| Production alias | `https://city-chatbot-murex.vercel.app` |
+| Region | `iad1` |
 
-## Why no deploy was attempted
+The project is connected to the GitHub repository. Production-only environment variables were entered through the authenticated Vercel console; values are never recorded here:
 
-The local/test artifact intentionally serves deterministic synthetic data and must not be promoted as production. The production environment requires an explicit app URL, trusted server session/durable stores, Supabase/LINE wiring, secret-vault values and Vercel project configuration. Inventing any of these would violate tenant isolation, source-of-truth and secret-handling invariants.
+`CITYCHATBOT_ENV`, `APP_BASE_URL`, `NEXT_PUBLIC_APP_ENV`, `NEXT_PUBLIC_APP_URL`, `OPENROUTER_MODEL`, `OPENROUTER_API_KEY`, `CSRF_SECRET`, `TENANT_CREDENTIAL_KEY`, `TENANT_CREDENTIAL_KEY_VERSION`.
 
-The OpenRouter key supplied in the conversation was not written to a file, command line, evidence, Vercel variable or log. No secret was echoed.
+The supplied OpenRouter key was typed only into the Vercel secret field. Generated CSRF and tenant-credential key material was also typed only into Vercel. No secret was written to the repository, shell command, evidence, screenshot or log.
 
-## Unblock request
+Supabase and LINE are intentionally not claimed as configured: the authenticated Supabase account has no CityChatbot project and the LINE developer tab is not authenticated. Citizen/provider features therefore remain disabled and fail closed; no synthetic data was promoted.
 
-An authorized operator must configure/confirm the `city-chatbot` Vercel project root/framework/domain and production environment variables through the trusted provider/session, then provide a verifiable deployment target. Required values must be entered in the provider secret store, not this repository. Once available, rerun `P9-DEP-001` with the verified artifact and record deployment URL, deployment ID, build result, smoke checks and rollback handle.
+## Deployment history and fix
+
+1. Initial production build `dpl_HVxCD5Ea52SHsJDXXmnk1KiaC5bB` failed because Vercel detected the repository root as Next.js while `next` is owned by the workspace app.
+2. Root Directory was corrected to `apps/web`; retry `dpl_9JC2eDNJbpwNPFfLe8pUzdYToCR7` then reached the Next build but failed Vercel's post-build trace step because the app forced `output: "standalone"`.
+3. `apps/web/next.config.ts` was changed to let Vercel manage the Next.js runtime. Local lint, typecheck and build passed; the fix was committed and pushed as `961655e745088bc5d802f69b3ef647f06b512008`.
+4. Final deployment `dpl_9eCxFtLxzVQ2DFZrcVbbioJCNNrJ` completed with state `READY`. Vercel logs show Next.js compilation, TypeScript, static generation of 37 pages, route finalization and `Build Completed in /vercel/output`.
+
+## Active release candidate
+
+- RC ID: `citychatbot-rc-2026-08-12-9d61a95d-bde66c72`
+- RC digest: `c26d66d08e9c29a583070170582239d7305f4f7e4bf9d5c662c056cb33c69642`
+- Source digest: `bde66c72db4e3ae8a701ce16f1d744457b12ced767c7a6786a0d2371a6d74109`
+- Source commit: `961655e745088bc5d802f69b3ef647f06b512008`
+- Release manifest digest: `9d61a95db5978d3b48a260ffc80fd73342a2404e74577f97b3c3e16edff4279a`
+- SBOM: 95 components; dependency digest `0aece6f8590eb6baa12fb3ae3308fa7b1d209a626a654022d1f089f12468b97a`
+- Staging verification: `NOT_AVAILABLE` and external signature: deferred; neither is fabricated as green.
+
+## Tests and actual results
+
+| Command/check | Result |
+|---|---|
+| `pnpm test:unit` | PASS - 51 Vitest files / 339 tests |
+| `pnpm --filter @citychatbot/web lint` | PASS |
+| `pnpm --filter @citychatbot/web typecheck` | PASS |
+| `pnpm --filter @citychatbot/web build` | PASS - Next.js 16.3.0 production build; 37 static pages and API route inventory |
+| `pnpm security:scan` | PASS - `SECRET_SCAN_CLEAN` |
+| `pnpm security:sbom` | PASS - 95 components; digest recorded above |
+| `pnpm release:manifest` / `pnpm release:verify` | PASS - manifest digest recorded above |
+| `pnpm release:rc` / `pnpm release:rc:verify` | PASS - active RC and all pinned inputs verified |
+| `python scripts/test_pyramid_audit.py --base-url http://127.0.0.1:3224 --unit-tests 339 --static-tests 193` | PASS - 10/10 smoke runs; 0 forbidden markers; report digest `d76f657eaee87a6d3c715ee40b59de95e07c8a9d121e9cf267d53c53bf4c1d6d` |
+| `python scripts/e2e_certification.py --base-url http://127.0.0.1:3224` | Local PASS 16/16; expected exit 1 because seven external dependencies are `NOT_AVAILABLE` |
+| Vercel runtime error query, last 30 minutes | PASS - no runtime errors found |
+
+## Production smoke checks
+
+| Check | Actual result |
+|---|---|
+| Browser GET `/` | PASS - production page loaded and explicitly reports `production`; page states real citizen/provider data is not enabled |
+| GET `/api/health` | HTTP 200; `{"status":"ok","service":"web","environment":"production"}` |
+| GET `/api/v1/citizen/services` | HTTP 503; `reasonCode=CONFIGURATION_UNAVAILABLE` - production fail-closed behavior verified |
+| Tenant/data safety | PASS - no production database, LINE channel, upload index or synthetic source was touched |
+
+## Acceptance criteria
+
+- Verified GitHub-to-Vercel production linkage and immutable code commit: **PASS**.
+- Production environment configuration stored provider-side without secret leakage: **PASS**.
+- Production build and deployment succeeded: **PASS**.
+- Production health and homepage smoke checks succeeded: **PASS**.
+- Unconfigured citizen/provider dependencies do not leak local data and return canonical fail-closed behavior: **PASS**.
+- Rollback path documented and no database migration was executed: **PASS with first-deployment limitation noted below**.
 
 ## Rollback procedure
 
-No production mutation occurred, so there is nothing to roll back. After unblocking, promote only the verified release artifact; if post-deploy smoke fails, immediately disable feature flags/revert alias to the last verified deployment and preserve logs/evidence. Database migrations use forward-compatible recovery or approved rollback, never manual production edits.
+1. Keep citizen/provider feature flags disabled while external Supabase/LINE targets are unavailable.
+2. If a smoke or runtime gate fails, remove the production alias/promote the last `READY` Vercel deployment, or redeploy the exact verified RC source commit `961655e...` from the Vercel deployment console.
+3. Preserve the failed deployment logs and evidence; do not mutate the immutable RC. No production database migration was applied, so rollback is application/configuration-only for this deployment.
+4. Before enabling any citizen feature, configure and verify the required tenant-isolated durable stores, LINE/LIFF channel and independent AI/RAG certification; otherwise keep the endpoint in `CONFIGURATION_UNAVAILABLE` state.
 
-## Next executable task
+## Known limitations and next task
 
-`P9-DEP-001` is the next executable task after an authorized operator configures and verifies the Vercel production target, project linkage and provider configuration. Until then it remains BLOCKED; P8-RC/P8-TEST are complete and P8 hardening is tracked separately.
+- This is a production foundation deployment, not a claim that the CityChatbot citizen experience is live. Supabase/LINE external configuration and P8 hardening remain open.
+- No earlier `READY` deployment existed at the first successful promotion, so an automatic previous-artifact promotion was not exercised; the safe no-traffic/fail-closed path is available and subsequent Vercel deployments create a rollback candidate.
+- `P8-E2E-001` remains blocked by seven external dependencies; `P9-CAN-001` is the next executable task after this deployment.

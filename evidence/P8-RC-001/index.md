@@ -71,6 +71,6 @@ The generated RC pins 25 Supabase migration files, 17 corpus metadata files, 11 
 ## Known limitations
 
 - No local git metadata/commit or detached cryptographic signature is available in this workspace.
-- Vercel `city-chatbot` project exists but has no deployment/domain/live target; this is recorded in `evidence/P9-DEP-001/index.md`.
+- Vercel `city-chatbot` had no deployment/domain/live target when this RC evidence was captured. Current production deployment/configuration is recorded in `evidence/P9-DEP-001/index.md`.
 - Supabase, LINE, OpenRouter and secret-vault provider versions are external configuration references only. No provider credential is in the RC.
-- `P9-DEP-001` remains BLOCKED; P8-RC completion does not claim production deployment or project completion.
+- P8-RC completion does not claim hardening, citizen/provider activation or project completion.

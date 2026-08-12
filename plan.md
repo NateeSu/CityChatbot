@@ -211,7 +211,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 | P6 Admin/Content | IN_PROGRESS (MVP Fast-Track) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [TBD](./evidence/P6-GATE/index.md) |
 | P7 KPI/Ops | IN_PROGRESS (MVP Fast-Track) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
 | P8 Post-production Certification | IN_PROGRESS | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-RC-001/index.md) |
-| P9 Immediate Deploy/Hypercare | BLOCKED (P9-DEP-001 external production target/configuration) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-DEP-001/index.md) |
+| P9 Immediate Deploy/Hypercare | IN_PROGRESS (P9-DEP-001 and P9-GATE DONE; canary/hypercare follow-up remains) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-DEP-001/index.md) |
 
 ---
 
@@ -1372,8 +1372,8 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
 **Depends on:** P0–P7 MVP scope unit tests green; ไม่ต้องรอ P8-GATE  
 **หลัก rollback:** การ rollback เป็นผลลัพธ์ที่ถูกต้อง ไม่ใช่ความล้มเหลว; rollback ก่อนวิเคราะห์หากกระทบความถูกต้อง สิทธิ์ หรือข้อมูลประชาชน
 
-- [ ] `P9-DEP-001` Deploy Production ทันทีหลัง Unit Tests Green
-  - สถานะ: IN_PROGRESS (2026-08-12 — production configuration resumed from the verified external session)
+- [x] `P9-DEP-001` Deploy Production ทันทีหลัง Unit Tests Green
+  - สถานะ: DONE (2026-08-12 — Vercel production deployment READY; citizen/provider traffic remains fail-closed until external dependencies are configured)
   - เริ่มทำ: 2026-08-12 — P7-GATE ผ่าน; ตรวจ artifact, repository deployment configuration และ authenticated Vercel project state ก่อน deploy โดยไม่ใส่ secret ลง repo
   - เจ้าของ: SRE; ผู้ร่วม: TL, QA, SEC
   - Prerequisites: MVP L1 Unit Test report ผ่าน, build artifact/production target/credentials ที่จำเป็นมีจริง
@@ -1383,10 +1383,11 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
   - Rollback: previous signed artifact + flags off + backward-compatible DB; execute if smoke fails
   - Effort: S (2) | Trace: RF-13, RF-15, RF-16, RF-17
   - หลักฐาน: [Evidence](./evidence/P9-DEP-001/index.md)
-  - Current execution: Vercel project `city-chatbot` and authenticated GitHub/Supabase/LINE browser sessions have been re-verified; configure only provider-side settings/secrets and the immutable RC, never local/test fixtures or repository secrets.
+  - เสร็จ: 2026-08-12 — Vercel project `city-chatbot` linked to `NateeSu/CityChatbot`; Root Directory `apps/web`; production build `pnpm build`; deployment `dpl_9eCxFtLxzVQ2DFZrcVbbioJCNNrJ` READY at `https://city-chatbot-murex.vercel.app`; `/api/health` returned production `200`; unconfigured citizen services returned `503 CONFIGURATION_UNAVAILABLE`; no secret was committed.
+  - Active RC: `citychatbot-rc-2026-08-12-9d61a95d-bde66c72`; digest `c26d66d08e9c29a583070170582239d7305f4f7e4bf9d5c662c056cb33c69642`; source commit `961655e745088bc5d802f69b3ef647f06b512008`.
 
 - [ ] `P9-CAN-001` เปิด internal canary ด้วยบัญชี/หน่วยงานทดสอบ
-  - สถานะ: TODO
+  - สถานะ: BLOCKED (2026-08-12 — LINE/LIFF, dedicated Supabase durable target and locked AI/RAG evaluator are unavailable; production remains fail-closed)
   - เจ้าของ: SRE + QA; ผู้ร่วม: UAT, AI
   - Prerequisites: P9-DEP-001
   - Deliverables: canary flags/audience; synthetic and manual journeys; live dashboards; incident log; cleanup
@@ -1464,8 +1465,8 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
 
 ## P9 Exit Gate — Immediate Go-live Recorded
 
-- [ ] `P9-GATE` บันทึกการขึ้น Production หลัง Unit Tests Green
-  - สถานะ: TODO
+- [x] `P9-GATE` บันทึกการขึ้น Production หลัง Unit Tests Green
+  - สถานะ: DONE (2026-08-12 — L1 unit suite and real production deployment passed; evidence records fail-closed external dependencies)
   - Gate เดียว: L1 Unit Test ของ release ผ่านและ production deployment สำเร็จ
   - canary, hypercare, SLO, correctness sampling, ownership, certification และ evidence completeness ทำต่อหลัง go-live แบบ non-blocking
   - หลักฐาน: [Evidence](./evidence/P9-GATE/index.md)
