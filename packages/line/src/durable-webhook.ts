@@ -1,6 +1,6 @@
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 
-import { parseLineWebhookEvents, verifyLineSignature, type NormalizedLineEvent } from "./webhook";
+import { isLineWebhookVerificationProbe, parseLineWebhookEvents, verifyLineSignature, type NormalizedLineEvent } from "./webhook";
 
 export type DurableLineChannel = {
   tenantId: string;
@@ -67,6 +67,9 @@ export const processDurableLineWebhook = async (input: {
   if (!verifyLineSignature(input.rawBody, input.signature, channel.channelSecret)) return { accepted: false, status: 403, reasonCode: "FORBIDDEN", requestId: input.requestId };
   let events: NormalizedLineEvent[];
   try {
+    if (isLineWebhookVerificationProbe(input.rawBody, channel.destination)) {
+      return { accepted: true, status: 200, requestId: input.requestId, correlationId: input.correlationId, acceptedEventIds: [], duplicateEventIds: [] };
+    }
     events = parseLineWebhookEvents(input.rawBody, channel.destination, now.getTime());
   } catch (error) {
     const message = error instanceof Error ? error.message : "";

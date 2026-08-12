@@ -32,6 +32,21 @@ describe("durable LINE webhook orchestration", () => {
     expect(store.writes).toBe(1);
   });
 
+  it("accepts a signed LINE verification probe without persisting an inbox event", async () => {
+    const store = makeStore();
+    const probeBody = new TextEncoder().encode(JSON.stringify({ destination: "U123456789abcdef", events: [] }));
+    const probeSignature = createHmac("sha256", CHANNEL_SECRET).update(probeBody).digest("base64");
+    await expect(processDurableLineWebhook({ webhookKey: WEBHOOK_KEY, webhookHashSecret: HASH_SECRET, signature: probeSignature, rawBody: probeBody, requestId: "req", correlationId: "corr", store, now: NOW })).resolves.toEqual({
+      accepted: true,
+      status: 200,
+      requestId: "req",
+      correlationId: "corr",
+      acceptedEventIds: [],
+      duplicateEventIds: [],
+    });
+    expect(store.writes).toBe(0);
+  });
+
   it("fails closed before persistence for unknown key and altered signature", async () => {
     const store = makeStore();
     await expect(processDurableLineWebhook({ webhookKey: `${WEBHOOK_KEY}x`, webhookHashSecret: HASH_SECRET, signature, rawBody: body, requestId: "req", correlationId: "corr", store, now: NOW })).resolves.toMatchObject({ status: 403, reasonCode: "FORBIDDEN" });

@@ -122,6 +122,12 @@ const parseRawJson = (body: Uint8Array): Record<string, unknown> => {
 
 const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === "object" && !Array.isArray(value);
 
+export const isLineWebhookVerificationProbe = (body: Uint8Array, expectedDestination: string): boolean => {
+  const parsed = parseRawJson(body);
+  if (parsed.destination !== expectedDestination) throw new LineWebhookError("FORBIDDEN", "webhook destination mismatch");
+  return Array.isArray(parsed.events) && parsed.events.length === 0;
+};
+
 export const parseLineWebhookEvents = (
   body: Uint8Array,
   expectedDestination: string,
