@@ -11,7 +11,7 @@ const securityEnvironment: SecurityEnvironment =
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
-  transpilePackages: ["@citychatbot/config", "@citychatbot/security"],
+  transpilePackages: ["@citychatbot/config", "@citychatbot/liff", "@citychatbot/security"],
   async headers() {
     return [
       {

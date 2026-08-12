@@ -15,6 +15,7 @@ const serverEnvSchema = z
     CSRF_SECRET: z.string().min(32).optional(),
     TENANT_CREDENTIAL_KEY: z.string().min(32).optional(),
     TENANT_CREDENTIAL_KEY_VERSION: z.string().min(1).optional(),
+    LIFF_SESSION_SECRET: z.string().min(32).optional(),
   })
   .superRefine((value, context) => {
     if (value.CITYCHATBOT_ENV === "production" && !value.APP_BASE_URL) {
@@ -29,6 +30,13 @@ const serverEnvSchema = z
         code: "custom",
         path: ["TENANT_CREDENTIAL_KEY_VERSION"],
         message: "TENANT_CREDENTIAL_KEY_VERSION is required when credential encryption is enabled",
+      });
+    }
+    if (value.CITYCHATBOT_ENV === "production" && !value.LIFF_SESSION_SECRET) {
+      context.addIssue({
+        code: "custom",
+        path: ["LIFF_SESSION_SECRET"],
+        message: "LIFF_SESSION_SECRET is required outside local/test environments",
       });
     }
     const lineDependencies = [value.DATABASE_URL, value.LINE_WEBHOOK_HASH_SECRET, value.TENANT_CREDENTIAL_KEY];

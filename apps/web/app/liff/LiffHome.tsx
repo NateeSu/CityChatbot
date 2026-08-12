@@ -16,6 +16,11 @@ export type LiffCitizenIdentity = {
   synthetic: boolean;
 };
 
+export type LiffHomeBootstrap = {
+  intakeQueueId: string | null;
+  categories: readonly { id: string; code: string; label: string }[];
+};
+
 type ApiError = { status: number; reasonCode: string; message: string };
 type ListResponse = { items: readonly ComplaintPublicView[]; nextCursor?: string };
 
@@ -103,7 +108,8 @@ function HomeContent({ identity }: { identity: LiffCitizenIdentity }) {
   </LiffFrame>;
 }
 
-export function LiffHome({ identity }: { identity: LiffCitizenIdentity }) {
+export function LiffHome({ identity, bootstrap }: { identity: LiffCitizenIdentity; bootstrap?: LiffHomeBootstrap }) {
+  void bootstrap;
   return <HomeContent identity={identity} />;
 }
 

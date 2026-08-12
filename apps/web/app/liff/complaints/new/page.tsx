@@ -1,5 +1,6 @@
 import { ComplaintWizard, type ComplaintWizardConfig } from "./ComplaintWizard";
 import Link from "next/link";
+import { ProductionComplaintWizard, ProductionLiffBoundary } from "../../ProductionLiffGate";
 
 const LOCAL_CATEGORIES = [
   { id: "33000000-0000-4000-8000-000000000001", code: "WASTE", label: "ขยะ / สิ่งปฏิกูล" },
@@ -43,6 +44,7 @@ const loadProductionConfig = (): ComplaintWizardConfig | undefined => {
 
 export default function NewComplaintPage() {
   const environment = process.env.CITYCHATBOT_ENV ?? "local";
+  if (environment === "production") return <ProductionLiffBoundary liffAppId={process.env.LIFF_APP_ID ?? ""}><ProductionComplaintWizard /></ProductionLiffBoundary>;
   const config = environment === "local" || environment === "test" ? LOCAL_CONFIG : loadProductionConfig();
   if (!config) {
     return (

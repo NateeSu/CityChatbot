@@ -42,7 +42,8 @@ const formatDate = (value: string): string => {
 };
 
 const apiRequest = async <T,>(url: string, init?: RequestInit): Promise<T> => {
-  const response = await fetch(url, { cache: "no-store", ...init, headers: { ...(init?.headers ?? {}), "Content-Type": "application/json" } });
+  const csrfToken = typeof window === "undefined" ? undefined : window.sessionStorage.getItem("citychatbot:csrf-token") ?? undefined;
+  const response = await fetch(url, { cache: "no-store", ...init, headers: { ...(init?.headers ?? {}), "Content-Type": "application/json", ...(csrfToken ? { "x-csrf-token": csrfToken } : {}) } });
   const payload: unknown = await response.json().catch(() => undefined);
   if (!response.ok) {
     const error = payload && typeof payload === "object" && payload !== null ? payload as ApiErrorShape : undefined;

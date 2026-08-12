@@ -53,6 +53,7 @@ describe("environment validation", () => {
       LINE_WEBHOOK_HASH_SECRET: "h".repeat(32),
       TENANT_CREDENTIAL_KEY: "k".repeat(32),
       TENANT_CREDENTIAL_KEY_VERSION: "line-key-v1",
+      LIFF_SESSION_SECRET: "l".repeat(32),
     }).DATABASE_URL).toContain("example.invalid");
   });
 

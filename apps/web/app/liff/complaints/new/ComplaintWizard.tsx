@@ -347,7 +347,7 @@ export function ComplaintWizard({ config }: { config: ComplaintWizardConfig }) {
     try {
       const response = await fetch("/api/v1/citizen/complaints", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKeyRef.current },
+        headers: { "Content-Type": "application/json", "Idempotency-Key": idempotencyKeyRef.current, ...(typeof window !== "undefined" && window.sessionStorage.getItem("citychatbot:csrf-token") ? { "x-csrf-token": window.sessionStorage.getItem("citychatbot:csrf-token")! } : {}) },
         body: JSON.stringify({
           ...draft,
           tenantId: config.tenantId,
