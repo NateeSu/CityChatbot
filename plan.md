@@ -1383,8 +1383,8 @@ Agent ห้ามรอทำ P8 ให้ครบก่อน `P9-DEP-001`; �
   - Rollback: previous signed artifact + flags off + backward-compatible DB; execute if smoke fails
   - Effort: S (2) | Trace: RF-13, RF-15, RF-16, RF-17
   - หลักฐาน: [Evidence](./evidence/P9-DEP-001/index.md)
-  - เสร็จ: 2026-08-12 — Vercel project `city-chatbot` linked to `NateeSu/CityChatbot`; Root Directory `apps/web`; production build `pnpm build`; deployment `dpl_9eCxFtLxzVQ2DFZrcVbbioJCNNrJ` READY at `https://city-chatbot-murex.vercel.app`; `/api/health` returned production `200`; unconfigured citizen services returned `503 CONFIGURATION_UNAVAILABLE`; no secret was committed.
-  - Active RC: `citychatbot-rc-2026-08-12-9d61a95d-bde66c72`; digest `c26d66d08e9c29a583070170582239d7305f4f7e4bf9d5c662c056cb33c69642`; source commit `961655e745088bc5d802f69b3ef647f06b512008`.
+  - เสร็จ: 2026-08-12 — Vercel project `city-chatbot` linked to `NateeSu/CityChatbot`; Root Directory `apps/web`; production build `pnpm build`; deployment `dpl_Cj5XLhyLZkKFKgUn5B3zY5Eoi1ia` READY at `https://city-chatbot-murex.vercel.app`; `/api/health` returned production `200`; unconfigured citizen services returned `503 CONFIGURATION_UNAVAILABLE`; no secret was committed.
+  - Active RC: `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`; digest `a083bb6eb030363086855ee694b9527a9f5be74bef64d33fda8c3d92539548ca`; source commit `f9f2650b046c4282cf937c7c499bbcb56caac2b0`.
 
 - [ ] `P9-CAN-001` เปิด internal canary ด้วยบัญชี/หน่วยงานทดสอบ
   - สถานะ: BLOCKED (2026-08-12 — LINE/LIFF, dedicated Supabase durable target and locked AI/RAG evaluator are unavailable; production remains fail-closed)

@@ -70,6 +70,7 @@ During the first final regression, three RC unit tests correctly detected a stal
 
 ## Known limitations
 
+- This evidence is pinned to the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`; the active RC was later regenerated as `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5` after the repository provenance test was corrected. The historical test result remains valid for the RC it names.
 - There is no connected staging deployment, so L5 business journeys and production-like E2E cannot be certified here.
 - Coverage tooling/configuration and external certification/UAT are not available in this workspace.
 - The local server and test corpus are synthetic; no secret, PII, OpenRouter key, Supabase credential or LINE credential was written to the repository or evidence.

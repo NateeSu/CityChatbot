@@ -50,5 +50,6 @@ Unblock the listed prerequisites through authorized content/security/municipal/p
 
 ## Known limitations
 
+- This gate was captured against the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`; the active production RC is now `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`. P8 remains blocked and must be recertified when its external prerequisites are available.
 - No external credentials, browser session, production database, LINE channel, AI provider route or staging deployment was used to manufacture a pass.
 - P8 hardening failure/blocker does not revoke the separate MVP unit-test authorization, but it prevents this hardening gate from being reported as complete.

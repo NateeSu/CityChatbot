@@ -94,6 +94,7 @@ No production mutation occurred during this certification run. The later P9 foun
 
 ## Known limitations
 
+- This evidence is pinned to the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`; a new immutable RC was generated after the commit-provenance test fix. Rerun against a verified external target before claiming the blocked journeys complete.
 - Browser/device video, real LINE push, durable storage/index operations, locked AI/RAG certification and staging E2E were not available in this workspace.
 - Local server data is synthetic and in-memory; it is not an authoritative production source.
 - `P8-E2E-001` remains BLOCKED until the listed external dependencies are available; `P8-UAT-001` and `P8-GO-001` remain downstream blocked.

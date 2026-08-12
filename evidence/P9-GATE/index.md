@@ -10,8 +10,8 @@ This gate records the MVP production deployment gate only. It does not close P8 
 - Requirements: `RF-13`, `RF-15`, `RF-16`, `RF-17`
 - Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
 - Rule: `SPEC-MVP-001` - L1 unit tests are the MVP deployment gate; external hardening remains tracked and explicit.
-- Active RC: `citychatbot-rc-2026-08-12-9d61a95d-bde66c72`
-- RC digest: `c26d66d08e9c29a583070170582239d7305f4f7e4bf9d5c662c056cb33c69642`
+- Active RC: `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`
+- RC digest: `a083bb6eb030363086855ee694b9527a9f5be74bef64d33fda8c3d92539548ca`
 
 ## Gate inputs
 
@@ -20,7 +20,7 @@ This gate records the MVP production deployment gate only. It does not close P8 
 | MVP L1 unit suite | PASS - 51 files / 339 tests | `pnpm test:unit` |
 | Release candidate verification | PASS | `pnpm release:rc:verify` |
 | Production build | PASS | Vercel deployment logs and local Next.js build |
-| Production deployment | PASS - Vercel `dpl_9eCxFtLxzVQ2DFZrcVbbioJCNNrJ`, state `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
+| Production deployment | PASS - Vercel `dpl_Cj5XLhyLZkKFKgUn5B3zY5Eoi1ia`, state `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Production health | PASS - HTTP 200, environment `production` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Fail-closed citizen dependency boundary | PASS - HTTP 503 `CONFIGURATION_UNAVAILABLE` | [P9-DEP-001](../P9-DEP-001/index.md) |
 

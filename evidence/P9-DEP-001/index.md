@@ -15,7 +15,7 @@ Status: **DONE** (2026-08-12)
 | Item | Verified value/state |
 |---|---|
 | Git repository | `https://github.com/NateeSu/CityChatbot` |
-| Branch and code commit | `main` / `961655e745088bc5d802f69b3ef647f06b512008` |
+| Branch and code commit | `main` / `f9f2650b046c4282cf937c7c499bbcb56caac2b0` |
 | Vercel team | `nateesu's projects` (`team_DlgaumeAT37hdSSsxmEu2BZA`) |
 | Vercel project | `city-chatbot` (`prj_6X89yOQgVVlbR48TCrQ6by9ELdjz`) |
 | Framework | Next.js `16.3.0` |
@@ -37,14 +37,15 @@ Supabase and LINE are intentionally not claimed as configured: the authenticated
 1. Initial production build `dpl_HVxCD5Ea52SHsJDXXmnk1KiaC5bB` failed because Vercel detected the repository root as Next.js while `next` is owned by the workspace app.
 2. Root Directory was corrected to `apps/web`; retry `dpl_9JC2eDNJbpwNPFfLe8pUzdYToCR7` then reached the Next build but failed Vercel's post-build trace step because the app forced `output: "standalone"`.
 3. `apps/web/next.config.ts` was changed to let Vercel manage the Next.js runtime. Local lint, typecheck and build passed; the fix was committed and pushed as `961655e745088bc5d802f69b3ef647f06b512008`.
-4. Final deployment `dpl_9eCxFtLxzVQ2DFZrcVbbioJCNNrJ` completed with state `READY`. Vercel logs show Next.js compilation, TypeScript, static generation of 37 pages, route finalization and `Build Completed in /vercel/output`.
+4. The release-candidate provenance test was corrected for a real commit-pinned repository baseline in `scripts/test_release_candidate.py`; the change was committed as `f9f2650b046c4282cf937c7c499bbcb56caac2b0` and its Vercel deployment `dpl_Cj5XLhyLZkKFKgUn5B3zY5Eoi1ia` completed `READY`.
+5. Vercel logs for the successful deployment show Next.js compilation, TypeScript, static generation of 37 pages, route finalization and `Build Completed in /vercel/output`.
 
 ## Active release candidate
 
-- RC ID: `citychatbot-rc-2026-08-12-9d61a95d-bde66c72`
-- RC digest: `c26d66d08e9c29a583070170582239d7305f4f7e4bf9d5c662c056cb33c69642`
-- Source digest: `bde66c72db4e3ae8a701ce16f1d744457b12ced767c7a6786a0d2371a6d74109`
-- Source commit: `961655e745088bc5d802f69b3ef647f06b512008`
+- RC ID: `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`
+- RC digest: `a083bb6eb030363086855ee694b9527a9f5be74bef64d33fda8c3d92539548ca`
+- Source digest: `ae6ccdd54857afca87b82f1200a089218f09ea606c56148a30a53e97701a4445`
+- Source commit: `f9f2650b046c4282cf937c7c499bbcb56caac2b0`
 - Release manifest digest: `9d61a95db5978d3b48a260ffc80fd73342a2404e74577f97b3c3e16edff4279a`
 - SBOM: 95 components; dependency digest `0aece6f8590eb6baa12fb3ae3308fa7b1d209a626a654022d1f089f12468b97a`
 - Staging verification: `NOT_AVAILABLE` and external signature: deferred; neither is fabricated as green.
@@ -61,8 +62,9 @@ Supabase and LINE are intentionally not claimed as configured: the authenticated
 | `pnpm security:sbom` | PASS - 95 components; digest recorded above |
 | `pnpm release:manifest` / `pnpm release:verify` | PASS - manifest digest recorded above |
 | `pnpm release:rc` / `pnpm release:rc:verify` | PASS - active RC and all pinned inputs verified |
-| `python scripts/test_pyramid_audit.py --base-url http://127.0.0.1:3224 --unit-tests 339 --static-tests 193` | PASS - 10/10 smoke runs; 0 forbidden markers; report digest `d76f657eaee87a6d3c715ee40b59de95e07c8a9d121e9cf267d53c53bf4c1d6d` |
-| `python scripts/e2e_certification.py --base-url http://127.0.0.1:3224` | Local PASS 16/16; expected exit 1 because seven external dependencies are `NOT_AVAILABLE` |
+| `python -m unittest discover -s scripts -p "test_*.py" -v` | PASS - 193/193 |
+| `python scripts/test_pyramid_audit.py --base-url http://127.0.0.1:3224 --unit-tests 339 --static-tests 193` | PASS - 10/10 smoke runs; 0 forbidden markers; report digest `0da1f601f06d6b737985aaaa1ae7b58098543af014231c0bc9f58e01bd091eb0` |
+| `python scripts/e2e_certification.py --base-url http://127.0.0.1:3224` | Local PASS 16/16; expected exit 1 because seven external dependencies are `NOT_AVAILABLE`; report digest `e02a3e8f21ebec5c968652c55260b9eaa00c84dd88fe25809cca642c6fce873c` |
 | Vercel runtime error query, last 30 minutes | PASS - no runtime errors found |
 
 ## Production smoke checks
@@ -86,7 +88,7 @@ Supabase and LINE are intentionally not claimed as configured: the authenticated
 ## Rollback procedure
 
 1. Keep citizen/provider feature flags disabled while external Supabase/LINE targets are unavailable.
-2. If a smoke or runtime gate fails, remove the production alias/promote the last `READY` Vercel deployment, or redeploy the exact verified RC source commit `961655e...` from the Vercel deployment console.
+2. If a smoke or runtime gate fails, remove the production alias/promote the last `READY` Vercel deployment, or redeploy the exact verified RC source commit `f9f2650...` from the Vercel deployment console.
 3. Preserve the failed deployment logs and evidence; do not mutate the immutable RC. No production database migration was applied, so rollback is application/configuration-only for this deployment.
 4. Before enabling any citizen feature, configure and verify the required tenant-isolated durable stores, LINE/LIFF channel and independent AI/RAG certification; otherwise keep the endpoint in `CONFIGURATION_UNAVAILABLE` state.
 

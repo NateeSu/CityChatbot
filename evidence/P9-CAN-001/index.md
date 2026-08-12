@@ -19,7 +19,7 @@ Unavailable dependencies are the same seven recorded by `P8-E2E-001`: LINE/LIFF 
 
 | Check | Result |
 |---|---|
-| Active production deployment | PASS - Vercel `dpl_9eCxFtLxzVQ2DFZrcVbbioJCNNrJ` is `READY` |
+| Active production deployment | PASS - Vercel `dpl_Cj5XLhyLZkKFKgUn5B3zY5Eoi1ia` is `READY` |
 | Production health | PASS - `/api/health` HTTP 200, environment `production` |
 | Citizen feature safety boundary | PASS - `/api/v1/citizen/services` HTTP 503, `CONFIGURATION_UNAVAILABLE` |
 | Runtime errors | PASS - no Vercel runtime errors in the last 30 minutes |

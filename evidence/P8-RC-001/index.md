@@ -70,6 +70,7 @@ The generated RC pins 25 Supabase migration files, 17 corpus metadata files, 11 
 
 ## Known limitations
 
+- This evidence is the immutable gate-capture record for the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`. After production Git provenance was enabled and the release-candidate test was corrected, the active RC was regenerated as `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`; current deployment evidence is in `evidence/P9-DEP-001/index.md`.
 - No local git metadata/commit or detached cryptographic signature is available in this workspace.
 - Vercel `city-chatbot` had no deployment/domain/live target when this RC evidence was captured. Current production deployment/configuration is recorded in `evidence/P9-DEP-001/index.md`.
 - Supabase, LINE, OpenRouter and secret-vault provider versions are external configuration references only. No provider credential is in the RC.
