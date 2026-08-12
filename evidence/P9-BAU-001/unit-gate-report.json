@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "2dbda75ed7d52627e57d3e3c245588726d31f1e79d2fea64ac95f8effd9ee4ba",
+  "executionManifestSha256": "14441c01c491239c3c88e2ace304d3e0ad5a663f235c2d52586553e409f5b22b",
+  "taskId": "P9-BAU-001",
+  "revision": "d68b521252d594342f08d36f4ac4b5f03b268289",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "49facfaec940a2aa1658e0e8d08627eb9d708ac66042dcf5bf682194e7c2fa56",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:49:54Z",
+  "finishedAt": "2026-08-12T23:49:58Z",
+  "requiredTestIds": [
+    "P9-BAU-EXPIRY",
+    "P9-BAU-STALE-SOURCE",
+    "P9-BAU-REGRESSION",
+    "P9-BAU-ALERT"
+  ],
+  "passedTestIds": [
+    "P9-BAU-EXPIRY",
+    "P9-BAU-STALE-SOURCE",
+    "P9-BAU-REGRESSION",
+    "P9-BAU-ALERT"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/continuous-correctness.test.ts packages/job-ops/src/operations-handoff.test.ts packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_continuous_correctness -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n····························\n\n Test Files  6 passed (6)\n      Tests  28 passed (28)\n   Start at  06:49:57\n   Duration  674ms (transform 555ms, setup 0ms, import 904ms, tests 67ms, environment 1ms)\n\n",
+      "stderr": "test_alert_and_rollback_contract (scripts.test_continuous_correctness.ContinuousCorrectnessContractTests.test_alert_and_rollback_contract) ... ok\ntest_regression_requires_unit_gate_and_recertification (scripts.test_continuous_correctness.ContinuousCorrectnessContractTests.test_regression_requires_unit_gate_and_recertification) ... ok\ntest_schedule_and_expiry_contract (scripts.test_continuous_correctness.ContinuousCorrectnessContractTests.test_schedule_and_expiry_contract) ... ok\ntest_stale_source_forces_handoff_and_tenant_scope (scripts.test_continuous_correctness.ContinuousCorrectnessContractTests.test_stale_source_forces_handoff_and_tenant_scope) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-CLOSE-001"
+    }
+  ],
+  "reportHash": "01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985"
+}

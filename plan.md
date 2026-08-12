@@ -1514,8 +1514,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: M (3) | Trace: RF-10, RF-15, RF-18
   - หลักฐาน: [Evidence](./evidence/P9-KT-001/index.md)
 
-- [ ] `P9-BAU-001` ตั้ง continuous correctness, corpus freshness และ regression cadence
-  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
+- [x] `P9-BAU-001` ตั้ง continuous correctness, corpus freshness และ regression cadence
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985; revision=d68b521252d594342f08d36f4ac4b5f03b268289)
   - เจ้าของ: QA + AI + CO; ผู้ร่วม: SRE, PO
   - Prerequisites: P9-HC-001
   - Deliverables: weekly/monthly certification schedule; source expiry alerts; unanswered/negative feedback review; drift/model/provider change policy; quarterly red-team/restore/UAT; KPI review
@@ -1526,7 +1526,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-BAU-001/index.md)
 
 - [ ] `P9-CLOSE-001` ปิด release และทำ post-implementation review
-  - สถานะ: TODO
+  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
   - เจ้าของ: PO + TL; ผู้ร่วม: ทุก owner
   - Prerequisites: P9-HC-001, P9-KT-001, P9-BAU-001
   - Deliverables: achieved outcomes/SLO/cost/quality; automated defect/debt summary; next-phase backlog; machine production record; archived evidence index
@@ -2101,6 +2101,8 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 `P9-HC-001` is now DONE via automatic unit gate report `f963cd37cfc06fed67acfb8d8374b69c2cad509b002b65316e8925109fbe9788` at revision `97ffbb824dd3de0bb9a89f0c95e4509e7db3db68`; health, certified sampling coverage, reconciliation and rollback controls passed `4/4`. The next executable task is `P9-KT-001`, queued automatically. The monitor is scheduler-ready; it does not claim a completed 14-day external observation window.
 
 `P9-KT-001` is now DONE via automatic unit gate report `b3b089304acd013b134c7eaa8e499af7020f30c4df0cd4b98e2e54e90846f87b` at revision `f21cb28e7132c2786a74a29a0e016b62812aa385`; docs/link, runbook safety and inventory/config checks passed `3/3`. The next executable task is `P9-BAU-001`, queued automatically. Live provider configuration remains external and fail-closed.
+
+`P9-BAU-001` is now DONE via automatic unit gate report `01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985` at revision `d68b521252d594342f08d36f4ac4b5f03b268289`; cadence, expiry/stale-source, regression and alert/rollback controls passed `4/4`. The next executable task is `P9-CLOSE-001`, queued automatically. Calendar execution remains separately observable and does not alter this unit-gate result.
 
 # Final Release Rule
 
