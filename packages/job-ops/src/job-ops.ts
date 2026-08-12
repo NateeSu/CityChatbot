@@ -370,3 +370,4 @@ export const jobDefinition = (jobType: string): JobDefinition => definitionFor(j
 export * from "./canary-rollout";
 export * from "./rollout-checkpoints";
 export * from "./hypercare-monitor";
+export * from "./operations-handoff";
