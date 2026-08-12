@@ -1017,9 +1017,9 @@
     },
     {
       "taskId": "P9-CLOSE-001",
-      "state": "planned",
+      "state": "ready",
       "requiredCommands": [
-        "pnpm test:unit"
+        "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/release-close.test.ts packages/job-ops/src/continuous-correctness.test.ts packages/job-ops/src/operations-handoff.test.ts packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_release_close -v"
       ],
       "requiredTestIds": [
         "P9-CLOSE-EVIDENCE",
@@ -1029,7 +1029,8 @@
       "onPass": [
         "CLOSE_TASK",
         "CLOSE_PHASE"
-      ]
+      ],
+      "testIdSource": "scripts/test_release_close.py:UNIT_TEST_IDS"
     },
     {
       "taskId": "P9-GATE",

@@ -372,3 +372,4 @@ export * from "./rollout-checkpoints";
 export * from "./hypercare-monitor";
 export * from "./operations-handoff";
 export * from "./continuous-correctness";
+export * from "./release-close";
