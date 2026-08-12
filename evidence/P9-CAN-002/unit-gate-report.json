@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "64914efe5cc8ff815f1a9e22cdab5aa01dc021dca14c9411be0894271c24da3f",
+  "executionManifestSha256": "47297884c9f64b362c7a7fb2f149faba4ee5fcb50ef76c3b68456a735f9875fb",
+  "taskId": "P9-CAN-002",
+  "revision": "6c0a95116477c3c0c2200dcaddff6b0d94d01593",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "3fe14566f0a8827d202f222c089048f082da7652127330eee7fbed97eac3d658",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:36:26Z",
+  "finishedAt": "2026-08-12T23:36:30Z",
+  "requiredTestIds": [
+    "P9-CAN-COHORT",
+    "P9-CAN-RECONCILIATION",
+    "P9-CAN-FAIL-CLOSED",
+    "P9-CAN-SAMPLING"
+  ],
+  "passedTestIds": [
+    "P9-CAN-COHORT",
+    "P9-CAN-RECONCILIATION",
+    "P9-CAN-FAIL-CLOSED",
+    "P9-CAN-SAMPLING"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_canary_rollout -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n·············\n\n Test Files  2 passed (2)\n      Tests  13 passed (13)\n   Start at  06:36:29\n   Duration  568ms (transform 232ms, setup 0ms, import 327ms, tests 23ms, environment 0ms)\n\n",
+      "stderr": "test_automated_sampling_contract (scripts.test_canary_rollout.CanaryRolloutContractTests.test_automated_sampling_contract) ... ok\ntest_cohort_contract_is_hmac_and_tenant_scoped (scripts.test_canary_rollout.CanaryRolloutContractTests.test_cohort_contract_is_hmac_and_tenant_scoped) ... ok\ntest_fail_closed_and_rollback_contract (scripts.test_canary_rollout.CanaryRolloutContractTests.test_fail_closed_and_rollback_contract) ... ok\ntest_reconciliation_contract_detects_cross_tenant_and_duplicate_events (scripts.test_canary_rollout.CanaryRolloutContractTests.test_reconciliation_contract_detects_cross_tenant_and_duplicate_events) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-CAN-003"
+    }
+  ],
+  "reportHash": "06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0"
+}

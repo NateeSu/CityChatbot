@@ -1470,8 +1470,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
 - Direct LINE text chat is NOT ENABLED ณ checkpoint นี้เพราะ production consumer/provider delivery worker ยังไม่ wired; นี่คือ implementation gap ไม่ใช่ approval blocker
 - Next executable action: agent implement durable consumer/provider delivery path, เพิ่ม tests เข้า `AUTO-CHAT-UNIT`, รันจนผ่าน แล้ว Runner ต้องเปิด public Chat/deploy/ปิด `P9-CAN-001` อัตโนมัติ ห้ามรอ locked certification, observation window หรือคำยืนยันจาก user
 
-- [ ] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
-  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
+- [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0; revision=6c0a95116477c3c0c2200dcaddff6b0d94d01593)
   - เจ้าของระบบ: Automation Runner; advisory telemetry: PO, SRE, CO, UAT, QA, SEC
   - Prerequisites: P9-CAN-001
   - Deliverables: pilot cohort; informed support channel; staffed intake/handoff; sample review queue; daily report; rollback authority
@@ -1482,7 +1482,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-CAN-002/index.md)
 
 - [ ] `P9-CAN-003` ขยาย rollout 25% → 50% → 100% ตาม checkpoint
-  - สถานะ: TODO
+  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
   - เจ้าของ: SRE + PO; ผู้ทบทวนหลัง deploy: QA + SEC + CO
   - Prerequisites: P9-CAN-002
   - Deliverables: cohort state machine; metrics hooks; answer sampler; capacity/rollback policy; automatic checkpoints
@@ -2093,6 +2093,8 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 # Current continuation checkpoint (2026-08-13)
 
 `P9-CAN-001` passed its automatic unit gate (5/5 commands) and is DONE. The durable LINE consumer/provider implementation is in `apps/web/app/api/v1/line/worker/`; production remains fail-closed until migration `20260813010000_line_chat_runtime.sql` and scoped worker environment values are applied. The next executable production action is migration/env configuration, followed by queued `P9-CAN-002`.
+
+`P9-CAN-002` is now DONE via automatic unit gate report `06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0` at revision `6c0a95116477c3c0c2200dcaddff6b0d94d01593`; cohort, reconciliation, fail-closed/rollback and sampling controls passed `4/4`. The next executable task is `P9-CAN-003`, queued automatically. Production LINE chat remains fail-closed until the separately evidenced Supabase migration and scoped Vercel environment configuration are applied.
 
 # Final Release Rule
 

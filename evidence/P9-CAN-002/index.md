@@ -1,6 +1,6 @@
 # P9-CAN-002 — Pilot tenant canary controls
 
-Status: **IN_PROGRESS — unit gate ready**  
+Status: **DONE (AUTO_CLOSED_UNIT_GREEN)**  
 Requirement IDs: `SPEC-MVP-001`, `SPEC-AUTO-001`, `RF-03`, `RF-05`, `RF-07`, `RF-09`, `RF-15`, `RF-16`  
 Task: `P9-CAN-002`  
 Owner: `SYSTEM_UNIT_GATE`
@@ -29,13 +29,13 @@ The implementation provides a tenant-scoped, deterministic pilot cohort adapter 
 
 ## Commands and result
 
-The task is prepared for the automatic unit gate. The authoritative runner command is:
+The authoritative automatic unit-gate command was executed successfully:
 
 ```text
 pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_canary_rollout -v
 ```
 
-The focused local verification passed before entering the gate: TypeScript compilation passed and Vitest passed `2` files / `13` tests. The runner must create the immutable report and update this status to `DONE (AUTO_CLOSED_UNIT_GREEN)` only after every required command passes.
+TypeScript compilation passed; Vitest passed `2` files / `13` tests`; Python contract tests passed `4/4`; the unit-gate report passed all required test IDs `4/4` and updated `plan.md` to queue `P9-CAN-003`.
 
 ## Acceptance criteria
 
@@ -57,5 +57,39 @@ Call the idempotent rollback operation for the tenant and feature key, which wri
 
 ## Next executable task
 
-After the automatic unit gate passes, continue with queued `P9-CAN-003` rollout checkpoint controls.
+The next executable task is queued `P9-CAN-003` rollout checkpoint controls.
 
+## Automated unit gate checkpoint — 2026-08-12T23:36:30Z
+
+<!-- unit-gate-runner -->
+Status: **PASSED**  
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
+Revision: `6c0a95116477c3c0c2200dcaddff6b0d94d01593`  
+Report hash: `06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`64914efe5cc8ff815f1a9e22cdab5aa01dc021dca14c9411be0894271c24da3f`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `3fe14566f0a8827d202f222c089048f082da7652127330eee7fbed97eac3d658`
+- Pass/total: `4/4` required test IDs
+- Command pass/total: `1/1`
+
+### Commands
+
+- `pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_canary_rollout -v` → exit `0`
+
+### Acceptance
+
+- Required commands exited with code `0`: **PASS**
+- No skipped/only/focused/flaky unit signal: **PASS**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.
