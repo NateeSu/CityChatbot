@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "5c4b9cbb04e60cf26a45f9ebdefb13e3e8db5ba6b12a075cd9f8f57a685a5bf8",
+  "executionManifestSha256": "5f01502a6134a6a587e8b3c09fdf62d4e627775e05e29eae8b5704de6f9d7d3e",
+  "taskId": "P9-CAN-003",
+  "revision": "4605a6b3e8e3157af3e84c412769853fc75764f0",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "bd7c640fbf55c7e4b930624425777fafec0e899781fd8168a58dfc65f0f1eca5",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:39:52Z",
+  "finishedAt": "2026-08-12T23:39:56Z",
+  "requiredTestIds": [
+    "P9-CAN-ROLLOUT-25",
+    "P9-CAN-ROLLOUT-50",
+    "P9-CAN-ROLLOUT-100",
+    "P9-CAN-ROLLBACK"
+  ],
+  "passedTestIds": [
+    "P9-CAN-ROLLOUT-25",
+    "P9-CAN-ROLLOUT-50",
+    "P9-CAN-ROLLOUT-100",
+    "P9-CAN-ROLLBACK"
+  ],
+  "passCount": 4,
+  "totalCount": 4,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_rollout_checkpoints -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n·················\n\n Test Files  3 passed (3)\n      Tests  17 passed (17)\n   Start at  06:39:55\n   Duration  568ms (transform 282ms, setup 0ms, import 454ms, tests 25ms, environment 0ms)\n\n",
+      "stderr": "test_checkpoint_sequence_is_explicit (scripts.test_rollout_checkpoints.RolloutCheckpointContractTests.test_checkpoint_sequence_is_explicit) ... ok\ntest_rollback_is_idempotent_and_handoff_safe (scripts.test_rollout_checkpoints.RolloutCheckpointContractTests.test_rollback_is_idempotent_and_handoff_safe) ... ok\ntest_tenant_scope_is_checked (scripts.test_rollout_checkpoints.RolloutCheckpointContractTests.test_tenant_scope_is_checked) ... ok\ntest_thresholds_and_fail_closed_are_enforced (scripts.test_rollout_checkpoints.RolloutCheckpointContractTests.test_thresholds_and_fail_closed_are_enforced) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-HC-001"
+    }
+  ],
+  "reportHash": "63bae804aad3789db0b7baf66cbfd6ea5b34572a4f72dae3fdf8b6a7fe74d398"
+}

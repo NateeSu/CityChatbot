@@ -1481,8 +1481,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: L (5) | Trace: RF-01, RF-03..RF-09, RF-13, RF-15, RF-16
   - หลักฐาน: [Evidence](./evidence/P9-CAN-002/index.md)
 
-- [ ] `P9-CAN-003` ขยาย rollout 25% → 50% → 100% ตาม checkpoint
-  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
+- [x] `P9-CAN-003` ขยาย rollout 25% → 50% → 100% ตาม checkpoint
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=63bae804aad3789db0b7baf66cbfd6ea5b34572a4f72dae3fdf8b6a7fe74d398; revision=4605a6b3e8e3157af3e84c412769853fc75764f0)
   - เจ้าของ: SRE + PO; ผู้ทบทวนหลัง deploy: QA + SEC + CO
   - Prerequisites: P9-CAN-002
   - Deliverables: cohort state machine; metrics hooks; answer sampler; capacity/rollback policy; automatic checkpoints
@@ -1493,7 +1493,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-CAN-003/index.md)
 
 - [ ] `P9-HC-001` ทำ 14-day hypercare และ daily certified sampling
-  - สถานะ: TODO
+  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
   - เจ้าของ: SRE + QA + AI + CO
   - Prerequisites: เริ่มเมื่อ P9-CAN-002; ต่อเนื่องหลัง 100%
   - Deliverables: daily health/correctness/cost report; sampled answer review; failed/handoff query triage; corpus gap register; incident/problem log; on-call rota
@@ -2095,6 +2095,8 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 `P9-CAN-001` passed its automatic unit gate (5/5 commands) and is DONE. The durable LINE consumer/provider implementation is in `apps/web/app/api/v1/line/worker/`; production remains fail-closed until migration `20260813010000_line_chat_runtime.sql` and scoped worker environment values are applied. The next executable production action is migration/env configuration, followed by queued `P9-CAN-002`.
 
 `P9-CAN-002` is now DONE via automatic unit gate report `06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0` at revision `6c0a95116477c3c0c2200dcaddff6b0d94d01593`; cohort, reconciliation, fail-closed/rollback and sampling controls passed `4/4`. The next executable task is `P9-CAN-003`, queued automatically. Production LINE chat remains fail-closed until the separately evidenced Supabase migration and scoped Vercel environment configuration are applied.
+
+`P9-CAN-003` is now DONE via automatic unit gate report `63bae804aad3789db0b7baf66cbfd6ea5b34572a4f72dae3fdf8b6a7fe74d398` at revision `4605a6b3e8e3157af3e84c412769853fc75764f0`; rollout checkpoints, thresholds, tenant scope and rollback passed `4/4`. The next executable task is `P9-HC-001`, queued automatically. Production LINE chat remains fail-closed until the separately evidenced Supabase migration and scoped Vercel environment configuration are applied.
 
 # Final Release Rule
 
