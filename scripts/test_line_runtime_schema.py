@@ -16,7 +16,9 @@ class LineRuntimeSchemaTests(unittest.TestCase):
         self.assertIn("create role citychatbot_runtime nologin nosuperuser nocreatedb nocreaterole noinherit", NORMALIZED)
         self.assertIn("revoke all on all tables in schema public from citychatbot_runtime", NORMALIZED)
         self.assertIn("revoke all on all tables in schema public from citychatbot_app", NORMALIZED)
-        self.assertEqual(NORMALIZED.count("grant execute on function private."), 2)
+        self.assertEqual(NORMALIZED.count("grant execute on function private."), 4)
+        self.assertEqual(NORMALIZED.count("to citychatbot_runtime"), 3)
+        self.assertEqual(NORMALIZED.count("to citychatbot_app"), 3)
 
     def test_functions_are_security_definer_with_fixed_search_path(self) -> None:
         self.assertEqual(NORMALIZED.count("security definer"), 2)
