@@ -44,6 +44,16 @@ const logRejectedWebhook = (requestId: string, stage: "configuration" | "resolve
   console.warn("line_webhook_rejected", { requestId, stage });
 };
 
+const logDependencyFailure = (requestId: string, stage: "resolve_error" | "persist_error", error: unknown): void => {
+  const candidate = error as { code?: unknown; name?: unknown };
+  console.warn("line_webhook_dependency_failure", {
+    requestId,
+    stage,
+    errorCode: typeof candidate?.code === "string" ? candidate.code : "unknown",
+    errorName: error instanceof Error && error.name ? error.name : "unknown",
+  });
+};
+
 export const processDurableLineWebhook = async (input: {
   webhookKey: string;
   webhookHashSecret: string;
@@ -67,7 +77,8 @@ export const processDurableLineWebhook = async (input: {
   let channel: DurableLineChannel | undefined;
   try {
     channel = await input.store.resolve(webhookKeyHash);
-  } catch {
+  } catch (error) {
+    logDependencyFailure(input.requestId, "resolve_error", error);
     logRejectedWebhook(input.requestId, "resolve_error");
     return { accepted: false, status: 503, reasonCode: "DEPENDENCY_NOT_READY", requestId: input.requestId };
   }
@@ -98,7 +109,8 @@ export const processDurableLineWebhook = async (input: {
   try {
     const persisted = await input.store.persist({ channel, events, rawBody: input.rawBody, payloadSha256: createHash("sha256").update(input.rawBody).digest("hex"), requestId: input.requestId, correlationId: input.correlationId, receivedAt: now });
     return { accepted: true, status: 200, requestId: input.requestId, correlationId: input.correlationId, ...persisted };
-  } catch {
+  } catch (error) {
+    logDependencyFailure(input.requestId, "persist_error", error);
     logRejectedWebhook(input.requestId, "persist_error");
     return { accepted: false, status: 503, reasonCode: "DEPENDENCY_NOT_READY", requestId: input.requestId };
   }
