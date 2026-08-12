@@ -371,3 +371,4 @@ export * from "./canary-rollout";
 export * from "./rollout-checkpoints";
 export * from "./hypercare-monitor";
 export * from "./operations-handoff";
+export * from "./continuous-correctness";
