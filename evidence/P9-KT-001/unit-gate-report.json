@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "f0c49368839dd1aca731bf49db6db8f92661a8212eaced7fc253c363735db26a",
+  "executionManifestSha256": "1b8de2fc3b0e9acbabde0ab141332bfefcf8764c06bfe19e5ac22dc141e636f1",
+  "taskId": "P9-KT-001",
+  "revision": "f21cb28e7132c2786a74a29a0e016b62812aa385",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "1bbb1b08e2323bd69ab5652f609cabdf89a5685e2dcdcc5f005c46d103342615",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:47:17Z",
+  "finishedAt": "2026-08-12T23:47:21Z",
+  "requiredTestIds": [
+    "P9-KT-DOCS",
+    "P9-KT-RUNBOOK",
+    "P9-KT-INVENTORY"
+  ],
+  "passedTestIds": [
+    "P9-KT-DOCS",
+    "P9-KT-RUNBOOK",
+    "P9-KT-INVENTORY"
+  ],
+  "passCount": 3,
+  "totalCount": 3,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/operations-handoff.test.ts packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_operations_handoff -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n························\n\n Test Files  5 passed (5)\n      Tests  24 passed (24)\n   Start at  06:47:20\n   Duration  609ms (transform 433ms, setup 0ms, import 707ms, tests 50ms, environment 0ms)\n\n",
+      "stderr": "test_docs_and_link_checker (scripts.test_operations_handoff.OperationsHandoffContractTests.test_docs_and_link_checker) ... ok\ntest_inventory_and_config_are_complete_without_secrets (scripts.test_operations_handoff.OperationsHandoffContractTests.test_inventory_and_config_are_complete_without_secrets) ... ok\ntest_runbook_commands_require_safe_rollback (scripts.test_operations_handoff.OperationsHandoffContractTests.test_runbook_commands_require_safe_rollback) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "QUEUE_NEXT_TASK"
+  ],
+  "actions": [
+    {
+      "action": "QUEUE_NEXT_TASK",
+      "status": "QUEUED",
+      "taskId": "P9-BAU-001"
+    }
+  ],
+  "reportHash": "b3b089304acd013b134c7eaa8e499af7020f30c4df0cd4b98e2e54e90846f87b"
+}
