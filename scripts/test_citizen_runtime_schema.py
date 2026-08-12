@@ -9,6 +9,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "supabase" / "migrations" / "20260812150000_citizen_complaint_runtime.sql"
+VERSION_MIGRATION = ROOT / "supabase" / "migrations" / "20260812160000_citizen_public_row_version.sql"
+MESSAGE_ROUTE = ROOT / "apps" / "web" / "app" / "api" / "v1" / "citizen" / "complaints" / "[id]" / "messages" / "route.ts"
+TRACKING_UI = ROOT / "apps" / "web" / "app" / "liff" / "complaints" / "ComplaintTracking.tsx"
+COMPLAINT_TYPES = ROOT / "packages" / "complaints" / "src" / "complaint.ts"
 
 
 def normalized(value: str) -> str:
@@ -20,6 +24,11 @@ class CitizenRuntimeSchemaTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.sql = MIGRATION.read_text(encoding="utf-8")
         cls.normalized = normalized(cls.sql)
+        cls.version_sql = VERSION_MIGRATION.read_text(encoding="utf-8")
+        cls.version_normalized = normalized(cls.version_sql)
+        cls.message_route = MESSAGE_ROUTE.read_text(encoding="utf-8")
+        cls.tracking_ui = TRACKING_UI.read_text(encoding="utf-8")
+        cls.complaint_types = COMPLAINT_TYPES.read_text(encoding="utf-8")
 
     def test_runtime_columns_and_idempotency_indexes_are_present(self) -> None:
         for column in (
@@ -65,6 +74,18 @@ class CitizenRuntimeSchemaTests(unittest.TestCase):
 
     def test_migration_is_additive(self) -> None:
         self.assertNotRegex(self.normalized, r"\bdrop\s+(table|schema|role)\b")
+
+    def test_public_projection_adds_only_the_safe_row_version_token(self) -> None:
+        self.assertIn("alter function private.citizen_public_view(uuid,text,uuid) rename to citizen_public_view_base", self.version_normalized)
+        self.assertIn("base_view || jsonb_build_object('rowversion', version_value)", self.version_normalized)
+        self.assertIn("revoke all on function private.citizen_public_view_base(uuid, text, uuid) from public, anon, authenticated, citychatbot_app", self.version_normalized)
+        self.assertNotRegex(self.version_sql, r"drop\s+(table|schema|role)")
+
+    def test_citizen_message_mutation_uses_the_public_concurrency_token(self) -> None:
+        self.assertIn("Number.isSafeInteger(body.expectedVersion)", self.message_route)
+        self.assertNotIn("const expectedVersion = typeof body.expectedVersion === \"number\" ? body.expectedVersion : 1", self.message_route)
+        self.assertIn("expectedVersion: item.rowVersion", self.tracking_ui)
+        self.assertIn("rowVersion: number", self.complaint_types)
 
 
 if __name__ == "__main__":

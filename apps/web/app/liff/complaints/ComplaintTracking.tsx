@@ -268,8 +268,9 @@ export function AdditionalInfo({ identity, complaintId }: { identity: ComplaintC
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!message.trim()) { setError(new TrackingApiError("VALIDATION_ERROR", 400, "กรุณาระบุข้อมูลเพิ่มเติม")); return; }
+    if (!item) { setError(new TrackingApiError("NOT_FOUND", 404, "ไม่พบข้อมูลเรื่องล่าสุด กรุณาโหลดใหม่")); return; }
     setSubmitting(true); setError(undefined);
-    try { const result = await apiRequest<{ item: ComplaintPublicView }>(`/api/v1/citizen/complaints/${complaintId}/messages`, { method: "POST", headers: { "Idempotency-Key": keyRef.current }, body: JSON.stringify({ ...identity, body: message }) }); setItem(result.item); setSent(true); }
+    try { const result = await apiRequest<{ item: ComplaintPublicView }>(`/api/v1/citizen/complaints/${complaintId}/messages`, { method: "POST", headers: { "Idempotency-Key": keyRef.current }, body: JSON.stringify({ ...identity, body: message, expectedVersion: item.rowVersion }) }); setItem(result.item); setSent(true); }
     catch (requestError) { setError(requestError instanceof TrackingApiError ? requestError : new TrackingApiError("PROCESSING_FAILED", 500, "ไม่สามารถส่งข้อมูลเพิ่มเติมได้")); }
     finally { setSubmitting(false); }
   };

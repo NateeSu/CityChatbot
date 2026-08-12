@@ -183,6 +183,7 @@ export type ComplaintOutboxEvent = {
 export type ComplaintPublicView = {
   id: string;
   complaintNo: string;
+  rowVersion: number;
   title: string;
   categoryId?: string;
   canonicalStatus: ComplaintState;
@@ -1024,6 +1025,7 @@ export class InMemoryComplaintRepository {
     return {
       id: record.id,
       complaintNo: record.complaintNo,
+      rowVersion: record.rowVersion,
       title: record.title,
       ...(record.categoryId ? { categoryId: record.categoryId } : {}),
       canonicalStatus: record.canonicalStatus,

@@ -11,6 +11,42 @@ Status: **IN_PROGRESS** (2026-08-12 — production data plane provisioned; provi
 
 ## Current production baseline
 
+## Latest verified production checkpoint (2026-08-12)
+
+The latest production code includes the citizen complaint runtime and the
+optimistic-concurrency fix for additional information. The public complaint
+projection now exposes only the non-sensitive `rowVersion` token; the
+production message route rejects a missing/unsafe `expectedVersion` instead
+of defaulting to version 1. Additive migration
+`20260812160000_citizen_public_row_version.sql` was applied in the Supabase
+SQL editor in small verified steps: the original projection was renamed to a
+private base function, the wrapper was created, and only `citychatbot_app`
+received execute privilege.
+
+Production boundary verification through the runtime role returned:
+
+- LIFF resolver rows: `1` for the dedicated canary LIFF app, with the app enabled.
+- `citychatbot_app` execute on the row-version projection: `true`.
+- `citychatbot_app` execute on the private base projection: `false`.
+- Direct `SELECT` on `public.complaints`: `false`.
+- The dedicated canary tenant still has citizen AI traffic disabled and no
+  broadcast/auto-reply/group participation is enabled.
+
+The latest Vercel production deployment for the CSP allowlist is READY. A
+browser smoke reached the LINE Login authorization surface after the
+deployment (the previous LIFF client-feature failure was resolved by the
+production CSP allowlist). The available Chrome session is not signed in to
+the dedicated LINE Login channel, so the authenticated LIFF session,
+bootstrap, complaint create and receipt journey cannot yet be certified.
+This is an external-authentication blocker, not a reason to enable public
+traffic or to fabricate a user identity.
+
+Latest local verification after the row-version change: `pnpm test:unit`
+PASS (53 files, 347 tests); `pnpm test:db` PASS (214 tests); `pnpm lint`
+PASS; `pnpm typecheck` and `pnpm typecheck:packages` PASS; `pnpm build` PASS;
+release manifest and release-candidate verification PASS; `pnpm
+security:scan` PASS (`SECRET_SCAN_CLEAN`).
+
 The authenticated Supabase organization now owns a dedicated `CityChatbot Production` project in Singapore. All 25 existing reviewed migrations were applied in timestamp order through the authenticated SQL editor without running `supabase/seed.sql`. A production-gap audit found that the six canonical LINE/LIFF tables required by `fullspec.md` were absent, so additive migration `20260812120000_line_liff_schema.sql` and its static contract test were implemented, tested, and applied as migration 26.
 
 The LINE Developer session is authenticated. The existing channel named `AI ChatBotเทศบาล v.1` currently points to an unrelated n8n webhook, so it was deliberately not overwritten. The owner accepted LINE's data-use terms and a dedicated `CityChatbot Canary` Messaging API channel was enabled on the free plan. Greeting, auto-reply, group participation, broadcasts, webhooks and citizen AI traffic remain disabled. Production runtime persistence is deployed; credential/runtime alignment, locked AI/RAG route, and a verified internal test cohort are still required before external traffic can be enabled.
@@ -32,9 +68,9 @@ The LINE Developer session is authenticated. The existing channel named `AI Chat
 | LINE provider session | PASS - authenticated provider/channel inventory inspected; existing unrelated webhook preserved |
 | Dedicated LINE OA | PASS - `CityChatbot Canary` created without modifying the existing municipal channel |
 | Messaging API channel | PASS - dedicated channel enabled on free plan; token validated against LINE bot-info API; provider-owned destination matched |
-| LINE/LIFF canary audience | IN_PROGRESS - encrypted channel metadata and a fail-closed canary tenant were provisioned; webhook cutover and LIFF app remain inactive |
+| LINE/LIFF canary audience | IN_PROGRESS - dedicated encrypted channel metadata, enabled LIFF app, signed webhook URL, runtime resolver and fail-closed canary tenant are provisioned; authenticated LIFF journey and observation window remain open |
 | Certified AI/RAG canary evaluator | IN_PROGRESS - user-authorized provider secret is available but model/index/evaluator route remains locked and unconfigured |
-| 24-hour observation window | NOT RUN - canary cannot start safely |
+| 24-hour observation window | NOT RUN - real LINE Login session is not yet available and public/AI traffic remains disabled |
 
 No production seed, upload, knowledge-index activation, push, broadcast, webhook cutover, or citizen feature-flag enablement was performed. Secret values were not written to the repository or this evidence.
 
@@ -81,8 +117,8 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 
 - Canary audience and flags: **IN_PROGRESS**.
 - Durable tenant-isolated production data plane: **PASS**.
-- LINE signed production probe: **FAIL-CLOSED** with HTTP 503 `DEPENDENCY_NOT_READY`; no event was inserted and the webhook was not saved or enabled in LINE.
-- LINE/LIFF complaint/chat/handoff/admin/notification probes: **NOT RUN** pending credential/runtime alignment and provider cutover.
+- LINE signed production probe: **PASS** with HTTP 200 for the configured dedicated webhook; a synthetic signed duplicate was persisted idempotently and cleaned up with exact canary identifiers.
+- LINE/LIFF complaint/chat/handoff/admin/notification probes: **NOT RUN** for authenticated user journeys because the available Chrome session is not signed in to the dedicated LINE Login channel; AI/RAG traffic remains locked.
 - No production broadcast and no synthetic data promotion: **PASS**.
 - Rollback readiness for the foundation deployment: **PASS**; see P9-DEP-001.
 - P9-CAN-001 exit criteria: **NOT MET** because the required 24-hour observation cannot begin.
@@ -104,6 +140,6 @@ Before the blocker is cleared, keep all citizen/provider flags disabled. If a fu
 - This task cannot be marked DONE from schema provisioning alone.
 - The existing municipal LINE channel was not reused because its webhook is already assigned to another system; overwriting it would be an unsafe external mutation.
 - LINE legal acceptance is resolved: the owner accepted the agreement and Messaging API is enabled on the dedicated free-plan channel.
-- A signed production verification probe currently returns `DEPENDENCY_NOT_READY`; the route remains fail-closed, the test webhook key observed in provider logs was rotated, and no webhook URL was saved in LINE.
+- The dedicated LINE webhook is saved and verified, but authenticated LIFF user testing is still blocked by the available browser session's LINE Login state. Keep the dedicated app restricted to the canary audience until a real signed-in account completes session/bootstrap and complaint smoke.
 - The Supabase transaction-pooler TLS connection is encrypted but currently uses `rejectUnauthorized: false` because the project UI did not offer a CA download on its free plan. Replace this with CA verification when the certificate is available.
-- Next executable action: align the Vercel credential key with the encrypted LINE envelope, retest the signed probe, save/verify the webhook, then create the LIFF app and run the no-broadcast canary.
+- Next executable action: complete real LINE Login in the existing Chrome session, verify LIFF session/bootstrap, run the no-broadcast complaint smoke with synthetic data, clean it up, and start the approved observation window.

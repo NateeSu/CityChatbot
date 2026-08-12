@@ -20,7 +20,10 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
       const { id } = await context.params;
       const body = await request.json() as { body?: unknown; expectedVersion?: unknown };
       if (typeof body.body !== "string" || !body.body.trim()) return jsonError(400, "VALIDATION_ERROR", "กรุณาระบุข้อมูลเพิ่มเติม");
-      const expectedVersion = typeof body.expectedVersion === "number" ? body.expectedVersion : 1;
+      if (typeof body.expectedVersion !== "number" || !Number.isSafeInteger(body.expectedVersion) || body.expectedVersion < 1) {
+        return jsonError(400, "VALIDATION_ERROR", "ต้องมี expectedVersion ของเรื่องล่าสุด");
+      }
+      const expectedVersion = body.expectedVersion;
       const result = await addCitizenComment({ tenantId: session.tenantId, lineUserId: session.lineUserId, complaintId: id, expectedVersion, body: body.body, idempotencyKey, requestHash: requestHash({ complaintId: id, body: body.body, expectedVersion }) });
       return NextResponse.json(result, { status: result.idempotentReplay ? 200 : 201 });
     } catch (error) {
