@@ -14,8 +14,8 @@ const buildContentSecurityPolicy = (environment: SecurityEnvironment): string =>
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  `script-src 'self' 'unsafe-inline'${environment === "production" ? "" : " 'unsafe-eval'"}`,
-  `connect-src 'self'${environment === "production" ? "" : " ws: wss:"}`,
+  `script-src 'self' 'unsafe-inline'${environment === "production" ? " https://static.line-scdn.net" : " 'unsafe-eval'"}`,
+  `connect-src 'self'${environment === "production" ? " https://api.line.me https://access.line.me https://liff.line.me" : " ws: wss:"}`,
   "worker-src 'self' blob:",
 ].join("; ");
 

@@ -15,7 +15,10 @@ describe("security headers", () => {
     expect(header("local", "X-Frame-Options")).toBe("DENY");
     expect(header("local", "Referrer-Policy")).toBe("strict-origin-when-cross-origin");
     expect(header("local", "Content-Security-Policy")).toContain("script-src 'self' 'unsafe-inline' 'unsafe-eval'");
-    expect(header("production", "Content-Security-Policy")).not.toContain("unsafe-eval");
+    const productionCsp = header("production", "Content-Security-Policy");
+    expect(productionCsp).not.toContain("unsafe-eval");
+    expect(productionCsp).toContain("script-src 'self' 'unsafe-inline' https://static.line-scdn.net");
+    expect(productionCsp).toContain("connect-src 'self' https://api.line.me https://access.line.me https://liff.line.me");
   });
 
   it("enables HSTS only for production", () => {
