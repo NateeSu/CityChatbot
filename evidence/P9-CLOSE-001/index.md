@@ -52,9 +52,8 @@ idempotency key after correcting links or trace rows.
 ## Known limitations
 
 - The generator closes only the records supplied to it. Live Supabase migration,
-  Vercel environment and LINE provider verification are now recorded separately
-  in `evidence/P9-CAN-001`; real inbound/outbound delivery still requires an
-  external LINE user message.
+  Vercel environment, LINE provider verification, and the real inbound/outbound
+  delivery proof are recorded separately in `evidence/P9-CAN-001`.
 - The LINE runtime is enabled in `SAFE_ABSTENTION` mode. Factual answers remain
   fail-closed because production has no certified ACTIVE public knowledge.
 
@@ -68,9 +67,10 @@ and evidenced; the record remains immutable historical runner output.
 
 ## Next executable task
 
-No repository implementation task remains after this unit-gated task. The next
-executable work is one real LINE inbound/outbound delivery proof and subsequent
-certified production knowledge activation. Project completion is not claimed.
+No repository implementation task remains after this unit-gated task. The real
+LINE inbound/outbound delivery proof is complete; the next executable work is
+certified production knowledge activation and remaining P8 hardening. Project
+completion is not claimed.
 
 ## Automated unit gate checkpoint — 2026-08-12T23:52:28Z
 

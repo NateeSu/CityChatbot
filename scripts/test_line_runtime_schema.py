@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SQL = (ROOT / "supabase" / "migrations" / "20260812130000_line_runtime_functions.sql").read_text(encoding="utf-8")
 NORMALIZED = re.sub(r"\s+", " ", SQL).lower()
+CLAIM_FIX_SQL = (ROOT / "supabase" / "migrations" / "20260813020000_fix_line_runtime_claim_qualification.sql").read_text(encoding="utf-8")
+CLAIM_FIX_NORMALIZED = re.sub(r"\s+", " ", CLAIM_FIX_SQL).lower()
 
 
 class LineRuntimeSchemaTests(unittest.TestCase):
@@ -38,6 +40,26 @@ class LineRuntimeSchemaTests(unittest.TestCase):
 
     def test_migration_is_additive(self) -> None:
         self.assertNotRegex(NORMALIZED, r"\bdrop\s+(table|schema|role)\b")
+
+    def test_line_worker_claim_fix_qualifies_tenant_and_row_references(self) -> None:
+        self.assertIn("create or replace function private.claim_line_webhook_job", CLAIM_FIX_NORMALIZED)
+        self.assertIn("create or replace function private.claim_line_message_job", CLAIM_FIX_NORMALIZED)
+        for marker in (
+            "from public.line_webhook_inbox as inbox",
+            "where inbox.tenant_id = selected_job.tenant_id",
+            "update public.jobs as job",
+            "update public.line_webhook_inbox as inbox",
+            "from public.line_messages as line_message",
+            "where line_message.tenant_id = selected_job.tenant_id",
+            "from public.line_channels as channel",
+            "from public.line_users as line_user",
+        ):
+            self.assertIn(marker, CLAIM_FIX_NORMALIZED)
+        for ambiguous in (
+            "where tenant_id = selected_job.tenant_id",
+            "where tenant_id = selected_message.tenant_id",
+        ):
+            self.assertNotIn(ambiguous, CLAIM_FIX_NORMALIZED)
 
 
 if __name__ == "__main__":

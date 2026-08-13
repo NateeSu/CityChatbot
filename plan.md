@@ -242,7 +242,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 | P6 Admin/Content | IN_PROGRESS (MVP Fast-Track) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [TBD](./evidence/P6-GATE/index.md) |
 | P7 KPI/Ops | IN_PROGRESS (MVP Fast-Track) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
 | P8 Post-production Certification | IN_PROGRESS | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-RC-001/index.md) |
-| P9 Immediate Deploy/Hypercare | IN_PROGRESS (P9-DEP-001 and P9-GATE DONE; canary/hypercare follow-up remains) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-DEP-001/index.md) |
+| P9 Immediate Deploy/Hypercare | DONE (MVP production E2E verified; P8 certification remains non-blocking follow-up) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-GATE/index.md) |
 
 ---
 
@@ -1456,7 +1456,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
     - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40; revision=6d8c4ba311e0943ca66b481f6be05170de5c3bd7)
   - เริ่มทำต่อ: 2026-08-12 — Supabase project `CityChatbot Production` (`qiaklpfojbdajpskmjze`, Singapore) healthy; 26 migrations applied without production seed; 88/88 tenant-owned tables have RLS enabled and forced; tenant-to-tenant FK missing tenant pair = 0; dedicated LINE/LIFF tables expose zero anon grants and zero authenticated write grants.
     - ความคืบหน้า: 2026-08-12 — added forward-only fixes `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql`; applied both in the production SQL editor. The first fixes authenticated LIFF identity persistence; the second fixes the complaint list aggregate projection that previously returned `503`. Static contracts, unit/database suites, lint, typechecks, build, and secret scan are green.
-    - ความคืบหน้า LINE/LIFF: owner accepted LINE data-use terms; dedicated free-plan `CityChatbot Canary` Messaging API channel is enabled and provider token/destination validated. The dedicated webhook is saved and signed delivery/duplicate ingestion passed. Authenticated LIFF session returned `201`, bootstrap/list returned `200`, complaint create/detail/replay passed, and the exact synthetic row was constrained to `CANCELLED` for cleanup. On 2026-08-13 the durable runtime migration and server-only environment were applied, webhook ACK was moved ahead of worker processing, Vercel Functions were colocated with Supabase in `sin1`, and LINE Developers Verify passed on deployment `dpl_2bNYaEftcKMh6LxEvuUiv9iDV6Q5` with production HTTP 200 in 75 ms. The tenant chat flag is now enabled in audited `SAFE_ABSTENTION` mode; greeting, auto-reply, group participation, broadcast, and uncertified factual RAG answers remain disabled.
+    - ความคืบหน้า LINE/LIFF: owner accepted LINE data-use terms; dedicated free-plan `CityChatbot Canary` Messaging API channel is enabled and provider token/destination validated. The dedicated webhook is saved and signed delivery/duplicate ingestion passed. Authenticated LIFF session returned `201`, bootstrap/list returned `200`, complaint create/detail/replay passed, and the exact synthetic row was constrained to `CANCELLED` for cleanup. On 2026-08-13 the durable runtime migration and server-only environment were applied, webhook ACK was moved ahead of worker processing, Vercel Functions were colocated with Supabase in `sin1`, and LINE Developers Verify passed. After enabling the previously-disabled `Use webhook` switch and applying `20260813020000_fix_line_runtime_claim_qualification.sql`, a real LINE message completed production E2E on deployment `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`: HTTP 200, worker `OK`, four durable chat rows processed, four provider deliveries `API_ACCEPTED`, zero retry/DLQ, and visible canonical safe-abstention replies. The tenant chat flag remains enabled in audited `SAFE_ABSTENTION` mode; greeting, auto-reply, group participation, broadcast, and uncertified factual RAG answers remain disabled.
   - เจ้าของ: SRE + QA; ผู้ร่วม: UAT, AI
   - Prerequisites: P9-DEP-001
   - Deliverables: canary flags/audience; synthetic and manual journeys; live dashboards; incident log; cleanup
@@ -1468,7 +1468,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
 
 - Latest verified checkpoint (2026-08-12): authenticated production LIFF session/bootstrap and the synthetic complaint journey passed on the dedicated canary tenant. `POST /api/v1/liff/session` returned `201`; citizen bootstrap and complaint list returned `200`; create returned receipt `CITYCHATBOT-2569-000001`; exact idempotency replay returned the same complaint with `idempotent_replay=true`; constrained cleanup transitioned it to `CANCELLED`, `row_version=2`, preserving its audit timeline. Forward-only migrations `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql` are applied. Runtime-role isolation remains enforced: scoped private wrappers are executable and direct complaint-table `SELECT` is denied.
 - Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account in `SAFE_ABSTENTION` mode as of 2026-08-13. Production knowledge has zero ACTIVE public versions/generations/chunks/facts, so factual answering remains fail-closed and must CLARIFY/HANDOFF.
-- Next executable action: send one benign real LINE message to the dedicated bot, then verify encrypted inbound `PROCESSED`, outbound `API_ACCEPTED`, visible canonical CLARIFY/HANDOFF, and zero FAILED/DLQ without recording citizen identity or raw content.
+- Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error.
+- Next executable work is the remaining non-blocking P8 certification and knowledge-index hardening; do not enable factual RAG traffic until those gates pass.
 
 - [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
   - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0; revision=6c0a95116477c3c0c2200dcaddff6b0d94d01593)
@@ -1539,7 +1540,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
 ## P9 Exit Gate — Immediate Go-live Recorded
 
 - [x] `P9-GATE` บันทึกการขึ้น Production หลัง Unit Tests Green
-  - สถานะ: DONE (2026-08-12 — L1 unit suite and real production deployment passed; evidence records fail-closed external dependencies)
+  - สถานะ: DONE (2026-08-13 — L1 unit suite, real production deployment, and dedicated LINE inbound/outbound E2E passed; factual RAG remains fail-closed)
   - Gate เดียว: L1 Unit Test ของ release ผ่านและ production deployment สำเร็จ
   - canary, hypercare, SLO, correctness sampling, ownership, certification และ evidence completeness ทำต่อหลัง go-live แบบ non-blocking
   - หลักฐาน: [Evidence](./evidence/P9-GATE/index.md)
@@ -2104,7 +2105,7 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 
 `P9-BAU-001` is now DONE via automatic unit gate report `01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985` at revision `d68b521252d594342f08d36f4ac4b5f03b268289`; cadence, expiry/stale-source, regression and alert/rollback controls passed `4/4`. The next executable task is `P9-CLOSE-001`, queued automatically. Calendar execution remains separately observable and does not alter this unit-gate result.
 
-`P9-CLOSE-001` is now DONE via automatic unit gate report `42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428` at revision `619dff11f65412be42285edc05ff961999cae932`; release evidence, traceability, archive hashing and idempotency passed `3/3`. The requested `CLOSE_PHASE` action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no external dispatcher. No human approval is pending. The next executable work is external Supabase migration/Vercel environment configuration and production smoke verification; project completion is not claimed.
+`P9-CLOSE-001` is now DONE via automatic unit gate report `42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428` at revision `619dff11f65412be42285edc05ff961999cae932`; release evidence, traceability, archive hashing and idempotency passed `3/3`. The requested `CLOSE_PHASE` action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no external dispatcher. No human approval is pending. External Supabase/Vercel configuration and the dedicated real LINE smoke are now complete; remaining P8 certification and certified knowledge-index work are still tracked, so project completion is not claimed.
 
 # Final Release Rule
 

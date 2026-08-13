@@ -17,9 +17,12 @@ The close-phase action was intentionally recorded as
 repository runner. This does not create a human approval dependency.
 
 The production LINE runtime is **CONFIGURED AND PROVIDER-VERIFIED** for the new
-durable worker. Migration `supabase/migrations/20260813010000_line_chat_runtime.sql`
-is applied, scoped Vercel environment values are configured, the tenant flag is
-enabled in audited `SAFE_ABSTENTION` mode, and LINE Developers `Verify` passes.
+durable worker. Migrations
+`supabase/migrations/20260813010000_line_chat_runtime.sql` and
+`supabase/migrations/20260813020000_fix_line_runtime_claim_qualification.sql`
+are applied, scoped Vercel environment values are configured, the tenant flag
+is enabled in audited `SAFE_ABSTENTION` mode, and LINE Developers `Verify`
+passes.
 The current production knowledge index is empty, so factual answers remain
 fail-closed and must use canonical CLARIFY/HANDOFF behavior.
 
@@ -46,8 +49,27 @@ On the current workspace after `P9-CLOSE-001`, the release pipeline passed:
 
 These results validate the repository release artifact. External Supabase,
 Vercel and LINE provider verification is now separately recorded in
-`evidence/P9-CAN-001`; one real inbound/outbound LINE journey and certified
-ACTIVE production knowledge remain distinct operational evidence.
+`evidence/P9-CAN-001`; the dedicated real inbound/outbound LINE journey also
+passed. Certified ACTIVE production knowledge remains distinct operational
+evidence and is intentionally absent.
+
+### Real LINE production E2E continuation checkpoint (2026-08-13)
+
+- LINE Developers `Use webhook` was found disabled for the dedicated canary
+  channel, enabled, and re-read as enabled. No unrelated channel was changed.
+- Production deployment `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8` (commit `d7122d0`,
+  `sin1`, READY) accepted one new real LINE message with HTTP `200`,
+  `acceptedEventCount=1`, and `duplicateEventCount=0`.
+- The deferred worker completed `OK` in `978 ms`, processing four queued
+  durable test events and accepting four provider deliveries. Retry and
+  dead-letter counters were both zero.
+- The visible LINE Desktop conversation showed the canonical safe-abstention
+  reply. With zero active public knowledge versions/generations/chunks/facts,
+  the response was CLARIFY/HANDOFF behavior and made no factual claim.
+- Redacted one-hour Supabase aggregate: inbox `PROCESSED=4`, outbound
+  `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`.
+- Post-fix Vercel scan: no `line_worker_step_failed` log and no runtime error
+  cluster in the selected five-minute window.
 
 ## Gate traceability
 
@@ -68,10 +90,12 @@ ACTIVE production knowledge remain distinct operational evidence.
 | Production deployment | PASS - Vercel `dpl_Cj5XLhyLZkKFKgUn5B3zY5Eoi1ia`, state `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Production health | PASS - HTTP 200, environment `production` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Fail-closed citizen dependency boundary | PASS - HTTP 503 `CONFIGURATION_UNAVAILABLE` | [P9-DEP-001](../P9-DEP-001/index.md) |
+| Dedicated LINE real inbound/outbound journey | PASS - webhook 200, worker `OK`, visible CLARIFY/HANDOFF, ledger reconciled | [P9-CAN-001](../P9-CAN-001/index.md) |
+| Durable ledger after SQL claim fix | PASS - 4 `PROCESSED`, 4 `API_ACCEPTED`, FAILED/DLQ 0/0 | [P9-CAN-001](../P9-CAN-001/index.md) |
 
 ## Decision
 
-The P9 immediate production gate is **PASS** because the active RC passed the L1 unit gate and a real production deployment completed. Dedicated LINE traffic is enabled in `SAFE_ABSTENTION` mode after migration, environment, RLS/grant, regional deployment and provider verification. Factual RAG answers remain fail-closed while the production knowledge index is empty.
+The P9 immediate production gate is **PASS** because the active RC passed the L1 unit gate, a real production deployment completed, and the dedicated LINE inbound/outbound journey reconciled successfully. Dedicated LINE traffic is enabled in `SAFE_ABSTENTION` mode after migration, environment, RLS/grant, regional deployment and provider verification. Factual RAG answers remain fail-closed while the production knowledge index is empty.
 
 ## Verification commands
 
@@ -84,6 +108,8 @@ The P9 immediate production gate is **PASS** because the active RC passed the L1
 - `Invoke-WebRequest https://city-chatbot-murex.vercel.app/api/health` - HTTP 200 with production JSON.
 - `Invoke-WebRequest https://city-chatbot-murex.vercel.app/api/v1/citizen/services` - HTTP 503 with `CONFIGURATION_UNAVAILABLE`.
 - Vercel runtime errors for the last 30 minutes - none found.
+- Real LINE E2E ledger query, one-hour redacted aggregate - PASS (`PROCESSED=4`, `API_ACCEPTED=4`, FAILED/DLQ `0/0`).
+- Vercel post-fix worker failure query, five minutes - PASS (no `line_worker_step_failed`; no runtime errors).
 
 ## Rollback
 
@@ -96,8 +122,8 @@ rewrite production data.
 ## Open work after the gate
 
 - No repository implementation task remains in the unit-gate manifest after
-  `P9-CLOSE-001`; the next executable proof is one benign real LINE message and
-  its encrypted inbound/outbound/API-accepted reconciliation.
+  `P9-CLOSE-001`; the dedicated real LINE inbound/outbound/API-accepted
+  reconciliation is complete.
 - `P8-GATE` remains blocked by external certification/hardening prerequisites.
 - Supabase project provisioning, LINE developer authentication and tenant data
   wiring are complete. Certified ACTIVE production knowledge is not present.

@@ -1,6 +1,6 @@
 # Evidence - P9-CAN-001
 
-Status: **DONE (AUTO_CLOSED_UNIT_GREEN)** (2026-08-12; report `evidence/P9-CAN-001/unit-gate-report.json`, reportHash `de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40`)
+Status: **DONE (AUTO_CLOSED_UNIT_GREEN + PRODUCTION_E2E_VERIFIED)** (unit gate 2026-08-12; production E2E 2026-08-13; report `evidence/P9-CAN-001/unit-gate-report.json`, reportHash `de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40`)
 
 ## Traceability
 
@@ -11,11 +11,55 @@ Status: **DONE (AUTO_CLOSED_UNIT_GREEN)** (2026-08-12; report `evidence/P9-CAN-0
 
 ## Current production baseline
 
+### Real LINE E2E delivery checkpoint (2026-08-13)
+
+This is the production proof that was previously pending. It used only the
+dedicated `CityChatbot Canary` account and the already-open authenticated LINE
+Desktop session; no unrelated LINE channel, broadcast, or public tenant was
+changed.
+
+- LINE Developers initially showed `Use webhook=false` for this channel. The
+  switch was enabled and re-read as `true`; the configured webhook URL and
+  provider verification remained unchanged.
+- Forward-only migration
+  `supabase/migrations/20260813020000_fix_line_runtime_claim_qualification.sql`
+  was applied in the production Supabase SQL editor. It qualifies tenant and
+  row references in both durable worker claim functions. The SQL editor
+  returned `Success. No rows returned`.
+- The latest READY production deployment is
+  `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`, source commit `d7122d0`, region `sin1`,
+  with alias `https://city-chatbot-murex.vercel.app`.
+- One new benign real LINE text event reached the production webhook with
+  HTTP `200`, `acceptedEventCount=1`, `duplicateEventCount=0`, and a `73 ms`
+  acknowledgment. Its deferred worker completed `OK` in `978 ms`, draining
+  four durable test events with `chatProcessed=4`, `deliveryAccepted=4`,
+  `retryScheduled=0`, and `deadLettered=0`.
+- The LINE Desktop conversation visibly showed the canonical safe-abstention
+  reply. Because the production knowledge index has zero active public
+  versions/generations/chunks/facts, the reply was CLARIFY/HANDOFF behavior;
+  no factual answer was asserted.
+- A redacted one-hour Supabase aggregate returned
+  `inbound_processed=4`, `outbound_api_accepted=4`,
+  `inbox_failed_or_dlq=0`, and `outbound_failed_or_dlq=0`. No raw message,
+  LINE user ID, webhook key, token, or encrypted payload was copied into this
+  evidence.
+- Post-fix Vercel verification found no `line_worker_step_failed` log and no
+  runtime error cluster in the selected five-minute window.
+
+#### E2E rollback and known limitations
+
+Run `supabase/ops/deactivate_line_chat_production.sql`, set
+`LINE_CHAT_RUNTIME_ENABLED=false`, and promote the previous READY deployment
+if the webhook, worker, provider, or ledger smoke regresses. Preserve durable
+rows for reconciliation; do not delete them. Certified ACTIVE knowledge is
+still intentionally absent, so production remains safe-abstention only and
+does not claim certified factual RAG coverage.
+
 ## Production LINE activation checkpoint (2026-08-13)
 
 This checkpoint supersedes every earlier statement in this evidence file that
 the direct LINE runtime, worker environment, or tenant chat flag is disabled.
-It does not supersede the requirement for a real inbound/outbound chat journey.
+The real inbound/outbound chat journey is recorded in the E2E checkpoint above.
 
 - Applied `20260813010000_line_chat_runtime.sql` to the dedicated production
   Supabase project. Verification passed for 12 runtime columns, 9 private
@@ -71,12 +115,12 @@ Then set `LINE_CHAT_RUNTIME_ENABLED=false` and redeploy the previous READY
 deployment. Durable inbox/message rows are retained for reconciliation; no
 rollback step deletes citizen data or rewrites an immutable release artifact.
 
-### Remaining production proof
+### Historical remaining production proof (superseded 2026-08-13)
 
-A real LINE user message and the resulting inbound/outbound/API-accepted ledger
-must still be observed before claiming the direct conversational journey passed.
-Sending that message is an external representational action and is not inferred
-from webhook verification alone.
+The earlier checkpoint correctly withheld the claim until a real LINE message
+and resulting inbound/outbound/API-accepted ledger were observed. That proof is
+now complete and is recorded above without retaining the message or user
+identity.
 
 The following authenticated production checkpoint supersedes the earlier
 "not signed in" note below. It was executed against the dedicated canary
@@ -212,6 +256,7 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 - `apps/web/app/api/v1/line/worker/runtime.ts`
 - `apps/web/src/server/runtime-database.ts`
 - `supabase/migrations/20260813010000_line_chat_runtime.sql`
+- `supabase/migrations/20260813020000_fix_line_runtime_claim_qualification.sql`
 - `packages/line/src/durable-webhook.ts`
 - `packages/line/src/durable-chat.test.ts`
 - `packages/chat/src/durable-line-worker.ts`
@@ -245,6 +290,14 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 | `pnpm exec tsc -p packages/chat/tsconfig.json --noEmit` | PASS |
 | `pnpm exec tsc -p apps/web/tsconfig.json --noEmit` | PASS |
 | `pnpm exec vitest run packages/line/src/durable-chat.test.ts packages/chat/src/durable-line-worker.test.ts --reporter=dot` | PASS - 2 files, 8 tests |
+| `python -m unittest scripts.test_line_runtime_schema scripts.test_line_webhook_api -v` | PASS - 15/15 tests after claim qualification fix |
+| `pnpm --filter @citychatbot/web typecheck` | PASS |
+| `pnpm --filter @citychatbot/web lint` | PASS |
+| `python scripts/secret_scan.py` | PASS - `SECRET_SCAN_CLEAN` |
+| Production Supabase migration `20260813020000_fix_line_runtime_claim_qualification.sql` | PASS - SQL editor returned `Success. No rows returned` |
+| Real LINE webhook/worker E2E on `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8` | PASS - HTTP 200; accepted 1; worker `OK`; 4 chat processed; 4 provider API accepted; retries/DLQ 0 |
+| Redacted production ledger aggregate, one-hour window | PASS - inbound `PROCESSED=4`; outbound `API_ACCEPTED=4`; FAILED/DLQ `0/0` |
+| Vercel post-fix worker-failure/runtime-error scan | PASS - no `line_worker_step_failed`; no runtime errors in selected five-minute window |
 | `python -m unittest scripts.test_line_webhook_api scripts.test_line_runtime_schema scripts.test_line_liff_schema scripts.test_liff_runtime_schema scripts.test_citizen_runtime_schema -v` | PASS - 29 tests |
 | `pnpm lint` | PASS |
 | `pnpm typecheck:packages` | PASS |
@@ -273,16 +326,15 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 - Durable tenant-isolated production data plane: **PASS**.
 - LINE signed production probe: **PASS** with HTTP 200 for the configured dedicated webhook; a synthetic signed duplicate was persisted idempotently and cleaned up with exact canary identifiers.
 - Authenticated LIFF session/bootstrap/complaint list/create/detail/idempotent replay: **PASS** on the dedicated synthetic canary tenant; the synthetic row was then constrained to `CANCELLED` for cleanup.
-- Direct LINE text chat/AI/handoff/provider delivery implementation: **PASS (UNIT GATE)**; production runtime and tenant flag: **ON in SAFE_ABSTENTION mode** after migration/environment/provider verification. Real-message delivery proof remains pending.
+- Direct LINE text chat/AI/handoff/provider delivery implementation: **PASS (UNIT GATE + PRODUCTION E2E)**; production runtime and tenant flag are **ON in SAFE_ABSTENTION mode** after migration/environment/provider verification. Real inbound, canonical safe-abstention reply, encrypted durable processing, and provider `API_ACCEPTED` reconciliation passed.
 - No production broadcast and no synthetic data promotion: **PASS**.
 - Rollback readiness for the foundation deployment: **PASS**; see P9-DEP-001.
 - P9-CAN-001 exit criteria: **MET for the authoritative automatic unit gate**. Production observation is a separate follow-up and has not been claimed as passed.
 
 ## Unblock procedure
 
-1. Send one benign real text from a LINE user to the dedicated CityChatbot account.
-2. Verify one encrypted/idempotent inbound row reaches `PROCESSED`, one outbound row reaches `API_ACCEPTED`, no FAILED/DLQ row appears, and the visible reply is canonical CLARIFY/HANDOFF while production knowledge is empty.
-3. Preserve only redacted counts, reason code, latency, deployment id and correlation evidence; never copy provider tokens, webhook keys, raw payloads or citizen identifiers into evidence.
+1. Keep production knowledge empty until certified ingestion/RAG gates are complete.
+2. Preserve only redacted counts, reason code, latency, deployment id and correlation evidence; never copy provider tokens, webhook keys, raw payloads or citizen identifiers into evidence.
 
 ## Rollback procedure
 
@@ -296,7 +348,7 @@ Before the blocker is cleared, keep all citizen/provider flags disabled. If a fu
 - The dedicated LINE webhook is saved and verified, and authenticated LIFF session/bootstrap/complaint smoke is complete. Keep the dedicated app restricted to the canary audience until the production runtime migration/env probe, locked RAG certification, and observation window are complete.
 - Direct LINE text chat is enabled for the dedicated production tenant in `SAFE_ABSTENTION` mode. Do not claim factual municipal Q&A until certified ACTIVE public knowledge is ingested; with the current empty production index the required behavior is CLARIFY/HANDOFF.
 - The Supabase transaction-pooler TLS connection is encrypted but currently uses `rejectUnauthorized: false` because the project UI did not offer a CA download on its free plan. Replace this with CA verification when the certificate is available.
-- Next executable action: send one benign real LINE message to the dedicated bot and record the encrypted inbound/outbound/provider ledger transition without exposing citizen identity or content.
+- Production LINE E2E proof is complete. Next executable work is the remaining non-blocking P8/P9 certification and knowledge-index hardening; factual RAG traffic stays fail-closed until those gates pass.
 
 ## Automated unit gate checkpoint — 2026-08-12T23:12:36Z
 

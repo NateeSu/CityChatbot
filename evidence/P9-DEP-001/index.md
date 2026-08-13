@@ -4,6 +4,27 @@ Status: **DONE** (2026-08-12)
 
 ## Verified production checkpoint (2026-08-13)
 
+### Superseding production continuation (2026-08-13)
+
+The foundation observations below are historical for `P9-DEP-001`. The current
+production state is recorded in `evidence/P9-CAN-001` and `evidence/P9-GATE`:
+
+- Current READY deployment: `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`, source
+  commit `d7122d0`, region `sin1`, production alias
+  `https://city-chatbot-murex.vercel.app`.
+- Supabase runtime migrations through
+  `20260813020000_fix_line_runtime_claim_qualification.sql` are applied.
+- LINE Developers `Use webhook` is enabled for the dedicated canary channel.
+- Real LINE E2E completed with webhook HTTP 200, deferred worker `OK`, visible
+  canonical safe-abstention reply, inbound `PROCESSED=4`, outbound
+  `API_ACCEPTED=4`, and FAILED/DLQ `0/0` in the redacted one-hour aggregate.
+- Certified ACTIVE production knowledge remains intentionally absent; factual
+  RAG traffic is still fail-closed.
+
+The earlier foundation-only deployment identifiers and fail-closed statements
+remain immutable historical evidence and are superseded for current runtime
+status by the continuation checkpoint above.
+
 The GitHub-linked Vercel production deployment for the application revision
 under verification completed successfully:
 
@@ -27,10 +48,8 @@ security scan, production build, release manifest and release-candidate
 verification. The current RC digest is
 `222cce8ae51acb22db984a506f8b9f703595121f8f0cd6728a7a808b95344bad`.
 
-Direct LINE chat is **not claimed live**. The durable worker migration and its
-scoped production environment values remain unverified in this workspace, so
-the citizen/provider boundary remains safely disabled until external migration,
-configuration and a real LINE delivery smoke test are evidenced.
+Direct LINE chat was not claimed live in this foundation checkpoint; that
+historical limitation is superseded by the production E2E continuation above.
 
 ## Scope and traceability
 
