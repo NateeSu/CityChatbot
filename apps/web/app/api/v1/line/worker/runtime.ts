@@ -497,6 +497,9 @@ const createChatService = async (event: DurableLineInboxEvent, knowledgeCache: M
     lineUserHashSecret: lineUserHashSecret(),
     systemPolicy: runtimeSystemPolicy,
     processor: async (input) => {
+      const scopedChunks = source.listSearchableChunks(input.tenantId);
+      const scopedFacts = source.listSearchableFacts(input.tenantId);
+      const scopedFactTypes = [...new Set(scopedFacts.map((fact) => fact.factType))].sort();
       const retrieval = retrieve(source, input.tenantId, input.userText, {
         audience: "CITIZEN",
         at: new Date().toISOString(),
@@ -507,6 +510,13 @@ const createChatService = async (event: DurableLineInboxEvent, knowledgeCache: M
         requestId: event.requestId ?? null,
         tenantScope: sha256(input.tenantId).slice(0, 12),
         inputLength: input.userText.length,
+        inputShape: {
+          hasFeeMarker: /fee|price|cost|ค่าธรรมเนียม|ค่าใช้จ่าย|ราคา/iu.test(input.userText),
+          normalizedHash: sha256(input.userText.normalize("NFC").toLocaleLowerCase("th-TH")).slice(0, 12),
+        },
+        scopedChunkCount: scopedChunks.length,
+        scopedFactCount: scopedFacts.length,
+        scopedFactTypes,
         queryLanguage: retrieval.plan.language,
         requestedFactTypes: retrieval.plan.requestedFactTypes,
         candidateCount: retrieval.candidates.length,
