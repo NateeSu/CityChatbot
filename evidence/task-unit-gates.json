@@ -1064,6 +1064,13 @@
         "QUEUE_NEXT_TASK"
       ],
       "testIdSource": "scripts/test_authorized_corpus_activation.py:UNIT_TEST_IDS"
+    },
+    {
+      "taskId": "P9-KNOW-002",
+      "state": "planned",
+      "requiredCommands": [],
+      "requiredTestIds": [],
+      "onPass": []
     }
   ]
 }
