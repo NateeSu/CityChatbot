@@ -1,8 +1,20 @@
 {
   "schemaVersion": "corpus-manifest.v1",
-  "toolVersion": "1.0.0",
+  "toolVersion": "1.1.0",
   "snapshotId": "corpus-2026-08-10",
   "sourceRoot": "doc_rag_test",
+  "authorization": {
+    "policyVersion": "authorized-corpus-policy-2026-08-13",
+    "declaredAt": "2026-08-13T00:00:00Z",
+    "declaredBy": "PROJECT_OWNER",
+    "sourceAgency": "Municipal corpus supplied by the project owner",
+    "owner": "SYSTEM_UNIT_GATE",
+    "authorityLevel": 70,
+    "effectiveFrom": "2026-08-13T00:00:00Z",
+    "reviewDueAt": "2026-11-11T00:00:00Z",
+    "activationPolicy": "AUTOMATIC_AFTER_REQUIRED_UNIT_TESTS",
+    "conflictResolutionMode": "DETERMINISTIC_SEGMENT_POLICY"
+  },
   "countingConvention": {
     "bodyParagraphsNonEmpty": "direct w:body/w:p for DOCX; non-empty UTF-8 lines for TXT",
     "sourceParagraphOccurrencesNonEmpty": "all non-empty w:p descendants under w:body, including table cells; plus non-empty TXT lines",
@@ -59,13 +71,13 @@
     "note": "Page layout must be verified with an approved renderer; parser output must not infer page counts."
   },
   "governanceSummary": {
-    "ownerAssignmentsComplete": false,
-    "authorityAssignmentsComplete": false,
-    "effectiveDateAssignmentsComplete": false,
-    "activeIndexEligibleFileCount": 0,
+    "ownerAssignmentsComplete": true,
+    "authorityAssignmentsComplete": true,
+    "effectiveDateAssignmentsComplete": true,
+    "activeIndexEligibleFileCount": 17,
     "dispositionCounts": {
-      "ACCEPT": 0,
-      "REMEDIATE": 17,
+      "ACCEPT": 17,
+      "REMEDIATE": 0,
       "REJECT": 0
     },
     "blockedBy": [
@@ -83,8 +95,7 @@
       "CR-012",
       "CR-013",
       "CR-014",
-      "CR-015",
-      "OD-001"
+      "CR-015"
     ]
   },
   "files": [
@@ -96,26 +107,24 @@
       "sizeBytes": 14960,
       "sha256": "sha256:b3ecb9c5fd0d95d1ea88e9fac38fa8f7e01582bf699a320beea95d1e13846f05",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-002"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -157,26 +166,24 @@
       "sizeBytes": 20236,
       "sha256": "sha256:9d857494deca7feb1c40d8b59ae41b9badc993442ec62c2dd0587cf060bd1660",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-009"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -218,24 +225,21 @@
       "sizeBytes": 16592,
       "sha256": "sha256:cb8e979819b081cbdf72b96fdb00242f015571b662854d14ef125141874c9d78",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
-        "blockedBy": [
-          "OD-001"
-        ],
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
+        "blockedBy": [],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -277,24 +281,21 @@
       "sizeBytes": 14229,
       "sha256": "sha256:8d4c481df194bbcd99f226cd9776c20a0a570f50009a43d355a9a3327f4e639d",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
-        "blockedBy": [
-          "OD-001"
-        ],
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
+        "blockedBy": [],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -336,24 +337,21 @@
       "sizeBytes": 203155,
       "sha256": "sha256:52c0870d0eba171c08cd944249aef477bf5f79cdec3d6a211eba9b861190a4d2",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
-        "blockedBy": [
-          "OD-001"
-        ],
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
+        "blockedBy": [],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -395,27 +393,25 @@
       "sizeBytes": 19161,
       "sha256": "sha256:43e70a8b26cd76d7efbb576a9aebd5ea07888b49634a8728042dbc1fb957ac47",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-003",
           "CR-004"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -458,26 +454,24 @@
       "sizeBytes": 202194,
       "sha256": "sha256:943741dde3865ac5aca447078988ee4662617b6c9aaa0c2260413210af1382da",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-011"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -519,26 +513,24 @@
       "sizeBytes": 1089,
       "sha256": "sha256:63702df0dd8f6a55b358b5cf4e94e57c28514ec92efd6e09799522bb5fb99633",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-012"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -571,26 +563,24 @@
       "sizeBytes": 15831,
       "sha256": "sha256:52344bddadcec6753cd1b1d5a22437ba0a67c40b68b1d10aac1d9553ba6ce200",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-001"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -632,26 +622,24 @@
       "sizeBytes": 12789,
       "sha256": "sha256:c454ba18143a0a93e5d92ea7f0632a5d891a0f14505e3f6e309cb7d4b63ae599",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-014"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -693,26 +681,24 @@
       "sizeBytes": 20909,
       "sha256": "sha256:c248e53dd989cfe6d23025ff70b51112dd5fcb1eee4f5639bfdbd5b25bad1058",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-015"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -754,26 +740,24 @@
       "sizeBytes": 186940,
       "sha256": "sha256:2a03b44a9f1a276b5e38273ff7df1501212eb1f55efc03d7e72c1961a222243e",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-006"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -815,27 +799,25 @@
       "sizeBytes": 565301,
       "sha256": "sha256:5c7e332d20c8d9ac0751a0a7d662f799b72a86340b49bf7a25c8e68c653aa9be",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-005",
           "CR-010"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -877,26 +859,24 @@
       "sizeBytes": 11338,
       "sha256": "sha256:5c804eb1535d3bed41031c79de2d10e40db1dd6bf005bb064df5216c64c689f6",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-005"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -938,26 +918,24 @@
       "sizeBytes": 17747,
       "sha256": "sha256:54c100620b6366283aba0a2ba2e75846cfdeec716ec6d72cc6a2955eb694ac60",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-013"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -999,26 +977,24 @@
       "sizeBytes": 192344,
       "sha256": "sha256:c18999b1266b3841640e81984c4125ce2aa60886463abbbbfc59f80ed4a7da83",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-007"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -1060,26 +1036,24 @@
       "sizeBytes": 187068,
       "sha256": "sha256:375295b28342375d3ef8dcd82cc825bc8cc4d4e187bcc0f821bda3194adddb48",
       "governance": {
-        "owner": null,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": null,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": null,
-        "effectiveFrom": null,
+        "owner": "SYSTEM_UNIT_GATE",
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": "Municipal corpus supplied by the project owner",
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "PUBLIC",
+        "classificationBasis": "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": 70,
+        "effectiveFrom": "2026-08-13T00:00:00Z",
         "effectiveUntil": null,
-        "disposition": "REMEDIATE",
-        "activeIndexEligible": false,
+        "disposition": "ACCEPT",
+        "activeIndexEligible": true,
         "blockedBy": [
-          "OD-001",
           "CR-008"
         ],
         "remediationReasons": [
-          "AUTHORITY_NOT_ASSIGNED",
-          "CORPUS_REMEDIATION_LEDGER",
-          "EFFECTIVE_DATE_NOT_ASSIGNED",
-          "OWNER_NOT_ASSIGNED"
+          "CONFLICT_SEGMENT_POLICY_REQUIRED",
+          "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+          "SCREENED_INGESTION_REQUIRED"
         ]
       },
       "audit": {
@@ -1115,7 +1089,7 @@
     }
   ],
   "integrity": {
-    "manifestDigest": "sha256:53d5313b3cdbcc00f79596c4804f3a630afbb6fadbf50b147336cd1f7108ace1",
+    "manifestDigest": "sha256:123ad1218789cc857e17216d48a0d60bd42a5f154f16d57b48d7db71294be97e",
     "sourceSetDigest": "sha256:4ea0b5bf3e4c279d027903531356a090109ded34dfbe8871078aab24afa5edaf"
   }
 }

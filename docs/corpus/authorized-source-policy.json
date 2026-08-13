@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "authorized-corpus-policy.v1",
+  "policyVersion": "authorized-corpus-policy-2026-08-13",
+  "declaredAt": "2026-08-13T00:00:00Z",
+  "declaredBy": "PROJECT_OWNER",
+  "declaration": "The project owner has declared every file in doc_rag_test to be an authentic municipal source for this tenant. This declaration establishes source authority from the declaration timestamp; it does not manufacture an historical issue date or permit unsafe content into the public index.",
+  "sourceAgency": "Municipal corpus supplied by the project owner",
+  "owner": "SYSTEM_UNIT_GATE",
+  "authorityLevel": 70,
+  "effectiveFrom": "2026-08-13T00:00:00Z",
+  "reviewDueAt": "2026-11-11T00:00:00Z",
+  "classification": "PUBLIC",
+  "activationPolicy": "AUTOMATIC_AFTER_REQUIRED_UNIT_TESTS",
+  "safetyInvariants": [
+    "PII is excluded from PUBLIC chunks and facts even when the source file is authentic.",
+    "Screenshots, templates, evaluation-only content, and undecoded QR destinations are excluded from the PUBLIC index.",
+    "Conflict-ledger rules apply per affected fact or segment; the source file itself remains auditable and versioned.",
+    "Volatile, medical, eligibility, fee-boundary, and person-specific questions remain CLARIFY or HANDOFF unless a separately scoped exact fact is certified."
+  ],
+  "conflictResolutionMode": "DETERMINISTIC_SEGMENT_POLICY",
+  "automaticActor": "SYSTEM_UNIT_GATE"
+}

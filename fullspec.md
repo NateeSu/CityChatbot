@@ -1,8 +1,8 @@
 # fullspec.md — ข้อกำหนดหลักของแพลตฟอร์มบริการประชาชนผ่าน LINE + AI
 
 > สถานะเอกสาร: **Authoritative Product & Engineering Specification**  
-> เวอร์ชัน: 2.2.0 — Autonomous Unit-Gate / Zero Human Approval
-> วันที่ปรับปรุง: 12 สิงหาคม 2569 (2026-08-12)
+> เวอร์ชัน: 2.3.0 — Autonomous Unit-Gate / Authorized Municipal Corpus
+> วันที่ปรับปรุง: 13 สิงหาคม 2569 (2026-08-13)
 > ภาษาเริ่มต้นของระบบ: ไทย (`th-TH`)  
 > ระบบเวลาในฐานข้อมูล: UTC; เวลาแสดงผลเริ่มต้น: `Asia/Bangkok`  
 > เจ้าของเอกสาร: Product Owner + Engineering Lead + Security Lead + Knowledge Governance Lead  
@@ -277,7 +277,9 @@ tenant ที่ runtime config ยังไม่พร้อมให้คง
 
 ## 2.4 Corpus remediation ledger ก่อน ACTIVE
 
-ทุกแถวต่อไปนี้บังคับให้ Bot `CLARIFY/HANDOFF` หรือปิดเฉพาะ fact ที่เกี่ยวข้องจน Document Owner แก้; ไม่บล็อกการขึ้น Production ของระบบทั้งก้อน และ coding agent ห้าม “แก้ความหมายให้เอง”:
+Project Owner ได้ประกาศเมื่อ `2026-08-13` ว่าไฟล์ทุกไฟล์ใน `doc_rag_test` เป็นเอกสารเทศบาลจริงสำหรับ tenant นี้ จึงปิด `OD-001` **เฉพาะ source authority, source agency, owner, และ source acceptance effective date ของ snapshot นี้** ผ่าน `docs/corpus/authorized-source-policy.json` และ `SYSTEM_UNIT_GATE`; ไม่ต้องรอ human approval เพิ่มเติม. การประกาศนี้ไม่สร้าง historical issue date, ไม่เปลี่ยนข้อมูล volatile ให้เป็น current, และไม่อนุญาตให้ PII, screenshot, template contamination, evaluation-only text หรือ URL จาก QR ที่ยังไม่ decode เข้า PUBLIC index.
+
+ทุกแถวต่อไปนี้ยังบังคับให้ Bot `CLARIFY/HANDOFF` หรือปิดเฉพาะ fact/segment ที่เกี่ยวข้องตาม deterministic conflict ledger; ไม่บล็อกการขึ้น Production ของระบบทั้งก้อน และ coding agent ห้าม “แก้ความหมายให้เอง”:
 
 | ID | Source/อาการ | Required disposition |
 |---|---|---|
@@ -2793,7 +2795,7 @@ Prototype เป็น design artifact; production appอยู่ `apps/web` �
 
 Open Decisions ต่อไปนี้ไม่บล็อก platform MVP Production; ให้ปิดเฉพาะ feature ที่ใช้ค่านั้นจริงหรือใช้ safe default/feature flag ที่มี unit test แล้วติดตามคำตอบหลัง deploy:
 
-- `OD-001` หน่วยงานเจ้าของข้อมูลและ authority/effective dateของเอกสารทุกไฟล์
+- `OD-001` **RESOLVED for `doc_rag_test` snapshot `corpus-2026-08-10`**: Project Owner declared all 17 files authentic municipal sources on 2026-08-13; the declaration is versioned in `docs/corpus/authorized-source-policy.json`. New corpus snapshots still require a new machine-recorded source declaration or safe default.
 - `OD-002` retention/legal hold/DSAR policy revision; ใช้ safe default + unit tests โดยไม่รอผู้รับผิดชอบอนุมัติ
 - `OD-003` production hosting/data residency/DPA ของ AI provider
 - `OD-004` malware scanner/parser sandbox runtime

@@ -25,6 +25,12 @@ UNIT_TEST_IDS = (
     "P8-RAG-CITATION",
     "P8-RAG-CONFLICT-STALE",
     "P8-RAG-INJECTION-TENANT",
+    "P9-KNOW-CORPUS-AUTHORITY",
+    "P9-KNOW-DETERMINISTIC-MANIFEST",
+    "P9-KNOW-CONFLICT-SEGMENT-POLICY",
+    "P9-KNOW-OOXML-CONTROL",
+    "P9-KNOW-MACRO-REJECT",
+    "P9-KNOW-SAFETY-REGRESSION",
 )
 
 from audit_corpus import (  # noqa: E402
@@ -55,13 +61,16 @@ class CorpusAuditTests(unittest.TestCase):
         checked_in = json.loads(self.manifest_path.read_text(encoding="utf-8"))
         self.assertEqual(canonical_json(self.manifest), canonical_json(checked_in))
 
-    def test_fail_safe_governance_blocks_every_file_from_active_index(self) -> None:
-        self.assertEqual(self.manifest["governanceSummary"]["activeIndexEligibleFileCount"], 0)
-        self.assertFalse(self.manifest["governanceSummary"]["ownerAssignmentsComplete"])
-        self.assertIn("OD-001", self.manifest["governanceSummary"]["blockedBy"])
-        self.assertTrue(
-            all(not record["governance"]["activeIndexEligible"] for record in self.manifest["files"])
-        )
+    def test_project_owner_authority_makes_intact_files_screened_ingestion_eligible(self) -> None:
+        authorization = self.manifest["authorization"]
+        self.assertEqual(authorization["declaredBy"], "PROJECT_OWNER")
+        self.assertEqual(authorization["owner"], "SYSTEM_UNIT_GATE")
+        self.assertEqual(self.manifest["governanceSummary"]["activeIndexEligibleFileCount"], EXPECTED_BASELINE["fileCount"])
+        self.assertTrue(self.manifest["governanceSummary"]["ownerAssignmentsComplete"])
+        self.assertTrue(self.manifest["governanceSummary"]["authorityAssignmentsComplete"])
+        self.assertTrue(self.manifest["governanceSummary"]["effectiveDateAssignmentsComplete"])
+        self.assertNotIn("OD-001", self.manifest["governanceSummary"]["blockedBy"])
+        self.assertTrue(all(record["governance"]["activeIndexEligible"] for record in self.manifest["files"]))
 
     def test_conflict_ledger_is_attached_to_known_sources(self) -> None:
         by_name = {record["filename"]: record for record in self.manifest["files"]}

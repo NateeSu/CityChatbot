@@ -242,7 +242,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 | P6 Admin/Content | DONE (AUTO_CLOSED_UNIT_GREEN) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [Evidence](./evidence/P6-GATE/index.md) |
 | P7 KPI/Ops | DONE (AUTO_CLOSED_UNIT_GREEN) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
 | P8 Post-production Certification | DONE (AUTO_CLOSED_UNIT_GREEN; safe operational follow-up remains) | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-GATE/index.md) |
-| P9 Immediate Deploy/Hypercare | DONE (PRODUCTION E2E VERIFIED) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-GATE/index.md) |
+| P9 Immediate Deploy/Hypercare | IN_PROGRESS (authorized municipal corpus production activation) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
 
 ---
 
@@ -289,7 +289,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 - [x] `P0-COR-001` สร้าง immutable corpus manifest และผล audit ที่ทำซ้ำได้
   - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=9f29520a08be218d42ac0f3869ae88a0d019bd35988dd3d970b75743661e2789; revision=6d8c4ba311e0943ca66b481f6be05170de5c3bd7)
   - เริ่มทำ: 2026-08-10 โดย Codex Delivery Agent
-  - Post-production note: `OD-001` และ renderer discrepancy ยังไม่ปิด; ไม่บล็อก platform release โดย unit tests ต้องยืนยันว่า unresolved fact ถูกปิดหรือ `HANDOFF`
+  - Post-production note: Project Owner closed `OD-001` for the frozen `doc_rag_test` snapshot on 2026-08-13; `P9-KNOW-001` applies the source declaration through a screened machine-only activation. Renderer discrepancy and unresolved fact segments remain fail-closed or `HANDOFF`.
   - เจ้าของ: AI + CO; ผู้ร่วม: QA, SEC
   - Prerequisites: ได้รับไฟล์ต้นฉบับจากทุกหน่วยงาน
   - Deliverables: SHA-256, filename, MIME, size, source agency, owner, confidentiality, authoritative level, version/effective/expiry dates, parser stats และ ingest eligibility
@@ -1467,9 +1467,9 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-CAN-001/index.md)
 
 - Latest verified checkpoint (2026-08-12): authenticated production LIFF session/bootstrap and the synthetic complaint journey passed on the dedicated canary tenant. `POST /api/v1/liff/session` returned `201`; citizen bootstrap and complaint list returned `200`; create returned receipt `CITYCHATBOT-2569-000001`; exact idempotency replay returned the same complaint with `idempotent_replay=true`; constrained cleanup transitioned it to `CANCELLED`, `row_version=2`, preserving its audit timeline. Forward-only migrations `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql` are applied. Runtime-role isolation remains enforced: scoped private wrappers are executable and direct complaint-table `SELECT` is denied.
-- Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account in `SAFE_ABSTENTION` mode as of 2026-08-13. Production knowledge has zero ACTIVE public versions/generations/chunks/facts, so factual answering remains fail-closed and must CLARIFY/HANDOFF.
+- Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account in `SAFE_ABSTENTION` mode as of 2026-08-13. The Project Owner has now declared `doc_rag_test` to be the authentic municipal corpus; `P9-KNOW-001` is the next executable task and will activate only unit-gated, conflict-screened public text/facts. Until its receipt and production verification are complete, factual answering remains fail-closed.
 - Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error. Runtime verification and the evidence-only follow-up deployment both reached READY and `/api/health` returned HTTP 200.
-- No repository Task remains queued after `P9-GATE`. The next operational work is optional content governance and certified knowledge-index preparation; factual RAG remains disabled while the safe-empty index and conflict quarantine are in force.
+- `P9-KNOW-001` closed its machine-verifiable implementation gate from the Project Owner's source-authority declaration. `P9-KNOW-002` is now the only open task: it applies that reviewed artifact to the production tenant, verifies tenant-scoped active knowledge, and proves a real LINE factual answer with source evidence.
 
 - [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
   - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0; revision=6c0a95116477c3c0c2200dcaddff6b0d94d01593)
@@ -1544,6 +1544,31 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Gate เดียว: L1 Unit Test ของ release ผ่านและ production deployment สำเร็จ
   - canary, hypercare, SLO, correctness sampling, ownership, certification และ evidence completeness ทำต่อหลัง go-live แบบ non-blocking
   - หลักฐาน: [Evidence](./evidence/P9-GATE/index.md)
+
+- [x] `P9-KNOW-001` เปิดใช้งาน corpus เทศบาลที่ Project Owner รับรองแบบ screened/unit-gated
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=bc2aae199770cd06ce6fb81dca60bdd1b1451ebf484e04d21c437e363cd0f868; revision=47c8f2a2338ba1d1e3fea963837016c9bb4da001)
+  - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
+  - Prerequisites: `P9-GATE`; Project Owner declaration for `doc_rag_test`; existing tenant-scoped LINE runtime
+  - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`
+  - Deliverables: versioned source-authority policy; deterministic manifest and CR segment ledger; PII/template/screenshot/QR sanitizer; additive unit-gate activation migration; idempotent tenant-scoped SQL activation artifact; production runbook handed to `P9-KNOW-002`
+  - Required unit tests: authority/manifest determinism, macro rejection, CR-001..CR-015 segment policies, PII/template/QR exclusion, exact symbol preservation, active-fact claim/citation behavior, tenant isolation, idempotent activation SQL contract and rollback command
+  - Exit: required unit tests pass; all 17 source records are auditable; activation artifact is deterministic, tenant-scoped and idempotent; no PII or affected conflict fact can be emitted by the artifact; production mutation and live verification are explicitly owned by `P9-KNOW-002`
+  - Rollback: run the generated tenant-scoped rollback SQL to retire this corpus generation and force the chat source back to safe abstention; redeploy the prior revision if runtime behavior regresses
+  - Effort: XL (8) | Trace: RF-07, RF-08, RF-13, RF-14, RF-15, RF-16, RF-18
+  - หลักฐาน: [Evidence](./evidence/P9-KNOW-001/index.md)
+
+- [ ] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
+  - สถานะ: IN_PROGRESS (machine-operated production activation; ไม่รอ human approval)
+  - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
+  - Prerequisites: `P9-KNOW-001`; deployed runtime; existing canary tenant and LINE webhook
+  - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`
+  - Deliverables: apply additive migration; bind the unit-gate receipt to one tenant-scoped active generation per source; verify active public chunks/facts through private retrieval wrappers; release a deploy containing the grounding guard; send a dedicated LINE grounded-answer probe and persist redacted evidence
+  - Required automated checks: migration transaction succeeds; all 17 source records have `ACTIVE + UNIT_GATED` document/version/index receipts; active public chunks/facts are tenant-scoped; approved exact fact returns `ANSWER` with source evidence; excluded PII/QR/conflict material remains `CLARIFY|HANDOFF`; `/api/health` and the production deployment are READY
+  - Auto-close: Coding Agent records DONE immediately after every required automated production check above passes. No human approver, business sign-off, or waiting window is required.
+  - Exit: production retrieval count and receipt query pass; one actual LINE request receives a grounded factual reply; safe fallback and rollback are proven without exposing source PII
+  - Rollback: run the generated tenant-scoped rollback SQL to retire only this activation receipt, then verify the runtime returns safe abstention; redeploy the prior runtime only if the grounding guard regresses
+  - Effort: M (3) | Trace: RF-07, RF-08, RF-13, RF-14, RF-15, RF-16, RF-18
+  - หลักฐาน: [Evidence](./evidence/P9-KNOW-002/index.md)
 
 ---
 
@@ -2007,7 +2032,7 @@ Viewport baseline ทุก phase: widths `320, 360, 390, 480, 768, 834, 1024, 1
 - `RF-04 IAM` → P1-IAM-001, P1-RLS-001, P2-LIFF-001, P3-CMP-001, P3-CMP-002, P3-CMP-003, P3-ADM-001, P3-ADM-002, P3-SLA-001, P3-NOTIF-001, P3-DUP-001, P3-RES-001, P5-HO-001, P5-HO-002, P5-HO-003, P5-FAQ-001, P5-QA-001, P5-OPS-001, P6-USR-001 → T-SEC-002..004, T-SEC-007, T-ADM-001
 - `RF-05 LINE` → P2-LINE-001, P2-LINE-002, P2-LINE-003, P2-LIFF-001, P2-RM-001, P2-UX-001, P2-QA-001, P3-NOTIF-001, P4-CHAT-002, P5-HO-003, P6-NEWS-001 → T-LINE-001..007
 - `RF-06 COMPLAINT` → P3-CMP-001, P3-CMP-002, P3-CMP-003, P3-ADM-001, P3-ADM-002, P3-SLA-001, P3-NOTIF-001, P3-DUP-001, P3-RES-001, P4-ROUTE-001, P7-KPI-001 → T-CMP-001..010, T-AIRT-001
-- `RF-07 RAG` → P0-COR-001, P0-COR-002, P0-QA-001, P4-DOC-001, P4-PARSE-001, P4-INDEX-001, P4-RET-001, P4-AIGW-001, P4-CHAT-001, P4-AISEC-001, P4-CHAT-002, P4-ROUTE-001, P4-QA-001, P5-FAQ-001, P6-KB-001, P8-RAG-001, P9-BAU-001 → T-RAG-001..012
+- `RF-07 RAG` → P0-COR-001, P0-COR-002, P0-QA-001, P4-DOC-001, P4-PARSE-001, P4-INDEX-001, P4-RET-001, P4-AIGW-001, P4-CHAT-001, P4-AISEC-001, P4-CHAT-002, P4-ROUTE-001, P4-QA-001, P5-FAQ-001, P6-KB-001, P8-RAG-001, P9-BAU-001, P9-KNOW-001, P9-KNOW-002 → T-RAG-001..012
 - `RF-08 AI` → P4-AIGW-001, P4-CHAT-001, P4-ROUTE-001, P7-AIRPT-001, P8-RAG-001 → T-RAG-005..012, T-AIRT-001, T-KPI-002
 - `RF-09 HANDOFF` → P4-CHAT-002, P5-HO-001, P5-HO-002, P5-HO-003, P5-FAQ-001, P5-QA-001, P5-OPS-001 → T-HO-001..003, T-RAG-009
 - `RF-10 ADMIN` → P3-ADM-001, P3-ADM-002, P5-HO-002, P6-ADM-001, P6-KB-001, P6-ORG-001, P6-BOT-001, P6-THEME-001, P6-NEWS-001, P6-SVC-001, P6-USR-001, P6-TEN-001, P6-AUD-001, P6-QA-001, P7-KPI-001, P7-KPI-002, P7-RPT-001, P7-AIRPT-001, P7-SLO-001, P7-JOB-001, P7-DR-001, P7-PERF-001, P7-PRIV-001, P7-IR-001 → T-ADM-001..004
@@ -2015,10 +2040,10 @@ Viewport baseline ทุก phase: widths `320, 360, 390, 480, 768, 834, 1024, 1
 - `RF-12 KPI` → P7-KPI-001, P7-KPI-002, P7-RPT-001, P7-AIRPT-001 → T-KPI-001..002
 - `RF-13 SECURITY` → P0-SEC-001, P1-SEC-001, P1-STO-001, P4-AISEC-001, P7-IR-001, P8-SEC-001 → T-SEC-001..010
 - `RF-14 PRIVACY` → P0-SEC-001, P2-LIFF-001, P3-CMP-001, P3-CMP-002, P3-CMP-003, P7-PRIV-001, P8-SEC-001 → T-PRIV-001, T-SEC-003..006
-- `RF-15 OPS` → P1-OBS-001, P7-KPI-001, P7-KPI-002, P7-RPT-001, P7-AIRPT-001, P7-SLO-001, P7-JOB-001, P7-DR-001, P7-PERF-001, P7-PRIV-001, P7-IR-001, P8-RES-001, P9-DEP-001, P9-CAN-001, P9-CAN-002, P9-CAN-003, P9-HC-001, P9-KT-001, P9-BAU-001, P9-CLOSE-001 → T-OPS-001..004
-- `RF-16 QA` → P0-QA-001, P0-QA-002, P0-GATE, P1-GATE, P2-GATE, P3-GATE, P4-GATE, P5-GATE, P6-GATE, P7-GATE, P8-RC-001, P8-TEST-001, P8-RAG-001, P8-E2E-001, P8-SEC-001, P8-UX-001, P8-RES-001, P8-UAT-001, P8-GO-001, P8-GATE, P9-DEP-001, P9-CAN-001, P9-CAN-002, P9-CAN-003, P9-HC-001, P9-KT-001, P9-BAU-001, P9-CLOSE-001, P9-GATE → test catalog ทั้งหมด
+- `RF-15 OPS` → P1-OBS-001, P7-KPI-001, P7-KPI-002, P7-RPT-001, P7-AIRPT-001, P7-SLO-001, P7-JOB-001, P7-DR-001, P7-PERF-001, P7-PRIV-001, P7-IR-001, P8-RES-001, P9-DEP-001, P9-CAN-001, P9-CAN-002, P9-CAN-003, P9-HC-001, P9-KT-001, P9-BAU-001, P9-CLOSE-001, P9-KNOW-001, P9-KNOW-002 → T-OPS-001..004
+- `RF-16 QA` → P0-QA-001, P0-QA-002, P0-GATE, P1-GATE, P2-GATE, P3-GATE, P4-GATE, P5-GATE, P6-GATE, P7-GATE, P8-RC-001, P8-TEST-001, P8-RAG-001, P8-E2E-001, P8-SEC-001, P8-UX-001, P8-RES-001, P8-UAT-001, P8-GO-001, P8-GATE, P9-DEP-001, P9-CAN-001, P9-CAN-002, P9-CAN-003, P9-HC-001, P9-KT-001, P9-BAU-001, P9-CLOSE-001, P9-GATE, P9-KNOW-001, P9-KNOW-002 → test catalog ทั้งหมด
 - `RF-17 ARCH` → P0-ARCH-001, P1-DB-001, P1-OBS-001, P4-DOC-001, P4-PARSE-001, P4-INDEX-001, P7-JOB-001 → T-OPS-001, contract/integration suites
-- `RF-18 GOV` → P0-GOV-001, P0-GOV-002, P0-COR-001, P0-COR-002, P5-FAQ-001, P8-UAT-001, P8-GO-001, P9-KT-001, P9-BAU-001, P9-CLOSE-001 → evidence/unit-gate/change-control tests
+- `RF-18 GOV` → P0-GOV-001, P0-GOV-002, P0-COR-001, P0-COR-002, P5-FAQ-001, P8-UAT-001, P8-GO-001, P9-KT-001, P9-BAU-001, P9-CLOSE-001, P9-KNOW-001, P9-KNOW-002 → evidence/unit-gate/change-control tests
 
 ---
 
@@ -2072,7 +2097,7 @@ forecast_and_scope_change:
 
 ใช้ ID ชุดเดียวกับ `fullspec.md` §22; ห้ามสร้างรายการ open decision ชุดที่สอง:
 
-- `OD-001` owner/authority/effective date ของเอกสารทุกไฟล์
+- `OD-001` **RESOLVED for frozen `doc_rag_test`** by the Project Owner declaration recorded in `docs/corpus/authorized-source-policy.json`; a new source snapshot requires a new machine-recorded declaration.
 - `OD-002` retention/legal hold/DSAR และ PDPA lawful basis
 - `OD-003` production hosting/data residency/provider DPA/plans/support
 - `OD-004` malware scanner/parser sandbox/OCR execution scope

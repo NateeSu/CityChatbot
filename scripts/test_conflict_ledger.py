@@ -19,6 +19,8 @@ UNIT_TEST_IDS = (
     "P0-COR-CONFLICT-NO-ACTIVE-FACTS",
     "P0-COR-CONFLICT-EXCLUDED-EVALUATION",
     "P0-COR-CONFLICT-DETERMINISTIC",
+    "P9-KNOW-CONFLICT-SEGMENT-POLICY",
+    "P9-KNOW-CONFLICT-NO-UNSAFE-FACT",
 )
 
 
@@ -29,10 +31,10 @@ class ConflictLedgerTests(unittest.TestCase):
         cls.manifest = json.loads(CORPUS_MANIFEST.read_text(encoding="utf-8"))
         cls.ledger = build_ledger(cls.fullspec_text, cls.manifest)
 
-    def test_all_conflicts_are_quarantined(self) -> None:
+    def test_all_conflicts_have_a_deterministic_segment_policy(self) -> None:
         self.assertEqual([entry["conflictId"] for entry in self.ledger["conflicts"]], list(CR_IDS))
-        self.assertTrue(all(entry["state"] == "QUARANTINED" for entry in self.ledger["conflicts"]))
-        self.assertTrue(all(entry["answerPolicy"] == "HANDOFF_ONLY" for entry in self.ledger["conflicts"]))
+        self.assertTrue(all(entry["state"] == "RESOLVED_BY_SEGMENT_POLICY" for entry in self.ledger["conflicts"]))
+        self.assertTrue(all(entry["answerPolicy"] and entry["resolution"] for entry in self.ledger["conflicts"]))
 
     def test_each_conflict_is_attached_to_manifest_source_files(self) -> None:
         for entry in self.ledger["conflicts"]:
@@ -47,7 +49,7 @@ class ConflictLedgerTests(unittest.TestCase):
     def test_template_and_evaluation_only_content_is_not_production_content(self) -> None:
         cr010 = next(entry for entry in self.ledger["conflicts"] if entry["conflictId"] == "CR-010")
         self.assertIn("EXCLUDED", cr010["requiredDisposition"])
-        self.assertEqual(cr010["answerPolicy"], "HANDOFF_ONLY")
+        self.assertEqual(cr010["answerPolicy"], "EXCLUDE_TEMPLATE_PII_SCREENSHOT")
 
     def test_checked_in_ledger_is_deterministic_and_integrity_verified(self) -> None:
         checked_in = json.loads(DEFAULT_OUTPUT.read_text(encoding="utf-8"))

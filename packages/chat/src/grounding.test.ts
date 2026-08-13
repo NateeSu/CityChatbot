@@ -114,6 +114,19 @@ describe("grounded chatbot decisions", () => {
     expect(decideAnswerability(retrieval().plan, retrieval(), { securityRisk: true }).result).toMatchObject({ outcome: "HANDOFF", reasonCode: "SECURITY" });
   });
 
+  it("does not turn a public lexical-only source chunk into an answer", () => {
+    const source = retrieval({
+      matchedFacts: [],
+      coverage: { requestedFactTypes: [], coveredFactTypes: [], missingFactTypes: [], complete: true },
+      evidence: [{ ...retrieval().evidence[0]!, exactFactIds: [] }],
+    });
+    expect(decideAnswerability(source.plan, source).result).toMatchObject({
+      outcome: "HANDOFF",
+      reasonCode: "LOW_EVIDENCE",
+      claims: [],
+    });
+  });
+
   it("locks every expected handoff case to a canonical reason with no claims", () => {
     const cases = [
       { name: "no knowledge", source: retrieval({ outcome: "HANDOFF", reasonCode: "NO_EVIDENCE", evidence: [], matchedFacts: [], coverage: { requestedFactTypes: ["PHONE"], coveredFactTypes: [], missingFactTypes: ["PHONE"], complete: false } }), context: {}, expected: "NO_EVIDENCE" },

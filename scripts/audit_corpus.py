@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Create and verify a deterministic audit manifest for the RAG source corpus.
 
-The manifest is deliberately conservative. It records facts observed from the
-files, but it does not promote a source to the production knowledge index or
-invent a data owner, authority, or effective date. Those values remain blocked
-until OD-001 and the CR-001..CR-015 remediation ledger are resolved by the
-appropriate content owners.
+The project owner has declared ``doc_rag_test`` to be an authentic municipal
+source bundle.  The manifest therefore records a deterministic source-authority
+receipt and makes intact files eligible for the *screened* ingestion pipeline.
+It does not directly publish text: PII, screenshots/templates, undecoded QR
+destinations, and every conflict-ledger segment remain excluded or fail-closed.
 
 This tool uses only the Python standard library so a clean-room audit does not
 depend on a parser package that may silently drop OOXML content controls.
@@ -25,12 +25,14 @@ from typing import Any, Iterable
 from xml.etree import ElementTree as ET
 
 
-TOOL_VERSION = "1.0.0"
+TOOL_VERSION = "1.1.0"
 SCHEMA_VERSION = "corpus-manifest.v1"
 DEFAULT_SNAPSHOT_ID = "corpus-2026-08-10"
 DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 TXT_MIME = "text/plain; charset=utf-8"
 SUPPORTED_SUFFIXES = {".docx": "DOCX", ".txt": "TXT"}
+ROOT = Path(__file__).resolve().parents[1]
+AUTHORIZED_POLICY_PATH = ROOT / "docs" / "corpus" / "authorized-source-policy.json"
 
 W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 W = "{" + W_NS + "}"
@@ -224,33 +226,61 @@ def extract_txt(path: Path) -> dict[str, Any]:
     }
 
 
-def governance_for_file(name: str, *, invalid_reason: str | None = None) -> dict[str, Any]:
+def load_authorized_policy(path: Path = AUTHORIZED_POLICY_PATH) -> dict[str, Any]:
+    """Load the owner declaration without accepting an implicit authority."""
+
+    try:
+        policy = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError(f"AUTHORIZED_SOURCE_POLICY_UNAVAILABLE: {exc}") from exc
+    if not isinstance(policy, dict) or policy.get("schemaVersion") != "authorized-corpus-policy.v1":
+        raise ValueError("AUTHORIZED_SOURCE_POLICY_INVALID")
+    required_text = (
+        "policyVersion", "declaredAt", "declaredBy", "sourceAgency", "owner",
+        "effectiveFrom", "reviewDueAt", "classification", "activationPolicy", "automaticActor",
+    )
+    if any(not isinstance(policy.get(field), str) or not policy[field].strip() for field in required_text):
+        raise ValueError("AUTHORIZED_SOURCE_POLICY_FIELDS_INVALID")
+    if policy["declaredBy"] != "PROJECT_OWNER" or policy["owner"] != "SYSTEM_UNIT_GATE" or policy["automaticActor"] != "SYSTEM_UNIT_GATE":
+        raise ValueError("AUTHORIZED_SOURCE_POLICY_ACTOR_INVALID")
+    authority = policy.get("authorityLevel")
+    if not isinstance(authority, int) or not 0 <= authority <= 100:
+        raise ValueError("AUTHORIZED_SOURCE_POLICY_AUTHORITY_INVALID")
+    return policy
+
+
+def governance_for_file(
+    name: str,
+    policy: dict[str, Any],
+    *,
+    invalid_reason: str | None = None,
+) -> dict[str, Any]:
     conflict_ids = CR_BY_FILENAME.get(name, [])
-    blocked_by = ["OD-001", *conflict_ids]
-    disposition = "REJECT" if invalid_reason else "REMEDIATE"
-    reasons = ["OWNER_NOT_ASSIGNED", "AUTHORITY_NOT_ASSIGNED", "EFFECTIVE_DATE_NOT_ASSIGNED"]
+    disposition = "REJECT" if invalid_reason else "ACCEPT"
+    reasons = ["PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE", "SCREENED_INGESTION_REQUIRED"]
     if conflict_ids:
-        reasons.append("CORPUS_REMEDIATION_LEDGER")
+        reasons.append("CONFLICT_SEGMENT_POLICY_REQUIRED")
     if invalid_reason:
         reasons.append(invalid_reason)
     return {
-        "owner": None,
-        "ownerStatus": "PENDING_OD-001",
-        "sourceAgency": None,
-        "sourceAgencyStatus": "PENDING_OD-001",
-        "classification": "RESTRICTED",
-        "classificationBasis": "FAIL_SAFE_PENDING_OD-001",
-        "authorityLevel": None,
-        "effectiveFrom": None,
+        "owner": policy["owner"],
+        "ownerStatus": "PROJECT_OWNER_DECLARED",
+        "sourceAgency": policy["sourceAgency"],
+        "sourceAgencyStatus": "PROJECT_OWNER_DECLARED",
+        "classification": "RESTRICTED" if invalid_reason else policy["classification"],
+        "classificationBasis": "REJECTED_BY_INTEGRITY_AUDIT" if invalid_reason else "PROJECT_OWNER_DECLARED_MUNICIPAL_SOURCE",
+        "authorityLevel": policy["authorityLevel"],
+        "effectiveFrom": policy["effectiveFrom"],
         "effectiveUntil": None,
         "disposition": disposition,
-        "activeIndexEligible": False,
-        "blockedBy": blocked_by,
+        "activeIndexEligible": invalid_reason is None,
+        "blockedBy": conflict_ids,
         "remediationReasons": sorted(set(reasons)),
     }
 
 
-def audit_file(path: Path, root: Path) -> dict[str, Any]:
+def audit_file(path: Path, root: Path, policy: dict[str, Any] | None = None) -> dict[str, Any]:
+    policy = policy or load_authorized_policy()
     relative = path.relative_to(root).as_posix()
     suffix = path.suffix.lower()
     file_format = SUPPORTED_SUFFIXES.get(suffix, "UNSUPPORTED")
@@ -331,7 +361,7 @@ def audit_file(path: Path, root: Path) -> dict[str, Any]:
         "mimeType": mime_type,
         "sizeBytes": path.stat().st_size,
         "sha256": sha256_file(path),
-        "governance": governance_for_file(path.name, invalid_reason=invalid_reason),
+        "governance": governance_for_file(path.name, policy, invalid_reason=invalid_reason),
         "audit": extracted,
     }
     if display_text and "≤" in display_text and path.name == "กองสาธารณสุข (2).docx":
@@ -346,7 +376,8 @@ def build_manifest(root: Path, snapshot_id: str = DEFAULT_SNAPSHOT_ID) -> dict[s
 
     files = [path for path in root.rglob("*") if path.is_file()]
     files.sort(key=lambda path: path.relative_to(root).as_posix())
-    records = [audit_file(path, root) for path in files]
+    policy = load_authorized_policy()
+    records = [audit_file(path, root, policy) for path in files]
 
     format_counts: dict[str, int] = {}
     for record in records:
@@ -379,6 +410,18 @@ def build_manifest(root: Path, snapshot_id: str = DEFAULT_SNAPSHOT_ID) -> dict[s
         "toolVersion": TOOL_VERSION,
         "snapshotId": snapshot_id,
         "sourceRoot": root.name,
+        "authorization": {
+            "policyVersion": policy["policyVersion"],
+            "declaredAt": policy["declaredAt"],
+            "declaredBy": policy["declaredBy"],
+            "sourceAgency": policy["sourceAgency"],
+            "owner": policy["owner"],
+            "authorityLevel": policy["authorityLevel"],
+            "effectiveFrom": policy["effectiveFrom"],
+            "reviewDueAt": policy["reviewDueAt"],
+            "activationPolicy": policy["activationPolicy"],
+            "conflictResolutionMode": policy["conflictResolutionMode"],
+        },
         "countingConvention": {
             "bodyParagraphsNonEmpty": "direct w:body/w:p for DOCX; non-empty UTF-8 lines for TXT",
             "sourceParagraphOccurrencesNonEmpty": "all non-empty w:p descendants under w:body, including table cells; plus non-empty TXT lines",

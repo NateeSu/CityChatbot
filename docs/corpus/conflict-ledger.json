@@ -1,11 +1,12 @@
 {
   "schemaVersion": "conflict-ledger.v1",
-  "revision": "corpus-conflicts-2026-08-12",
+  "revision": "corpus-conflicts-2026-08-13",
   "systemActor": "SYSTEM_UNIT_GATE",
   "source": "fullspec.md §2.4 + docs/corpus/corpus-manifest.json",
   "summary": {
     "conflictCount": 15,
-    "quarantinedCount": 15,
+    "quarantinedCount": 0,
+    "resolvedBySegmentPolicyCount": 15,
     "activeIndexEligibleCount": 0,
     "inventoriedFactCount": 0,
     "evaluationOnlyOrExcludedCount": 1
@@ -18,8 +19,9 @@
       "sourceFiles": [
         "งานทะเบียนราษฎรและบัตรประจำตัวประชาชน .docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "EXCLUDE_AFFECTED_FAQ",
+      "resolution": "Exclude the mismatched FAQ pair; only separately supported registration facts may be retrieved.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -30,8 +32,9 @@
       "sourceFiles": [
         "กองการศึกษา.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "HANDOFF_AFFECTED_CONTACT",
+      "resolution": "Keep source provenance but do not publish a definitive education-department phone fact.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -42,8 +45,9 @@
       "sourceFiles": [
         "กองสาธารณสุข (2).docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "HANDOFF_FEE_BOUNDARY",
+      "resolution": "Exclude the overlapping 50-square-metre fee rows from exact facts.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -54,8 +58,9 @@
       "sourceFiles": [
         "กองสาธารณสุข (2).docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "PARSER_VERIFIED_SENSITIVE_HANDOFF",
+      "resolution": "Preserve the ≤ comparator in audited text; sensitive eligibility remains handoff-only.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -67,8 +72,9 @@
         "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx",
         "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 2.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "EXCLUDE_UNNORMALIZED_INTEREST",
+      "resolution": "Do not normalize ambiguous pawn interest wording into a percentage or time basis.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -79,8 +85,9 @@
       "sourceFiles": [
         "ศูนย์พัฒนาเด็กเล็ก.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "HANDOFF_AMBIGUOUS_AGE",
+      "resolution": "Exclude the ambiguous 2.8–3.11 age range from eligibility facts.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -91,8 +98,9 @@
       "sourceFiles": [
         "โรงเรียนเทศบาล 1.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "HANDOFF_AFFECTED_SCHOOL_FACTS",
+      "resolution": "Keep unrelated source text; exclude uncertain language, URL, cost, and eligibility claims.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -103,8 +111,9 @@
       "sourceFiles": [
         "โรงเรียนเทศบาล 2.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "HANDOFF_AFFECTED_ELIGIBILITY",
+      "resolution": "Do not publish a definitive child-attendance requirement.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -115,8 +124,9 @@
       "sourceFiles": [
         "กองคลัง.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "HANDOFF_AMBIGUOUS_WASTE_RANGE",
+      "resolution": "Exclude the affected waste-fee range until its units and boundaries are explicit.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -127,8 +137,9 @@
       "sourceFiles": [
         "สถานธนานุบาลเทศบาลเมืองฉะเชิงเทรา 1.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "EXCLUDE_TEMPLATE_PII_SCREENSHOT",
+      "resolution": "Exclude template text, expired deadlines, personal phone numbers, and screenshots.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -139,8 +150,9 @@
       "sourceFiles": [
         "กองสาธารณสุข งานบริการสาธารณสุข.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "EXCLUDE_UNDECODED_QR",
+      "resolution": "Do not index or follow a QR destination without a decoded, allowlisted URL.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -151,8 +163,9 @@
       "sourceFiles": [
         "คณะผู้บริหาร.txt"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "EXCLUDE_PERSONAL_CONTACT",
+      "resolution": "Exclude executive personal mobile numbers and volatile person-specific contact claims.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -163,8 +176,9 @@
       "sourceFiles": [
         "สำนักปลัด.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "MISSING_TIME_FOR_STATIC_SCHEDULE",
+      "resolution": "Static transport schedule text cannot answer a question framed as today/current.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -175,8 +189,9 @@
       "sourceFiles": [
         "ฟิตเนส.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "MEDICAL_HANDOFF",
+      "resolution": "Do not turn fitness guidance into medical advice or a definitive exercise clearance.",
       "activeIndexEligible": false,
       "facts": []
     },
@@ -187,13 +202,14 @@
       "sourceFiles": [
         "ศูนย์การเรียนรู้เมืองฉะเชิงเทรา KCC.docx"
       ],
-      "state": "QUARANTINED",
-      "answerPolicy": "HANDOFF_ONLY",
+      "state": "RESOLVED_BY_SEGMENT_POLICY",
+      "answerPolicy": "SEPARATE_SERVICE_ENTITIES",
+      "resolution": "Model KCC centre hours and meeting-room hours as separate service scopes; do not merge them.",
       "activeIndexEligible": false,
       "facts": []
     }
   ],
   "integrity": {
-    "ledgerSha256": "63cfaaa510087b063c78bf129b41d3b8d9cb3e9103aca60fef5aa2f33423c009"
+    "ledgerSha256": "d5f7da373049f34919875d95a12fbaab0cd9341bc7ab8096456b6ffee8a80a8f"
   }
 }

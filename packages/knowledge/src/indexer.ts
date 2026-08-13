@@ -162,6 +162,14 @@ export type BuildIndexInput = {
   effectiveFrom?: Date | string | null;
   effectiveUntil?: Date | string | null;
   parsed: ParseResult;
+  /**
+   * Optional deterministic policy applied after structure-aware parsing and
+   * before facts are materialised.  It is used by the authorised municipal
+   * corpus activation path to exclude unsafe source segments without altering
+   * the immutable parser result.
+   */
+  screenChunk?: (input: { text: string; locator: SourceLocator; type: IndexChunkType; chunkIndex: number }) => boolean;
+  scopeFact?: (input: { fact: IndexFact; chunk: IndexChunk }) => Partial<Pick<IndexFact, "entityType" | "entityKey" | "entityDisplayName" | "reviewStatus" | "reviewedBy" | "reviewedAt" | "factKey">> | null;
   config?: Partial<IndexConfig>;
   now?: Date | string;
 };
@@ -382,7 +390,7 @@ const buildFacts = (chunks: IndexChunk[], input: BuildIndexInput): IndexFact[] =
         const normalizedValue = normalizeSearchText(value);
         const factKey = `${factPattern.type}|${normalizedValue}|${chunk.sourceHash}|${matchIndex}`;
         const factId = `fact-${hash(`${input.tenantId}|${input.documentVersionId}|${factKey}`).slice(0, 32)}`;
-        facts.push({
+        const baseFact: IndexFact = {
           id: factId,
           tenantId: input.tenantId,
           documentVersionId: input.documentVersionId,
@@ -403,7 +411,10 @@ const buildFacts = (chunks: IndexChunk[], input: BuildIndexInput): IndexFact[] =
           sourceQuote: chunk.displayText.slice(Math.max(0, match.index - 80), Math.min(chunk.displayText.length, match.index + value.length + 80)),
           extractionMethod: "RULE",
           reviewStatus: "PENDING",
-        });
+        };
+        const scoped = input.scopeFact ? input.scopeFact({ fact: baseFact, chunk }) : {};
+        if (scoped === null) continue;
+        facts.push({ ...baseFact, ...scoped });
         matchIndex += 1;
         if (match[0]!.length === 0) factPattern.pattern.lastIndex += 1;
       }
@@ -453,6 +464,7 @@ export const buildIndexGeneration = (input: BuildIndexInput): IndexGeneration =>
   const specToChunkId = new Map<number, string>();
   for (let specIndex = 0; specIndex < specs.length; specIndex += 1) {
     const spec = specs[specIndex]!;
+    if (input.screenChunk && !input.screenChunk({ text: spec.text, locator: cloneLocator(spec.locator), type: spec.type, chunkIndex: specIndex })) continue;
     const sourceHash = spec.sourceHash ?? hash(`${input.documentVersionId}|${JSON.stringify(spec.locator)}|${spec.text}`);
     const id = `chunk-${hash(`${input.tenantId}|${input.documentVersionId}|${hashOfConfig}|${specIndex}|${sourceHash}`).slice(0, 32)}`;
     const parentChunkId = spec.parentSpecIndex === undefined ? undefined : specToChunkId.get(spec.parentSpecIndex);

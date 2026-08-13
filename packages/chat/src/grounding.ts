@@ -226,7 +226,12 @@ export const decideAnswerability = (
     const reason = mapHandoffReason(retrieval.reasonCode);
     return { result: handoff(intentId, reason, contacts, evidence), evidence, reason };
   }
-  if (!retrieval.coverage.complete || evidence.length === 0) return { result: handoff(intentId, "LOW_EVIDENCE", contacts, evidence), evidence, reason: "LOW_EVIDENCE" };
+  // A screened public chunk is useful as retrieval context but must never be
+  // promoted verbatim into a citizen answer.  An ANSWER requires an explicit,
+  // approved structured fact linked to one of the selected evidence chunks.
+  if (!retrieval.coverage.complete || evidence.length === 0 || retrieval.matchedFacts.length === 0) {
+    return { result: handoff(intentId, "LOW_EVIDENCE", contacts, evidence), evidence, reason: "LOW_EVIDENCE" };
+  }
   const result = answer(intentId, retrieval.matchedFacts, evidence, contacts);
   const verification = verifyGroundedTurn({ overallOutcome: "ANSWER", intentResults: [result] }, evidence);
   if (!verification.valid) return { result: handoff(intentId, "SYSTEM_ERROR", contacts), evidence, reason: "SYSTEM_ERROR" };

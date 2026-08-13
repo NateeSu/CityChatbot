@@ -1038,6 +1038,32 @@
       "requiredCommands": [],
       "requiredTestIds": [],
       "onPass": []
+    },
+    {
+      "taskId": "P9-KNOW-001",
+      "state": "completed",
+      "requiredCommands": [
+        "python -m unittest scripts.test_authorized_corpus_activation scripts.test_corpus_audit scripts.test_conflict_ledger -v && python scripts/audit_corpus.py --input doc_rag_test --verify docs/corpus/corpus-manifest.json && python scripts/build_conflict_ledger.py --verify docs/corpus/conflict-ledger.json",
+        "pnpm exec vitest run packages/knowledge/src/authorized-corpus-activation.test.ts packages/chat/src/grounding.test.ts --reporter=dot",
+        "pnpm exec tsc -p packages/knowledge/tsconfig.json --noEmit && pnpm exec tsc -p packages/chat/tsconfig.json --noEmit && python scripts/authorized_corpus_activation.py --verify && python scripts/test_authorized_corpus_activation.py --verify-sql"
+      ],
+      "requiredTestIds": [
+        "P9-KNOW-CORPUS-AUTHORITY",
+        "P9-KNOW-DETERMINISTIC-MANIFEST",
+        "P9-KNOW-CONFLICT-SEGMENT-POLICY",
+        "P9-KNOW-PII-TEMPLATE-QR-EXCLUSION",
+        "P9-KNOW-EXACT-SYMBOL-PRESERVATION",
+        "P9-KNOW-IDEMPOTENT-ACTIVATION-SQL",
+        "P9-KNOW-TENANT-SCOPED-ROLLBACK",
+        "P9-KNOW-GROUNDED-ANSWER",
+        "P9-KNOW-SAFE-HANDOFF"
+      ],
+      "onPass": [
+        "CLOSE_TASK",
+        "DEPLOY_PRODUCTION",
+        "QUEUE_NEXT_TASK"
+      ],
+      "testIdSource": "scripts/test_authorized_corpus_activation.py:UNIT_TEST_IDS"
     }
   ]
 }
