@@ -189,6 +189,10 @@ const isRecord = (value: unknown): value is Record<string, unknown> => Boolean(v
 
 const stringArray = (value: unknown): string[] => Array.isArray(value) && value.every((item) => typeof item === "string") ? [...value] : [];
 
+const databaseId = (value: string): string => value.trim().toLowerCase();
+const databaseEnum = (value: string): string => value.trim().toUpperCase();
+const databaseLanguage = (value: string): IndexChunk["language"] => databaseEnum(value).toLowerCase() as IndexChunk["language"];
+
 const sourceLocator = (value: unknown): IndexChunk["sourceLocator"] => {
   const record = isRecord(value) ? value : {};
   const optionalNumber = (key: string): number | undefined => typeof record[key] === "number" && Number.isSafeInteger(record[key]) ? record[key] as number : undefined;
@@ -208,52 +212,52 @@ const sourceLocator = (value: unknown): IndexChunk["sourceLocator"] => {
 };
 
 const mapChunk = (row: KnowledgeChunkRow): IndexChunk => ({
-  id: row.id,
-  tenantId: row.tenant_id,
-  documentVersionId: row.document_version_id,
-  ...(row.parent_chunk_id ? { parentChunkId: row.parent_chunk_id } : {}),
-  chunkType: row.chunk_type as IndexChunk["chunkType"],
+  id: databaseId(row.id),
+  tenantId: databaseId(row.tenant_id),
+  documentVersionId: databaseId(row.document_version_id),
+  ...(row.parent_chunk_id ? { parentChunkId: databaseId(row.parent_chunk_id) } : {}),
+  chunkType: databaseEnum(row.chunk_type) as IndexChunk["chunkType"],
   chunkIndex: row.chunk_index,
   displayText: row.display_text,
   searchText: row.search_text,
   entityKeys: stringArray(row.entity_keys),
   topicKeys: stringArray(row.topic_keys),
-  factTypes: stringArray(row.fact_types) as IndexChunk["factTypes"],
-  visibility: row.visibility,
-  ownerDepartmentId: row.owner_department_id,
+  factTypes: stringArray(row.fact_types).map(databaseEnum) as IndexChunk["factTypes"],
+  visibility: databaseEnum(row.visibility) as IndexChunk["visibility"],
+  ownerDepartmentId: databaseId(row.owner_department_id),
   authorityLevel: row.authority_level,
   ...(row.valid_from ? { validFrom: row.valid_from } : {}),
   ...(row.valid_until ? { validUntil: row.valid_until } : {}),
   sourceLocator: sourceLocator(row.source_locator_json),
-  sourceHash: row.source_hash,
+  sourceHash: row.source_hash.trim(),
   tokenCount: row.token_count,
-  language: row.language,
-  ...(row.previous_chunk_id ? { previousChunkId: row.previous_chunk_id } : {}),
-  ...(row.next_chunk_id ? { nextChunkId: row.next_chunk_id } : {}),
+  language: databaseLanguage(row.language),
+  ...(row.previous_chunk_id ? { previousChunkId: databaseId(row.previous_chunk_id) } : {}),
+  ...(row.next_chunk_id ? { nextChunkId: databaseId(row.next_chunk_id) } : {}),
   createdAt: row.created_at,
 });
 
 const mapFact = (row: KnowledgeFactRow): IndexFact => ({
-  id: row.id,
-  tenantId: row.tenant_id,
-  documentVersionId: row.document_version_id,
+  id: databaseId(row.id),
+  tenantId: databaseId(row.tenant_id),
+  documentVersionId: databaseId(row.document_version_id),
   entityType: row.entity_type,
-  entityKey: row.entity_key,
+  entityKey: row.entity_key.trim(),
   entityDisplayName: row.entity_display_name,
-  factType: row.fact_type as IndexFact["factType"],
-  factKey: row.fact_key,
+  factType: databaseEnum(row.fact_type) as IndexFact["factType"],
+  factKey: row.fact_key.trim(),
   valueJson: isRecord(row.value_json) ? row.value_json : { value: row.value_json },
-  normalizedValue: row.normalized_value,
+  normalizedValue: row.normalized_value.trim(),
   ...(row.unit ? { unit: row.unit } : {}),
   ...(row.valid_from ? { validFrom: row.valid_from } : {}),
   ...(row.valid_until ? { validUntil: row.valid_until } : {}),
   authorityLevel: row.authority_level,
-  visibility: row.visibility,
-  sourceChunkId: row.source_chunk_id,
+  visibility: databaseEnum(row.visibility) as IndexFact["visibility"],
+  sourceChunkId: databaseId(row.source_chunk_id),
   sourceLocator: sourceLocator(row.source_locator_json),
   sourceQuote: row.source_quote,
-  extractionMethod: row.extraction_method,
-  reviewStatus: row.review_status,
+  extractionMethod: databaseEnum(row.extraction_method) as IndexFact["extractionMethod"],
+  reviewStatus: databaseEnum(row.review_status) as IndexFact["reviewStatus"],
   ...(row.reviewed_at ? { reviewedAt: row.reviewed_at } : {}),
 });
 
