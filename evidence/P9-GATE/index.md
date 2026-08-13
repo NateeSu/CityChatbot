@@ -27,11 +27,12 @@ The current production knowledge index is empty, so factual answers remain
 fail-closed and must use canonical CLARIFY/HANDOFF behavior.
 
 The real LINE journey was verified on deployment
-`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8` from source commit `d7122d0`. The current
-production alias is served by READY deployment
-`dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` from source commit `59c26d2`, region `sin1`.
-Its `/api/health` endpoint returned HTTP `200`; Vercel reported no runtime
-errors in the selected current window.
+`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8` from source commit `d7122d0`. Runtime
+verification then passed on READY deployment
+`dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` from source commit `59c26d2`, region `sin1`,
+with `/api/health` HTTP `200`. The evidence-only follow-up commit `3b7a109`
+produced READY deployment `dpl_Ehs95f992DhdrWgmibfoBHYj8851`; it also returned
+health HTTP `200` and had no runtime errors in its selected window.
 
 ### Latest repository verification
 
@@ -76,15 +77,17 @@ knowledge remains distinct operational evidence and is intentionally absent.
 - Post-fix Vercel scan: no `line_worker_step_failed` log and no runtime error
   cluster in the selected five-minute window.
 
-### Current production deployment checkpoint (2026-08-13)
+### Production deployment checkpoints (2026-08-13)
 
-- Latest READY deployment: `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`, source commit
-  `59c26d2`, region `sin1`, production alias
+- Runtime verification deployment: `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`,
+  source commit `59c26d2`, region `sin1`, production alias
   `https://city-chatbot-murex.vercel.app`.
+- Evidence-only follow-up deployment: `dpl_Ehs95f992DhdrWgmibfoBHYj8851`,
+  source commit `3b7a109`, READY in `sin1`; it contains no runtime-code change.
 - Vercel authenticated fetch of `/api/health`: HTTP `200`, production JSON
   status `ok`.
-- Current deployment runtime-error scan for the selected ten-minute window:
-  no runtime errors and no logs returned.
+- Both verification windows had no runtime errors; the evidence-only
+  deployment had no logs in its selected ten-minute window.
 - The current explicit immutable RC at
   `artifacts/release-candidate-2026-08-13.json` verified successfully.
 
@@ -105,7 +108,7 @@ knowledge remains distinct operational evidence and is intentionally absent.
 | MVP L1 unit suite | PASS - 63 files / 387 tests | `pnpm test:unit` |
 | Release candidate verification | PASS - current explicit immutable RC | `python scripts/release_candidate.py --verify artifacts/release-candidate-2026-08-13.json` |
 | Production build | PASS | Vercel deployment logs and local Next.js build |
-| Production deployment | PASS - Vercel `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`, state `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
+| Production deployment | PASS - runtime verification `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` and evidence-only follow-up `dpl_Ehs95f992DhdrWgmibfoBHYj8851`, both `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Production health | PASS - HTTP 200, environment `production` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Fail-closed citizen dependency boundary | PASS - HTTP 503 `CONFIGURATION_UNAVAILABLE` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Dedicated LINE real inbound/outbound journey | PASS - webhook 200, worker `OK`, visible CLARIFY/HANDOFF, ledger reconciled | [P9-CAN-001](../P9-CAN-001/index.md) |

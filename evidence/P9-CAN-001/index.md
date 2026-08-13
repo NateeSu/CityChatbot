@@ -48,20 +48,22 @@ changed.
 
 ### Current production deployment verification (2026-08-13)
 
-After the real LINE journey, the forward-only migration and evidence updates
-were pushed as commit `59c26d2`. Vercel created the latest READY production
-deployment `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` in `sin1` and assigned the
-production alias `https://city-chatbot-murex.vercel.app`. The real message
-journey above remains attributed to the preceding runtime deployment
-`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`; the current deployment contains the same
-runtime fix plus the forward-only migration/documentation checkpoint.
+After the real LINE journey, the forward-only migration and runtime evidence
+were pushed as commit `59c26d2`. Its READY runtime verification deployment was
+`dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` in `sin1`, with production alias
+`https://city-chatbot-murex.vercel.app`. The real message journey above remains
+attributed to the preceding runtime deployment
+`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`. The later evidence-only commit `3b7a109`
+was also deployed by Vercel as READY deployment
+`dpl_Ehs95f992DhdrWgmibfoBHYj8851`; it contains no runtime-code change.
 
 - Vercel authenticated fetch of `/api/health`: HTTP `200`,
   `{"status":"ok","service":"web","environment":"production"}`.
-- Current deployment inspection: `READY`, source commit `59c26d2`, region
-  `sin1`, alias assignment successful.
-- Current deployment runtime-error scan for the selected ten-minute window:
-  no runtime errors and no logs returned.
+- Runtime verification deployment inspection: `READY`, source commit `59c26d2`,
+  region `sin1`, alias assignment successful.
+- Evidence-only deployment inspection: `READY`, source commit `3b7a109`, region
+  `sin1`; health returned HTTP `200`, and its selected ten-minute
+  runtime-error scan had no runtime errors and no logs.
 - Current release artifacts: `pnpm release:manifest` and
   `pnpm release:verify` passed; an explicit immutable RC written to
   `artifacts/release-candidate-2026-08-13.json` was verified successfully

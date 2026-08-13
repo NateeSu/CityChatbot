@@ -13,10 +13,13 @@ production state is recorded in `evidence/P9-CAN-001` and `evidence/P9-GATE`:
   `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`, source commit `d7122d0`, region `sin1`,
   production alias
   `https://city-chatbot-murex.vercel.app`.
-- The current production alias is now served by READY deployment
+- Runtime verification was completed on READY deployment
   `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`, source commit `59c26d2`, region `sin1`.
-  Its `/api/health` endpoint returned HTTP `200` with production JSON and its
-  selected ten-minute runtime-error scan was empty.
+  Its `/api/health` endpoint returned HTTP `200` with production JSON.
+- The evidence-only follow-up commit `3b7a109` produced READY deployment
+  `dpl_Ehs95f992DhdrWgmibfoBHYj8851` in `sin1`; its health check returned HTTP
+  `200` and its selected ten-minute runtime-error scan was empty. This
+  follow-up contains no runtime-code change.
 - Supabase runtime migrations through
   `20260813020000_fix_line_runtime_claim_qualification.sql` are applied.
 - LINE Developers `Use webhook` is enabled for the dedicated canary channel.
