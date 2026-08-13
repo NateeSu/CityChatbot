@@ -34,3 +34,40 @@ Restore the previous `plan.md`, remove the generated queue/event/report artifact
 ## Known limitations
 
 This runner closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate post-production evidence; missing external configuration is fail-closed and never converted into a false unit pass.
+
+## Automated unit gate checkpoint — 2026-08-13T08:56:20Z
+
+<!-- unit-gate-runner -->
+Status: **PASSED**
+Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`
+Revision: `d6d1e0fa9b9b4287720fe895b8f3d37c6b3bd974`
+Report hash: `192fad4c546b38766056a581cbe2f863cd85e50ed63c15f97ec698db1f796cc4`
+
+### Unit-gate result
+
+- Manifest: `task-unit-gates.v1` (`e8c04170166d11061da105f935b8f17b267ad8767b2e778424a85df0fbed85b8`)
+- Actor: `SYSTEM_UNIT_GATE`
+- Idempotency key: `0c1657b01511c89cdcb8b261664f53b3e831629c5074abbfa0585f1aa713aabc`
+- Pass/total: `9/9` required test IDs
+- Command pass/total: `3/3`
+
+### Commands
+
+- `python -m unittest scripts.test_authorized_corpus_activation scripts.test_corpus_audit scripts.test_conflict_ledger -v && python scripts/audit_corpus.py --input doc_rag_test --verify docs/corpus/corpus-manifest.json && python scripts/build_conflict_ledger.py --verify docs/corpus/conflict-ledger.json` → exit `0`
+- `pnpm exec vitest run packages/knowledge/src/authorized-corpus-activation.test.ts packages/chat/src/grounding.test.ts --reporter=dot` → exit `0`
+- `pnpm exec tsc -p packages/knowledge/tsconfig.json --noEmit && pnpm exec tsc -p packages/chat/tsconfig.json --noEmit && python scripts/authorized_corpus_activation.py --verify && python scripts/test_authorized_corpus_activation.py --verify-sql` → exit `0`
+
+### Acceptance
+
+- Required commands exited with code `0`: **PASS**
+- No skipped/only/focused/flaky unit signal: **PASS**
+- No human approval state or action was used: **PASS**
+- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
+
+### Rollback note
+
+Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
+
+### Known limitation
+
+This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.

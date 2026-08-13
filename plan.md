@@ -1546,7 +1546,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-GATE/index.md)
 
 - [x] `P9-KNOW-001` เปิดใช้งาน corpus เทศบาลที่ Project Owner รับรองแบบ screened/unit-gated
-  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=bc2aae199770cd06ce6fb81dca60bdd1b1451ebf484e04d21c437e363cd0f868; revision=47c8f2a2338ba1d1e3fea963837016c9bb4da001)
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=192fad4c546b38766056a581cbe2f863cd85e50ed63c15f97ec698db1f796cc4; revision=d6d1e0fa9b9b4287720fe895b8f3d37c6b3bd974)
   - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
   - Prerequisites: `P9-GATE`; Project Owner declaration for `doc_rag_test`; existing tenant-scoped LINE runtime
   - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`
@@ -1558,7 +1558,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-KNOW-001/index.md)
 
 - [ ] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
-  - สถานะ: IN_PROGRESS (machine-operated production activation; ไม่รอ human approval)
+  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
   - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
   - Prerequisites: `P9-KNOW-001`; deployed runtime; existing canary tenant and LINE webhook
   - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`
