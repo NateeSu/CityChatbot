@@ -52,6 +52,12 @@ class LineWebhookApiContractTests(unittest.TestCase):
         for marker in ("https://api.line.me/v2/bot/message/", "providerForClaim", "createDurableLineIdempotencyKey"):
             self.assertIn(marker, WORKER_RUNTIME)
 
+    def test_webhook_ack_is_not_blocked_by_worker_processing(self) -> None:
+        self.assertIn('import { after, NextResponse } from "next/server"', ROUTE)
+        self.assertIn("after(async () =>", ROUTE)
+        self.assertIn('workerStatus = "DEFERRED"', ROUTE)
+        self.assertNotIn("workerStatus = (await runLineWorkerBatch", ROUTE)
+
     def test_grounding_and_fail_closed_boundaries_are_explicit(self) -> None:
         for marker in ("ai_chat_enabled", "PUBLIC", "ACTIVE", "effective", "retrieve", "decideAnswerability", "DEPENDENCY_NOT_READY"):
             self.assertIn(marker.lower(), (WORKER_RUNTIME + RUNTIME_SQL + WORKER_ROUTE).lower())

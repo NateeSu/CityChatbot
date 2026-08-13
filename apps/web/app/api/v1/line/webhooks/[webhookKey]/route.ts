@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { processDurableLineWebhook } from "@citychatbot/line/durable-webhook";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 import { PostgresLineWebhookStore } from "./store";
 import { runLineWorkerBatch } from "../../worker/runtime";
@@ -24,11 +24,14 @@ export async function POST(request: Request, { params }: { params: Promise<{ web
   if (!result.accepted) return NextResponse.json({ accepted: false, reasonCode: result.reasonCode, requestId: result.requestId }, { status: result.status });
   let workerStatus: "NOT_RUN" | "OK" | "PARTIAL" | "DEFERRED" = "NOT_RUN";
   if (process.env.LINE_CHAT_RUNTIME_ENABLED === "true") {
-    try {
-      workerStatus = (await runLineWorkerBatch({ maxJobs: 5 })).status === "OK" ? "OK" : "PARTIAL";
-    } catch {
-      workerStatus = "DEFERRED";
-    }
+    workerStatus = "DEFERRED";
+    after(async () => {
+      try {
+        await runLineWorkerBatch({ maxJobs: 5 });
+      } catch {
+        // The durable inbox keeps the job retryable; LINE must still receive its ACK.
+      }
+    });
   }
   return NextResponse.json({ accepted: true, requestId: result.requestId, correlationId: result.correlationId, acceptedEventIds: result.acceptedEventIds, duplicateEventIds: result.duplicateEventIds, workerStatus }, { status: 200 });
 }
