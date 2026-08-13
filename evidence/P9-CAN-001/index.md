@@ -46,6 +46,27 @@ changed.
 - Post-fix Vercel verification found no `line_worker_step_failed` log and no
   runtime error cluster in the selected five-minute window.
 
+### Current production deployment verification (2026-08-13)
+
+After the real LINE journey, the forward-only migration and evidence updates
+were pushed as commit `59c26d2`. Vercel created the latest READY production
+deployment `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` in `sin1` and assigned the
+production alias `https://city-chatbot-murex.vercel.app`. The real message
+journey above remains attributed to the preceding runtime deployment
+`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`; the current deployment contains the same
+runtime fix plus the forward-only migration/documentation checkpoint.
+
+- Vercel authenticated fetch of `/api/health`: HTTP `200`,
+  `{"status":"ok","service":"web","environment":"production"}`.
+- Current deployment inspection: `READY`, source commit `59c26d2`, region
+  `sin1`, alias assignment successful.
+- Current deployment runtime-error scan for the selected ten-minute window:
+  no runtime errors and no logs returned.
+- Current release artifacts: `pnpm release:manifest` and
+  `pnpm release:verify` passed; an explicit immutable RC written to
+  `artifacts/release-candidate-2026-08-13.json` was verified successfully
+  (digest `92588376171acd609deef9440488da2df4d8675e8c4c51a0ff60c39bfe9ec6f2`).
+
 #### E2E rollback and known limitations
 
 Run `supabase/ops/deactivate_line_chat_production.sql`, set
@@ -290,7 +311,7 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 | `pnpm exec tsc -p packages/chat/tsconfig.json --noEmit` | PASS |
 | `pnpm exec tsc -p apps/web/tsconfig.json --noEmit` | PASS |
 | `pnpm exec vitest run packages/line/src/durable-chat.test.ts packages/chat/src/durable-line-worker.test.ts --reporter=dot` | PASS - 2 files, 8 tests |
-| `python -m unittest scripts.test_line_runtime_schema scripts.test_line_webhook_api -v` | PASS - 15/15 tests after claim qualification fix |
+| `python -m unittest scripts.test_line_runtime_schema scripts.test_line_webhook_api -v` | PASS - 16/16 tests after claim qualification fix |
 | `pnpm --filter @citychatbot/web typecheck` | PASS |
 | `pnpm --filter @citychatbot/web lint` | PASS |
 | `python scripts/secret_scan.py` | PASS - `SECRET_SCAN_CLEAN` |
@@ -310,6 +331,9 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 | `pnpm lint` | PASS |
 | `pnpm typecheck`; `pnpm typecheck:packages` | PASS |
 | `pnpm build` | PASS - Next production build compiled the canonical LIFF, citizen, and LINE webhook routes |
+| Latest `pnpm test:unit` after the production fix | PASS - 63 files, 387 tests |
+| Latest `pnpm test:db` after refreshing the post-build release manifest | PASS - 333 Python contract/database tests |
+| Latest explicit release-manifest and RC verification | PASS - manifest digest `6cd8526f583b48518a13855fb74b5e6d32304d1d54fbfb18e970672fcf8e0cce`; current RC digest recorded above |
 | Vercel production runtime error/warning scan, last 2 hours | PASS - no runtime errors or warning/error logs returned |
 | Supabase migration execution, files `20260810000000` through `20260811230000` | PASS - each returned `Success. No rows returned` |
 | Supabase migration execution, `20260812120000_line_liff_schema.sql` | PASS - `Success. No rows returned` |
@@ -329,7 +353,7 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 - Direct LINE text chat/AI/handoff/provider delivery implementation: **PASS (UNIT GATE + PRODUCTION E2E)**; production runtime and tenant flag are **ON in SAFE_ABSTENTION mode** after migration/environment/provider verification. Real inbound, canonical safe-abstention reply, encrypted durable processing, and provider `API_ACCEPTED` reconciliation passed.
 - No production broadcast and no synthetic data promotion: **PASS**.
 - Rollback readiness for the foundation deployment: **PASS**; see P9-DEP-001.
-- P9-CAN-001 exit criteria: **MET for the authoritative automatic unit gate**. Production observation is a separate follow-up and has not been claimed as passed.
+- P9-CAN-001 exit criteria: **MET for the authoritative automatic unit gate and the dedicated real production LINE journey**. Extended observation and certified knowledge activation remain follow-up hardening.
 
 ## Unblock procedure
 
@@ -338,14 +362,14 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 
 ## Rollback procedure
 
-Before the blocker is cleared, keep all citizen/provider flags disabled. If a future canary produces an incident, turn flags off immediately, restore the previous Rich Menu/webhook/model/index/configuration, reconcile test-tenant data and preserve forensic logs. Do not roll back or rewrite the immutable RC.
+Keep factual RAG and broadcast features disabled while certification is incomplete. If a future canary produces an incident, turn the affected flags off immediately, restore the previous Rich Menu/webhook/model/index/configuration, reconcile test-tenant data and preserve forensic logs. Do not roll back or rewrite the immutable RC.
 
 ## Known limitations / next executable action
 
 - The task is closed by the authoritative automatic unit-gate rule; schema provisioning and production traffic remain separately evidenced.
 - The existing municipal LINE channel was not reused because its webhook is already assigned to another system; overwriting it would be an unsafe external mutation.
 - LINE legal acceptance is resolved: the owner accepted the agreement and Messaging API is enabled on the dedicated free-plan channel.
-- The dedicated LINE webhook is saved and verified, and authenticated LIFF session/bootstrap/complaint smoke is complete. Keep the dedicated app restricted to the canary audience until the production runtime migration/env probe, locked RAG certification, and observation window are complete.
+- The dedicated LINE webhook is saved and verified, and authenticated LIFF session/bootstrap/complaint smoke is complete. Keep the dedicated app restricted to the canary audience until locked RAG certification and the observation window are complete.
 - Direct LINE text chat is enabled for the dedicated production tenant in `SAFE_ABSTENTION` mode. Do not claim factual municipal Q&A until certified ACTIVE public knowledge is ingested; with the current empty production index the required behavior is CLARIFY/HANDOFF.
 - The Supabase transaction-pooler TLS connection is encrypted but currently uses `rejectUnauthorized: false` because the project UI did not offer a CA download on its free plan. Replace this with CA verification when the certificate is available.
 - Production LINE E2E proof is complete. Next executable work is the remaining non-blocking P8/P9 certification and knowledge-index hardening; factual RAG traffic stays fail-closed until those gates pass.

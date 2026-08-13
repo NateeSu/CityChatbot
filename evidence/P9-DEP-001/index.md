@@ -9,9 +9,14 @@ Status: **DONE** (2026-08-12)
 The foundation observations below are historical for `P9-DEP-001`. The current
 production state is recorded in `evidence/P9-CAN-001` and `evidence/P9-GATE`:
 
-- Current READY deployment: `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`, source
-  commit `d7122d0`, region `sin1`, production alias
+- Real LINE E2E was verified on READY deployment
+  `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`, source commit `d7122d0`, region `sin1`,
+  production alias
   `https://city-chatbot-murex.vercel.app`.
+- The current production alias is now served by READY deployment
+  `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`, source commit `59c26d2`, region `sin1`.
+  Its `/api/health` endpoint returned HTTP `200` with production JSON and its
+  selected ten-minute runtime-error scan was empty.
 - Supabase runtime migrations through
   `20260813020000_fix_line_runtime_claim_qualification.sql` are applied.
 - LINE Developers `Use webhook` is enabled for the dedicated canary channel.
@@ -23,7 +28,7 @@ production state is recorded in `evidence/P9-CAN-001` and `evidence/P9-GATE`:
 
 The earlier foundation-only deployment identifiers and fail-closed statements
 remain immutable historical evidence and are superseded for current runtime
-status by the continuation checkpoint above.
+status by the continuation checkpoints above.
 
 The GitHub-linked Vercel production deployment for the application revision
 under verification completed successfully:

@@ -1,6 +1,6 @@
 # Evidence - P9-GATE
 
-Status: **DONE** (2026-08-12)
+Status: **DONE** (2026-08-13)
 
 This gate records the MVP production deployment gate only. It does not close P8 hardening, canary, hypercare, UAT or the project as a whole.
 
@@ -26,11 +26,12 @@ passes.
 The current production knowledge index is empty, so factual answers remain
 fail-closed and must use canonical CLARIFY/HANDOFF behavior.
 
-The verified application deployment in this checkpoint is
-`dpl_2bNYaEftcKMh6LxEvuUiv9iDV6Q5` from source commit `40d2b9c`, state `READY`,
-region `sin1`, with the production alias
-`https://city-chatbot-murex.vercel.app`. LINE verification returned HTTP `200`
-in `75 ms`; Vercel reported no runtime errors in the selected window.
+The real LINE journey was verified on deployment
+`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8` from source commit `d7122d0`. The current
+production alias is served by READY deployment
+`dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` from source commit `59c26d2`, region `sin1`.
+Its `/api/health` endpoint returned HTTP `200`; Vercel reported no runtime
+errors in the selected current window.
 
 ### Latest repository verification
 
@@ -43,15 +44,19 @@ On the current workspace after `P9-CLOSE-001`, the release pipeline passed:
 - `python scripts/unit_gate.py --validate-only` — PASS
 - `pnpm build` — PASS
 - `pnpm release:manifest` and `pnpm release:verify` — PASS
-- `pnpm release:rc` and `pnpm release:rc:verify` — PASS; current RC digest
-  `222cce8ae51acb22db984a506f8b9f703595121f8f0cd6728a7a808b95344bad`
-- `pnpm test:all` — PASS; Python contract suite `329/329`
+- `pnpm test:db` — PASS; Python contract/database suite `333/333`
+- `pnpm release:manifest` and `pnpm release:verify` — PASS; current manifest
+  digest `6cd8526f583b48518a13855fb74b5e6d32304d1d54fbfb18e970672fcf8e0cce`
+- Explicit current RC write/verify — PASS; RC digest
+  `92588376171acd609deef9440488da2df4d8675e8c4c51a0ff60c39bfe9ec6f2`
 
-These results validate the repository release artifact. External Supabase,
-Vercel and LINE provider verification is now separately recorded in
-`evidence/P9-CAN-001`; the dedicated real inbound/outbound LINE journey also
-passed. Certified ACTIVE production knowledge remains distinct operational
-evidence and is intentionally absent.
+These results validate the repository release artifact. Any earlier default RC
+command result is historical; the immutable default candidate was intentionally
+not overwritten. The current manifest and explicit current RC verification are
+recorded above. External Supabase, Vercel and LINE provider verification is
+separately recorded in `evidence/P9-CAN-001`; the dedicated real
+inbound/outbound LINE journey also passed. Certified ACTIVE production
+knowledge remains distinct operational evidence and is intentionally absent.
 
 ### Real LINE production E2E continuation checkpoint (2026-08-13)
 
@@ -71,23 +76,36 @@ evidence and is intentionally absent.
 - Post-fix Vercel scan: no `line_worker_step_failed` log and no runtime error
   cluster in the selected five-minute window.
 
+### Current production deployment checkpoint (2026-08-13)
+
+- Latest READY deployment: `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`, source commit
+  `59c26d2`, region `sin1`, production alias
+  `https://city-chatbot-murex.vercel.app`.
+- Vercel authenticated fetch of `/api/health`: HTTP `200`, production JSON
+  status `ok`.
+- Current deployment runtime-error scan for the selected ten-minute window:
+  no runtime errors and no logs returned.
+- The current explicit immutable RC at
+  `artifacts/release-candidate-2026-08-13.json` verified successfully.
+
 ## Gate traceability
 
 - Gate: `P9-GATE`
 - Requirements: `RF-13`, `RF-15`, `RF-16`, `RF-17`
 - Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
 - Rule: `SPEC-MVP-001` - L1 unit tests are the MVP deployment gate; external hardening remains tracked and explicit.
-- Active RC: `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`
-- RC digest: `a083bb6eb030363086855ee694b9527a9f5be74bef64d33fda8c3d92539548ca`
+- Historical RC: `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5` (immutable)
+- Current explicit RC: `citychatbot-rc-2026-08-13-6cd8526f-215fb2df`
+- Current RC digest: `92588376171acd609deef9440488da2df4d8675e8c4c51a0ff60c39bfe9ec6f2`
 
 ## Gate inputs
 
 | Input | Result | Evidence |
 |---|---|---|
-| MVP L1 unit suite | PASS - 51 files / 339 tests | `pnpm test:unit` |
-| Release candidate verification | PASS | `pnpm release:rc:verify` |
+| MVP L1 unit suite | PASS - 63 files / 387 tests | `pnpm test:unit` |
+| Release candidate verification | PASS - current explicit immutable RC | `python scripts/release_candidate.py --verify artifacts/release-candidate-2026-08-13.json` |
 | Production build | PASS | Vercel deployment logs and local Next.js build |
-| Production deployment | PASS - Vercel `dpl_Cj5XLhyLZkKFKgUn5B3zY5Eoi1ia`, state `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
+| Production deployment | PASS - Vercel `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH`, state `READY` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Production health | PASS - HTTP 200, environment `production` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Fail-closed citizen dependency boundary | PASS - HTTP 503 `CONFIGURATION_UNAVAILABLE` | [P9-DEP-001](../P9-DEP-001/index.md) |
 | Dedicated LINE real inbound/outbound journey | PASS - webhook 200, worker `OK`, visible CLARIFY/HANDOFF, ledger reconciled | [P9-CAN-001](../P9-CAN-001/index.md) |
@@ -95,17 +113,17 @@ evidence and is intentionally absent.
 
 ## Decision
 
-The P9 immediate production gate is **PASS** because the active RC passed the L1 unit gate, a real production deployment completed, and the dedicated LINE inbound/outbound journey reconciled successfully. Dedicated LINE traffic is enabled in `SAFE_ABSTENTION` mode after migration, environment, RLS/grant, regional deployment and provider verification. Factual RAG answers remain fail-closed while the production knowledge index is empty.
+The P9 immediate production gate is **PASS** because the current release artifacts passed the L1 unit gate, a real production deployment completed, and the dedicated LINE inbound/outbound journey reconciled successfully. Dedicated LINE traffic is enabled in `SAFE_ABSTENTION` mode after migration, environment, RLS/grant, regional deployment and provider verification. Factual RAG answers remain fail-closed while the production knowledge index is empty.
 
 ## Verification commands
 
-- `pnpm test:unit` - PASS, 339/339.
+- `pnpm test:unit` - PASS, 387/387.
 - `pnpm --filter @citychatbot/web lint` - PASS.
 - `pnpm --filter @citychatbot/web typecheck` - PASS.
 - `pnpm --filter @citychatbot/web build` - PASS.
 - `pnpm security:scan` - PASS.
-- `pnpm release:rc:verify` - PASS for the active RC.
-- `Invoke-WebRequest https://city-chatbot-murex.vercel.app/api/health` - HTTP 200 with production JSON.
+- `python scripts/release_candidate.py --verify artifacts/release-candidate-2026-08-13.json` - PASS for the current explicit immutable RC.
+- Vercel authenticated fetch `https://city-chatbot-murex.vercel.app/api/health` - HTTP 200 with production JSON.
 - `Invoke-WebRequest https://city-chatbot-murex.vercel.app/api/v1/citizen/services` - HTTP 503 with `CONFIGURATION_UNAVAILABLE`.
 - Vercel runtime errors for the last 30 minutes - none found.
 - Real LINE E2E ledger query, one-hour redacted aggregate - PASS (`PROCESSED=4`, `API_ACCEPTED=4`, FAILED/DLQ `0/0`).

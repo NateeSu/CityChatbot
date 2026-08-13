@@ -1456,7 +1456,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
     - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=de24536b083102b6feb74efe0fc6cb1756a5c0409799b193b5f29af430a9bb40; revision=6d8c4ba311e0943ca66b481f6be05170de5c3bd7)
   - เริ่มทำต่อ: 2026-08-12 — Supabase project `CityChatbot Production` (`qiaklpfojbdajpskmjze`, Singapore) healthy; 26 migrations applied without production seed; 88/88 tenant-owned tables have RLS enabled and forced; tenant-to-tenant FK missing tenant pair = 0; dedicated LINE/LIFF tables expose zero anon grants and zero authenticated write grants.
     - ความคืบหน้า: 2026-08-12 — added forward-only fixes `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql`; applied both in the production SQL editor. The first fixes authenticated LIFF identity persistence; the second fixes the complaint list aggregate projection that previously returned `503`. Static contracts, unit/database suites, lint, typechecks, build, and secret scan are green.
-    - ความคืบหน้า LINE/LIFF: owner accepted LINE data-use terms; dedicated free-plan `CityChatbot Canary` Messaging API channel is enabled and provider token/destination validated. The dedicated webhook is saved and signed delivery/duplicate ingestion passed. Authenticated LIFF session returned `201`, bootstrap/list returned `200`, complaint create/detail/replay passed, and the exact synthetic row was constrained to `CANCELLED` for cleanup. On 2026-08-13 the durable runtime migration and server-only environment were applied, webhook ACK was moved ahead of worker processing, Vercel Functions were colocated with Supabase in `sin1`, and LINE Developers Verify passed. After enabling the previously-disabled `Use webhook` switch and applying `20260813020000_fix_line_runtime_claim_qualification.sql`, a real LINE message completed production E2E on deployment `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`: HTTP 200, worker `OK`, four durable chat rows processed, four provider deliveries `API_ACCEPTED`, zero retry/DLQ, and visible canonical safe-abstention replies. The tenant chat flag remains enabled in audited `SAFE_ABSTENTION` mode; greeting, auto-reply, group participation, broadcast, and uncertified factual RAG answers remain disabled.
+    - ความคืบหน้า LINE/LIFF: owner accepted LINE data-use terms; dedicated free-plan `CityChatbot Canary` Messaging API channel is enabled and provider token/destination validated. The dedicated webhook is saved and signed delivery/duplicate ingestion passed. Authenticated LIFF session returned `201`, bootstrap/list returned `200`, complaint create/detail/replay passed, and the exact synthetic row was constrained to `CANCELLED` for cleanup. On 2026-08-13 the durable runtime migration and server-only environment were applied, webhook ACK was moved ahead of worker processing, Vercel Functions were colocated with Supabase in `sin1`, and LINE Developers Verify passed. After enabling the previously-disabled `Use webhook` switch and applying `20260813020000_fix_line_runtime_claim_qualification.sql`, a real LINE message completed production E2E on deployment `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`: HTTP 200, worker `OK`, four durable chat rows processed, four provider deliveries `API_ACCEPTED`, zero retry/DLQ, and visible canonical safe-abstention replies. The current production alias is now on READY deployment `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` from commit `59c26d2`; its health endpoint returns HTTP 200 and the selected runtime-error scan is empty. The tenant chat flag remains enabled in audited `SAFE_ABSTENTION` mode; greeting, auto-reply, group participation, broadcast, and uncertified factual RAG answers remain disabled.
   - เจ้าของ: SRE + QA; ผู้ร่วม: UAT, AI
   - Prerequisites: P9-DEP-001
   - Deliverables: canary flags/audience; synthetic and manual journeys; live dashboards; incident log; cleanup
@@ -1468,7 +1468,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
 
 - Latest verified checkpoint (2026-08-12): authenticated production LIFF session/bootstrap and the synthetic complaint journey passed on the dedicated canary tenant. `POST /api/v1/liff/session` returned `201`; citizen bootstrap and complaint list returned `200`; create returned receipt `CITYCHATBOT-2569-000001`; exact idempotency replay returned the same complaint with `idempotent_replay=true`; constrained cleanup transitioned it to `CANCELLED`, `row_version=2`, preserving its audit timeline. Forward-only migrations `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql` are applied. Runtime-role isolation remains enforced: scoped private wrappers are executable and direct complaint-table `SELECT` is denied.
 - Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account in `SAFE_ABSTENTION` mode as of 2026-08-13. Production knowledge has zero ACTIVE public versions/generations/chunks/facts, so factual answering remains fail-closed and must CLARIFY/HANDOFF.
-- Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error.
+- Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error. Current production deployment `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` is READY and `/api/health` is HTTP 200.
 - Next executable work is the remaining non-blocking P8 certification and knowledge-index hardening; do not enable factual RAG traffic until those gates pass.
 
 - [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
@@ -2091,7 +2091,7 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 
 ---
 
-# Current continuation checkpoint (2026-08-13)
+# Historical automatic queue snapshots (superseded by the current production checkpoint below)
 
 `P9-CAN-001` passed its automatic unit gate (5/5 commands) and is DONE. The durable LINE consumer/provider implementation is in `apps/web/app/api/v1/line/worker/`; production remains fail-closed until migration `20260813010000_line_chat_runtime.sql` and scoped worker environment values are applied. The next executable production action is migration/env configuration, followed by queued `P9-CAN-002`.
 
@@ -2106,6 +2106,19 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 `P9-BAU-001` is now DONE via automatic unit gate report `01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985` at revision `d68b521252d594342f08d36f4ac4b5f03b268289`; cadence, expiry/stale-source, regression and alert/rollback controls passed `4/4`. The next executable task is `P9-CLOSE-001`, queued automatically. Calendar execution remains separately observable and does not alter this unit-gate result.
 
 `P9-CLOSE-001` is now DONE via automatic unit gate report `42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428` at revision `619dff11f65412be42285edc05ff961999cae932`; release evidence, traceability, archive hashing and idempotency passed `3/3`. The requested `CLOSE_PHASE` action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no external dispatcher. No human approval is pending. External Supabase/Vercel configuration and the dedicated real LINE smoke are now complete; remaining P8 certification and certified knowledge-index work are still tracked, so project completion is not claimed.
+
+## Current authoritative production checkpoint (2026-08-13)
+
+The dedicated real LINE inbound/outbound journey is complete and recorded in
+`evidence/P9-CAN-001`. The real event was verified on runtime deployment
+`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`; the current production alias is served by
+READY deployment `dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` from commit `59c26d2` in
+`sin1`. `/api/health` returns HTTP 200. Current manifest/release verification
+passed, and the explicit current immutable RC was verified from
+`artifacts/release-candidate-2026-08-13.json` with digest
+`92588376171acd609deef9440488da2df4d8675e8c4c51a0ff60c39bfe9ec6f2`.
+Production chat remains intentionally `SAFE_ABSTENTION`: factual RAG and
+broadcast are disabled until certified knowledge/hardening gates pass.
 
 # Final Release Rule
 
