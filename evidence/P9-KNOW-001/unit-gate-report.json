@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "manifestVersion": "task-unit-gates.v1",
-  "manifestSha256": "e8c04170166d11061da105f935b8f17b267ad8767b2e778424a85df0fbed85b8",
-  "executionManifestSha256": "f515bd69957f58d737690b1826a0c4ff3446ba472c870d2429af88dfca182de3",
+  "manifestSha256": "5adfc6a9ac681f18e7790830d02907f7048189ec5ba0d12bfd8a701f028012fa",
+  "executionManifestSha256": "48e81768b553502a8bf90fa3da53c6b4af5532f722f2bde020054ddf95cd6017",
   "taskId": "P9-KNOW-001",
-  "revision": "d6d1e0fa9b9b4287720fe895b8f3d37c6b3bd974",
+  "revision": "d1028c787f6841737472c38dfdf9f23d20a54bfa",
   "actor": "SYSTEM_UNIT_GATE",
-  "idempotencyKey": "0c1657b01511c89cdcb8b261664f53b3e831629c5074abbfa0585f1aa713aabc",
+  "idempotencyKey": "dee351af25b164e5176af8c5cf14e0fc7ad14193136bd3c7ad6e173f3653fa30",
   "attempt": 2,
   "status": "PASSED",
-  "startedAt": "2026-08-13T08:56:09Z",
-  "finishedAt": "2026-08-13T08:56:20Z",
+  "startedAt": "2026-08-13T09:17:22Z",
+  "finishedAt": "2026-08-13T09:17:33Z",
   "requiredTestIds": [
     "P9-KNOW-CORPUS-AUTHORITY",
     "P9-KNOW-DETERMINISTIC-MANIFEST",
@@ -20,7 +20,8 @@
     "P9-KNOW-IDEMPOTENT-ACTIVATION-SQL",
     "P9-KNOW-TENANT-SCOPED-ROLLBACK",
     "P9-KNOW-GROUNDED-ANSWER",
-    "P9-KNOW-SAFE-HANDOFF"
+    "P9-KNOW-SAFE-HANDOFF",
+    "P9-KNOW-MVP-SAFE-SURFACE"
   ],
   "passedTestIds": [
     "P9-KNOW-CORPUS-AUTHORITY",
@@ -31,10 +32,11 @@
     "P9-KNOW-IDEMPOTENT-ACTIVATION-SQL",
     "P9-KNOW-TENANT-SCOPED-ROLLBACK",
     "P9-KNOW-GROUNDED-ANSWER",
-    "P9-KNOW-SAFE-HANDOFF"
+    "P9-KNOW-SAFE-HANDOFF",
+    "P9-KNOW-MVP-SAFE-SURFACE"
   ],
-  "passCount": 9,
-  "totalCount": 9,
+  "passCount": 10,
+  "totalCount": 10,
   "commandPassCount": 3,
   "commandTotalCount": 3,
   "commands": [
@@ -44,14 +46,14 @@
       "passed": true,
       "forbiddenTestMarker": false,
       "stdout": "CORPUS_MANIFEST_VERIFIED sha256:123ad1218789cc857e17216d48a0d60bd42a5f154f16d57b48d7db71294be97e\nCONFLICT_LEDGER_VERIFIED docs\\corpus\\conflict-ledger.json sha256=d5f7da373049f34919875d95a12fbaab0cd9341bc7ab8096456b6ffee8a80a8f\n",
-      "stderr": "test_activation_manifest_and_sql_are_deterministic (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_activation_manifest_and_sql_are_deterministic) ... ok\ntest_additive_database_migration_has_parallel_index_receipt_guard (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_additive_database_migration_has_parallel_index_receipt_guard) ... ok\ntest_conflicted_and_personal_content_is_not_in_public_chunks_or_facts (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_conflicted_and_personal_content_is_not_in_public_chunks_or_facts) ... ok\ntest_exact_comparator_and_safe_fact_anchors_survive_screening (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_exact_comparator_and_safe_fact_anchors_survive_screening) ... ok\ntest_generated_rollback_is_narrow_and_retains_history (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_generated_rollback_is_narrow_and_retains_history) ... ok\ntest_generated_sql_is_idempotent_auditable_and_machine_gated (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_generated_sql_is_idempotent_auditable_and_machine_gated) ... ok\ntest_project_owner_authority_and_source_artifacts_are_consistent (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_project_owner_authority_and_source_artifacts_are_consistent) ... ok\ntest_conflict_ledger_is_attached_to_known_sources (scripts.test_corpus_audit.CorpusAuditTests.test_conflict_ledger_is_attached_to_known_sources) ... ok\ntest_frozen_corpus_counts_match_spec (scripts.test_corpus_audit.CorpusAuditTests.test_frozen_corpus_counts_match_spec) ... ok\ntest_integrity_digests_are_present (scripts.test_corpus_audit.CorpusAuditTests.test_integrity_digests_are_present) ... ok\ntest_locked_rag_conflict_stale_injection_and_tenant_boundaries (scripts.test_corpus_audit.CorpusAuditTests.test_locked_rag_conflict_stale_injection_and_tenant_boundaries) ... ok\ntest_locked_rag_parser_recall_and_claim_citation_contract (scripts.test_corpus_audit.CorpusAuditTests.test_locked_rag_parser_recall_and_claim_citation_contract) ... ok\ntest_macro_docx_is_rejected_and_quarantined (scripts.test_corpus_audit.CorpusAuditTests.test_macro_docx_is_rejected_and_quarantined) ... ok\ntest_manifest_is_deterministic_and_matches_checked_in_artifact (scripts.test_corpus_audit.CorpusAuditTests.test_manifest_is_deterministic_and_matches_checked_in_artifact) ... ok\ntest_ooxml_content_control_keeps_adl_comparator (scripts.test_corpus_audit.CorpusAuditTests.test_ooxml_content_control_keeps_adl_comparator) ... ok\ntest_project_owner_authority_makes_intact_files_screened_ingestion_eligible (scripts.test_corpus_audit.CorpusAuditTests.test_project_owner_authority_makes_intact_files_screened_ingestion_eligible) ... ok\ntest_all_conflicts_have_a_deterministic_segment_policy (scripts.test_conflict_ledger.ConflictLedgerTests.test_all_conflicts_have_a_deterministic_segment_policy) ... ok\ntest_checked_in_ledger_is_deterministic_and_integrity_verified (scripts.test_conflict_ledger.ConflictLedgerTests.test_checked_in_ledger_is_deterministic_and_integrity_verified) ... ok\ntest_each_conflict_is_attached_to_manifest_source_files (scripts.test_conflict_ledger.ConflictLedgerTests.test_each_conflict_is_attached_to_manifest_source_files) ... ok\ntest_no_conflict_fact_can_enter_active_index (scripts.test_conflict_ledger.ConflictLedgerTests.test_no_conflict_fact_can_enter_active_index) ... ok\ntest_template_and_evaluation_only_content_is_not_production_content (scripts.test_conflict_ledger.ConflictLedgerTests.test_template_and_evaluation_only_content_is_not_production_content) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 0.992s\n\nOK\n"
+      "stderr": "are_deterministic (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_activation_manifest_and_sql_are_deterministic) ... ok\ntest_additive_database_migration_has_parallel_index_receipt_guard (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_additive_database_migration_has_parallel_index_receipt_guard) ... ok\ntest_conflicted_and_personal_content_is_not_in_public_chunks_or_facts (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_conflicted_and_personal_content_is_not_in_public_chunks_or_facts) ... ok\ntest_exact_comparator_and_safe_fact_anchors_survive_screening (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_exact_comparator_and_safe_fact_anchors_survive_screening) ... ok\ntest_generated_rollback_is_narrow_and_retains_history (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_generated_rollback_is_narrow_and_retains_history) ... ok\ntest_generated_sql_is_idempotent_auditable_and_machine_gated (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_generated_sql_is_idempotent_auditable_and_machine_gated) ... ok\ntest_mvp_safe_fact_surface_keeps_every_source_auditable_and_small (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_mvp_safe_fact_surface_keeps_every_source_auditable_and_small) ... ok\ntest_project_owner_authority_and_source_artifacts_are_consistent (scripts.test_authorized_corpus_activation.AuthorizedCorpusActivationTests.test_project_owner_authority_and_source_artifacts_are_consistent) ... ok\ntest_conflict_ledger_is_attached_to_known_sources (scripts.test_corpus_audit.CorpusAuditTests.test_conflict_ledger_is_attached_to_known_sources) ... ok\ntest_frozen_corpus_counts_match_spec (scripts.test_corpus_audit.CorpusAuditTests.test_frozen_corpus_counts_match_spec) ... ok\ntest_integrity_digests_are_present (scripts.test_corpus_audit.CorpusAuditTests.test_integrity_digests_are_present) ... ok\ntest_locked_rag_conflict_stale_injection_and_tenant_boundaries (scripts.test_corpus_audit.CorpusAuditTests.test_locked_rag_conflict_stale_injection_and_tenant_boundaries) ... ok\ntest_locked_rag_parser_recall_and_claim_citation_contract (scripts.test_corpus_audit.CorpusAuditTests.test_locked_rag_parser_recall_and_claim_citation_contract) ... ok\ntest_macro_docx_is_rejected_and_quarantined (scripts.test_corpus_audit.CorpusAuditTests.test_macro_docx_is_rejected_and_quarantined) ... ok\ntest_manifest_is_deterministic_and_matches_checked_in_artifact (scripts.test_corpus_audit.CorpusAuditTests.test_manifest_is_deterministic_and_matches_checked_in_artifact) ... ok\ntest_ooxml_content_control_keeps_adl_comparator (scripts.test_corpus_audit.CorpusAuditTests.test_ooxml_content_control_keeps_adl_comparator) ... ok\ntest_project_owner_authority_makes_intact_files_screened_ingestion_eligible (scripts.test_corpus_audit.CorpusAuditTests.test_project_owner_authority_makes_intact_files_screened_ingestion_eligible) ... ok\ntest_all_conflicts_have_a_deterministic_segment_policy (scripts.test_conflict_ledger.ConflictLedgerTests.test_all_conflicts_have_a_deterministic_segment_policy) ... ok\ntest_checked_in_ledger_is_deterministic_and_integrity_verified (scripts.test_conflict_ledger.ConflictLedgerTests.test_checked_in_ledger_is_deterministic_and_integrity_verified) ... ok\ntest_each_conflict_is_attached_to_manifest_source_files (scripts.test_conflict_ledger.ConflictLedgerTests.test_each_conflict_is_attached_to_manifest_source_files) ... ok\ntest_no_conflict_fact_can_enter_active_index (scripts.test_conflict_ledger.ConflictLedgerTests.test_no_conflict_fact_can_enter_active_index) ... ok\ntest_template_and_evaluation_only_content_is_not_production_content (scripts.test_conflict_ledger.ConflictLedgerTests.test_template_and_evaluation_only_content_is_not_production_content) ... ok\n\n----------------------------------------------------------------------\nRan 22 tests in 1.236s\n\nOK\n"
     },
     {
       "command": "pnpm exec vitest run packages/knowledge/src/authorized-corpus-activation.test.ts packages/chat/src/grounding.test.ts --reporter=dot",
       "exitCode": 0,
       "passed": true,
       "forbiddenTestMarker": false,
-      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n···········\n\n Test Files  2 passed (2)\n      Tests  11 passed (11)\n   Start at  15:56:13\n   Duration  1.14s (transform 538ms, setup 0ms, import 699ms, tests 22ms, environment 0ms)\n\n",
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n···········\n\n Test Files  2 passed (2)\n      Tests  11 passed (11)\n   Start at  16:17:26\n   Duration  981ms (transform 504ms, setup 0ms, import 697ms, tests 27ms, environment 0ms)\n\n",
       "stderr": ""
     },
     {
@@ -59,7 +61,7 @@
       "exitCode": 0,
       "passed": true,
       "forbiddenTestMarker": false,
-      "stdout": "AUTHORIZED_CORPUS_VERIFIED documents=17 facts=6 manifest=sha256:017f0842bb85efe974c6eea1ddd8c7496ed306336d00f891f7aef66bcac3d39b\nAUTHORIZED_CORPUS_SQL_CONTRACT_VERIFIED\n",
+      "stdout": "AUTHORIZED_CORPUS_VERIFIED documents=17 facts=6 manifest=sha256:22f23d2d6901cc67cdf0cc06f96d1320d7ef1d66c26b8fdf97e4c074821814a6\nAUTHORIZED_CORPUS_SQL_CONTRACT_VERIFIED\n",
       "stderr": ""
     }
   ],
@@ -80,5 +82,5 @@
       "reason": "external dispatcher is not configured in repository runner"
     }
   ],
-  "reportHash": "192fad4c546b38766056a581cbe2f863cd85e50ed63c15f97ec698db1f796cc4"
+  "reportHash": "f08981a910049cbfe90580100eae8f307235e2a345e84400a88b2ff8e6cfe4e4"
 }

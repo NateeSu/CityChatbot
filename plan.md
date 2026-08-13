@@ -1546,7 +1546,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-GATE/index.md)
 
 - [x] `P9-KNOW-001` เปิดใช้งาน corpus เทศบาลที่ Project Owner รับรองแบบ screened/unit-gated
-  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=192fad4c546b38766056a581cbe2f863cd85e50ed63c15f97ec698db1f796cc4; revision=d6d1e0fa9b9b4287720fe895b8f3d37c6b3bd974)
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=f08981a910049cbfe90580100eae8f307235e2a345e84400a88b2ff8e6cfe4e4; revision=d1028c787f6841737472c38dfdf9f23d20a54bfa)
   - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
   - Prerequisites: `P9-GATE`; Project Owner declaration for `doc_rag_test`; existing tenant-scoped LINE runtime
   - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`
