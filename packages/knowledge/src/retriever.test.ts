@@ -77,6 +77,33 @@ describe("knowledge hybrid retrieval", () => {
     expect(result.coverage.complete).toBe(true);
   });
 
+  it("retrieves the authorized municipal fitness fee from a natural Thai question", () => {
+    const fitnessChunk = chunk({
+      id: "fitness-safe-chunk",
+      tenantId: TENANT_A,
+      displayText: "คำถาม: ค่าธรรมเนียมการเข้าใช้บริการ คำตอบ: ค่าบริการรายครั้ง 30 บาท",
+      sourceHash: "fitness-source-hash",
+      factTypes: ["FEE"],
+    });
+    const fitnessFee = fact({
+      id: "fitness-safe-fee",
+      sourceChunkId: fitnessChunk.id,
+      factType: "FEE",
+      normalizedValue: "ค่าบริการรายครั้ง 30 บาท",
+      entityKey: "fitness-center:single-visit-fee",
+      entityDisplayName: "ศูนย์ส่งเสริมสุขภาพเทศบาลเมืองฉะเชิงเทรา (Fitness Center)",
+      valueJson: { raw: "ค่าบริการรายครั้ง 30 บาท", policy: "AUTHORIZED_CORPUS_SAFE_FACT" },
+    });
+
+    const result = retrieve(source([fitnessChunk], [fitnessFee]), TENANT_A, "ฟิตเนส ค่าธรรมเนียมรายครั้งเท่าไร", { at: AT });
+
+    expect(result.outcome).toBe("READY");
+    expect(result.reasonCode).toBeUndefined();
+    expect(result.coverage).toMatchObject({ requestedFactTypes: ["FEE"], complete: true });
+    expect(result.matchedFacts.map((item) => item.id)).toEqual([fitnessFee.id]);
+    expect(result.evidence[0]?.chunk.id).toBe(fitnessChunk.id);
+  });
+
   it("applies RRF deterministically, source/section diversity and context budget", () => {
     const chunks = [
       chunk({ id: "chunk-1", tenantId: TENANT_A, displayText: "service permit application process", sourceHash: "same-source", chunkIndex: 0 }),

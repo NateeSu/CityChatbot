@@ -276,7 +276,17 @@ const loadKnowledge = async (tenantId: string, at: Date): Promise<RuntimeKnowled
     pool.query<KnowledgeChunkRow>("select * from private.list_public_active_knowledge_chunks($1::uuid, $2::timestamptz)", [tenantId, at.toISOString()]),
     pool.query<KnowledgeFactRow>("select * from private.list_public_active_knowledge_facts($1::uuid, $2::timestamptz)", [tenantId, at.toISOString()]),
   ]);
-  return new RuntimeKnowledgeSource(chunkResult.rows.map(mapChunk), factResult.rows.map(mapFact));
+  const chunks = chunkResult.rows.map(mapChunk);
+  const facts = factResult.rows.map(mapFact);
+  console.info("line_knowledge_loaded", {
+    tenantScope: sha256(tenantId).slice(0, 12),
+    chunkCount: chunks.length,
+    factCount: facts.length,
+    publicChunkCount: chunks.filter((chunk) => chunk.visibility === "PUBLIC").length,
+    approvedFactCount: facts.filter((fact) => fact.visibility === "PUBLIC" && fact.reviewStatus === "APPROVED").length,
+    asOf: at.toISOString(),
+  });
+  return new RuntimeKnowledgeSource(chunks, facts);
 };
 
 const createProvider = (accessToken: string): LineProviderClient => {
@@ -493,6 +503,25 @@ const createChatService = async (event: DurableLineInboxEvent, knowledgeCache: M
         priorTurns: input.context.map((turn) => ({ role: turn.role === "ASSISTANT" ? "assistant" : "user", content: turn.text })),
       });
       const decision = decideAnswerability(retrieval.plan, retrieval, { intentId: "intent-1" });
+      console.info("line_retrieval_snapshot", {
+        requestId: event.requestId ?? null,
+        tenantScope: sha256(input.tenantId).slice(0, 12),
+        inputLength: input.userText.length,
+        queryLanguage: retrieval.plan.language,
+        requestedFactTypes: retrieval.plan.requestedFactTypes,
+        candidateCount: retrieval.candidates.length,
+        evidenceCount: retrieval.evidence.length,
+        matchedFactCount: retrieval.matchedFacts.length,
+        exactCandidateCount: retrieval.trace.exactCandidateCount,
+        lexicalCandidateCount: retrieval.trace.lexicalCandidateCount,
+        coverageComplete: retrieval.coverage.complete,
+        coveredFactTypes: retrieval.coverage.coveredFactTypes,
+        missingFactTypes: retrieval.coverage.missingFactTypes,
+        retrievalOutcome: retrieval.outcome,
+        retrievalReasonCode: retrieval.reasonCode ?? null,
+        decisionOutcome: decision.result.outcome,
+        decisionReasonCode: decision.result.reasonCode,
+      });
       return { overallOutcome: decision.result.outcome, intentResults: [decision.result] };
     },
   });
