@@ -1056,7 +1056,8 @@
         "P9-KNOW-IDEMPOTENT-ACTIVATION-SQL",
         "P9-KNOW-TENANT-SCOPED-ROLLBACK",
         "P9-KNOW-GROUNDED-ANSWER",
-        "P9-KNOW-SAFE-HANDOFF"
+        "P9-KNOW-SAFE-HANDOFF",
+        "P9-KNOW-MVP-SAFE-SURFACE"
       ],
       "onPass": [
         "CLOSE_TASK",

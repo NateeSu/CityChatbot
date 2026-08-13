@@ -16,6 +16,7 @@ try:
         REQUIRED_TEST_IDS,
         ROOT,
         TARGET_TENANT_SLUG,
+        ACTIVATION_MODE_MVP_SAFE_FACTS,
         build_activation,
         canonical_json,
     )
@@ -28,6 +29,7 @@ except ModuleNotFoundError:  # pragma: no cover - direct script invocation
         REQUIRED_TEST_IDS,
         ROOT,
         TARGET_TENANT_SLUG,
+        ACTIVATION_MODE_MVP_SAFE_FACTS,
         build_activation,
         canonical_json,
     )
@@ -43,6 +45,7 @@ UNIT_TEST_IDS = (
     "P9-KNOW-TENANT-SCOPED-ROLLBACK",
     "P9-KNOW-GROUNDED-ANSWER",
     "P9-KNOW-SAFE-HANDOFF",
+    "P9-KNOW-MVP-SAFE-SURFACE",
 )
 
 
@@ -89,6 +92,17 @@ class AuthorizedCorpusActivationTests(unittest.TestCase):
         self.assertGreaterEqual(len(safe_fact_ids), 6)
         self.assertIn("fitness-single-visit-fee", " ".join(safe_fact_ids))
         self.assertIn("kcc-weekday-hours", " ".join(safe_fact_ids))
+
+    def test_mvp_safe_fact_surface_keeps_every_source_auditable_and_small(self) -> None:
+        mvp_manifest, mvp_sql, _ = build_activation(mode=ACTIVATION_MODE_MVP_SAFE_FACTS)
+        mvp_chunk_count = sum(item["chunkCount"] for item in mvp_manifest["documents"])
+        self.assertEqual(mvp_manifest["activationMode"], ACTIVATION_MODE_MVP_SAFE_FACTS)
+        self.assertEqual(len(mvp_manifest["documents"]), 17)
+        self.assertGreaterEqual(mvp_chunk_count, 17)
+        self.assertLessEqual(mvp_chunk_count, 24)
+        self.assertLess(len(mvp_sql), len(self.activation_sql) // 10)
+        self.assertIn("MVP_SAFE_FACT_SURFACE", mvp_sql)
+        self.assertNotIn("081-6823355", mvp_sql)
 
     def test_generated_sql_is_idempotent_auditable_and_machine_gated(self) -> None:
         self.assertIn("on conflict (tenant_id, source_key) do nothing", self.activation_sql)

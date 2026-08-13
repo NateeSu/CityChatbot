@@ -33,3 +33,9 @@ phone numbers, screenshots, templates, expired content, undecoded QR links, and
 affected conflict segments. `CR-001` through `CR-015` remain attached to their
 source records with a deterministic safe-answer policy in
 `conflict-ledger.json`.
+
+For the production MVP, run `scripts/authorized_corpus_activation.py` with
+`--activation-mode safe-facts-mvp`. This activates all 17 audited source
+records, but exposes only six certified exact-fact anchors plus title-derived
+provenance chunks. The broader `full-screened` artifact remains offline until
+each additional answerable segment receives structured validation.

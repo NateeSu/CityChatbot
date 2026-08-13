@@ -38,6 +38,9 @@ TARGET_CATEGORY_CODE = "MUNICIPAL_CORPUS"
 SYSTEM_ACCOUNT_SUBJECT = "system:unit-gate"
 SYSTEM_ACCOUNT_ID = "10000000-0000-4000-8000-000000000009"
 ACTIVATION_SCHEMA_VERSION = "authorized-corpus-activation.v1"
+ACTIVATION_MODE_FULL_SCREENED = "full-screened"
+ACTIVATION_MODE_MVP_SAFE_FACTS = "safe-facts-mvp"
+ACTIVATION_MODES = (ACTIVATION_MODE_FULL_SCREENED, ACTIVATION_MODE_MVP_SAFE_FACTS)
 REQUIRED_TEST_IDS = (
     "P9-KNOW-CORPUS-AUTHORITY",
     "P9-KNOW-DETERMINISTIC-MANIFEST",
@@ -48,6 +51,7 @@ REQUIRED_TEST_IDS = (
     "P9-KNOW-TENANT-SCOPED-ROLLBACK",
     "P9-KNOW-GROUNDED-ANSWER",
     "P9-KNOW-SAFE-HANDOFF",
+    "P9-KNOW-MVP-SAFE-SURFACE",
 )
 
 W_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
@@ -296,7 +300,39 @@ SAFE_FACT_RULES: tuple[dict[str, str], ...] = (
 )
 
 
-def build_activation(report_hash: str | None = None) -> tuple[dict[str, Any], str, str]:
+def reduce_to_mvp_safe_fact_surface(documents: list[dict[str, Any]], facts: list[dict[str, Any]]) -> None:
+    """Keep every source record auditable while exposing only fact anchors.
+
+    The production MVP must not turn a newly-authorised bulk corpus into a
+    broad answer surface before every semantic segment has its own structured
+    validation.  Every document therefore remains an active, receipt-bound
+    source record; documents without a certified exact fact get only an
+    innocuous title-derived provenance chunk.  This preserves safe abstention
+    while the full screened artifact remains available for later expansion.
+    """
+
+    fact_chunk_ids = {str(fact["sourceChunkId"]) for fact in facts}
+    for document in documents:
+        fact_chunks = [chunk for chunk in document["chunks"] if chunk["id"] in fact_chunk_ids]
+        if fact_chunks:
+            document["chunks"] = fact_chunks
+        else:
+            title_text = f"Authorized municipal source: {document['title']}"
+            document["chunks"] = [{
+                "id": deterministic_uuid("mvp-safe-title", document["versionId"]),
+                "chunkIndex": 0,
+                "text": title_text,
+                "chunkType": "DOCUMENT_SUMMARY",
+                "locator": {"sectionPath": [document["filename"]], "sourceRecord": True, "activationSurface": ACTIVATION_MODE_MVP_SAFE_FACTS},
+                "sourceHash": sha256(title_text),
+                "tokenCount": max(1, (len(title_text) + 3) // 4),
+            }]
+        document["warnings"] = [*document["warnings"], "MVP_SAFE_FACT_SURFACE"]
+
+
+def build_activation(report_hash: str | None = None, mode: str = ACTIVATION_MODE_FULL_SCREENED) -> tuple[dict[str, Any], str, str]:
+    if mode not in ACTIVATION_MODES:
+        raise ActivationError(f"unsupported activation mode: {mode}")
     manifest = read_json(MANIFEST)
     ledger = read_json(LEDGER)
     policy = read_json(POLICY)
@@ -395,6 +431,8 @@ def build_activation(report_hash: str | None = None) -> tuple[dict[str, Any], st
             "locator": source["locator"],
             "sourceQuote": source["text"],
         })
+    if mode == ACTIVATION_MODE_MVP_SAFE_FACTS:
+        reduce_to_mvp_safe_fact_surface(documents, facts)
     facts_by_chunk: dict[str, list[str]] = {}
     for fact in facts:
         facts_by_chunk.setdefault(fact["sourceChunkId"], []).append(fact["factType"])
@@ -404,6 +442,7 @@ def build_activation(report_hash: str | None = None) -> tuple[dict[str, Any], st
 
     preflight = {
         "schemaVersion": ACTIVATION_SCHEMA_VERSION,
+        "activationMode": mode,
         "policyVersion": policy["policyVersion"],
         "tenantSlug": TARGET_TENANT_SLUG,
         "departmentCode": TARGET_DEPARTMENT_CODE,
@@ -570,17 +609,18 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--write", action="store_true", help="write ignored SQL/manifest artifacts")
     parser.add_argument("--verify", action="store_true", help="verify deterministic activation invariants")
     parser.add_argument("--report-hash", help="SYSTEM_UNIT_GATE report hash to bind to production activation")
+    parser.add_argument("--activation-mode", choices=ACTIVATION_MODES, default=ACTIVATION_MODE_FULL_SCREENED, help="screened corpus surface to emit")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--rollback-output", type=Path, default=DEFAULT_ROLLBACK_OUTPUT)
     parser.add_argument("--manifest-output", type=Path, default=DEFAULT_MANIFEST_OUTPUT)
     args = parser.parse_args(argv)
     try:
-        activation_manifest, activation_sql, rollback_sql = build_activation(args.report_hash)
+        activation_manifest, activation_sql, rollback_sql = build_activation(args.report_hash, args.activation_mode)
         if args.write:
             write(args.output, activation_sql)
             write(args.rollback_output, rollback_sql)
             write(args.manifest_output, json.dumps(activation_manifest, ensure_ascii=False, indent=2) + "\n")
-            print(f"AUTHORIZED_CORPUS_ARTIFACTS_WRITTEN documents={len(activation_manifest['documents'])} chunks={sum(item['chunkCount'] for item in activation_manifest['documents'])} facts={len(activation_manifest['safeFacts'])} manifest={activation_manifest['integrity']['activationManifestHash']}")
+            print(f"AUTHORIZED_CORPUS_ARTIFACTS_WRITTEN mode={args.activation_mode} documents={len(activation_manifest['documents'])} chunks={sum(item['chunkCount'] for item in activation_manifest['documents'])} facts={len(activation_manifest['safeFacts'])} manifest={activation_manifest['integrity']['activationManifestHash']}")
         if args.verify or not args.write:
             verified = verify()
             print(f"AUTHORIZED_CORPUS_VERIFIED documents={len(verified['documents'])} facts={len(verified['safeFacts'])} manifest={verified['integrity']['activationManifestHash']}")
