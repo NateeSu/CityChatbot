@@ -27,9 +27,24 @@ export async function POST(request: Request, { params }: { params: Promise<{ web
   if (process.env.LINE_CHAT_RUNTIME_ENABLED === "true") {
     workerStatus = "DEFERRED";
     after(async () => {
+      const workerStartedAt = Date.now();
       try {
-        await runLineWorkerBatch({ maxJobs: 5 });
-      } catch {
+        const workerResult = await runLineWorkerBatch({ maxJobs: 5 });
+        console.info("line_worker_completed", {
+          requestId: result.requestId,
+          durationMs: Date.now() - workerStartedAt,
+          status: workerResult.status,
+          chatProcessed: workerResult.chatProcessed,
+          deliveryAccepted: workerResult.deliveryAccepted,
+          retryScheduled: workerResult.retryScheduled,
+          deadLettered: workerResult.deadLettered,
+        });
+      } catch (error) {
+        console.error("line_worker_failed", {
+          requestId: result.requestId,
+          durationMs: Date.now() - workerStartedAt,
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        });
         // The durable inbox keeps the job retryable; LINE must still receive its ACK.
       }
     });
