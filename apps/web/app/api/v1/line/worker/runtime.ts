@@ -124,6 +124,15 @@ type KnowledgeFactRow = {
 
 const CONTROL_PATTERN = /[\u0000-\u001f\u007f]/;
 const MAX_BATCH = 10;
+const safeWorkerError = (error: unknown): string => {
+  const message = error instanceof Error ? error.message : "Unknown worker error";
+  return message
+    .replace(/postgres(?:ql)?:\/\/[^\s]+/gi, "[redacted-connection]")
+    .replace(/Bearer\s+[^\s]+/gi, "Bearer [redacted]")
+    .replace(/sk-or-v1-[A-Za-z0-9_-]+/g, "[redacted-key]")
+    .replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, "[redacted-uuid]")
+    .slice(0, 240);
+};
 
 const credentialKey = (): Uint8Array => {
   const value = process.env.TENANT_CREDENTIAL_KEY;
@@ -528,8 +537,9 @@ export const runLineWorkerBatch = async (options: { maxJobs?: number } = {}): Pr
       if (result.status === "PROCESSED") chatProcessed += 1;
       if (result.status === "RETRY_WAIT") retryScheduled += 1;
       if (result.status === "DLQ") deadLettered += 1;
-    } catch {
+    } catch (error) {
       partial = true;
+      console.error("line_worker_step_failed", { phase: "CHAT", errorName: error instanceof Error ? error.name : "UnknownError", errorMessage: safeWorkerError(error) });
       break;
     }
   }
@@ -546,8 +556,9 @@ export const runLineWorkerBatch = async (options: { maxJobs?: number } = {}): Pr
       if (result.status === "API_ACCEPTED") deliveryAccepted += 1;
       if (result.status === "RETRY_WAIT") retryScheduled += 1;
       if (result.status === "DLQ" || result.status === "FAILED") deadLettered += 1;
-    } catch {
+    } catch (error) {
       partial = true;
+      console.error("line_worker_step_failed", { phase: "DELIVERY", errorName: error instanceof Error ? error.name : "UnknownError", errorMessage: safeWorkerError(error) });
       break;
     }
   }
