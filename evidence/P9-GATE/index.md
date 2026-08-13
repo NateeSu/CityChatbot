@@ -24,10 +24,10 @@ The current production knowledge index is empty, so factual answers remain
 fail-closed and must use canonical CLARIFY/HANDOFF behavior.
 
 The verified application deployment in this checkpoint is
-`dpl_CYQC28A7Hd4xwEw7brh1ff8CuAXE` from source commit `2909287`, state `READY`,
+`dpl_2bNYaEftcKMh6LxEvuUiv9iDV6Q5` from source commit `40d2b9c`, state `READY`,
 region `sin1`, with the production alias
 `https://city-chatbot-murex.vercel.app`. LINE verification returned HTTP `200`
-in `73 ms`; Vercel reported no runtime errors in the selected window.
+in `75 ms`; Vercel reported no runtime errors in the selected window.
 
 ### Latest repository verification
 

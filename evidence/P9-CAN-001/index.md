@@ -28,10 +28,10 @@ It does not supersede the requirement for a real inbound/outbound chat journey.
   work in the function lifecycle without blocking the provider response.
 - Added root `vercel.json` with the single Hobby-compatible `sin1` region,
   colocating Vercel Functions with Supabase Singapore. Deployment
-  `dpl_CYQC28A7Hd4xwEw7brh1ff8CuAXE` from commit `2909287` is READY and owns the
+  `dpl_2bNYaEftcKMh6LxEvuUiv9iDV6Q5` from commit `40d2b9c` is READY and owns the
   production aliases.
 - LINE Developers `Verify` returned `Success`. The post-activation request
-  returned HTTP `200` in `73 ms`, `workerStatus=DEFERRED`, zero accepted/duplicate
+  returned HTTP `200` in `75 ms`, `workerStatus=DEFERRED`, zero accepted/duplicate
   events (the canonical verification probe), and no runtime error cluster.
 - Ran `supabase/ops/activate_line_chat_production.sql`. The idempotent transaction
   set the single ACTIVE channel to `HEALTHY`, recorded `last_verified_at`, enabled
@@ -58,8 +58,8 @@ It does not supersede the requirement for a real inbound/outbound chat journey.
 |---|---|
 | `python -m unittest scripts.test_line_webhook_api -v` | PASS - 10/10 contract tests |
 | `pnpm test:all` | PASS - lint, all package typechecks, Vitest 63/63 files and 387/387 tests, secret scan, SBOM, build, release manifest, Python 331/331 tests |
-| Vercel deployment inspection | PASS - READY, commit `2909287`, region `sin1`, aliases assigned |
-| LINE Developers webhook verification after tenant activation | PASS - provider UI `Success`, production HTTP 200 in 73 ms |
+| Vercel deployment inspection | PASS - READY, commit `40d2b9c`, region `sin1`, aliases assigned |
+| LINE Developers webhook verification after tenant activation | PASS - provider UI `Success`, production HTTP 200 in 75 ms |
 | Supabase activation verification | PASS - 5/5 checks; one ACTIVE+HEALTHY channel, one AI-enabled tenant, two audit events, zero FAILED/DLQ jobs |
 | Production knowledge readiness query | SAFE-EMPTY - active public versions/generations/chunks/approved facts all `0`; factual answering remains fail-closed |
 
