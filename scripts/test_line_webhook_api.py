@@ -11,6 +11,7 @@ STORE = (ROOT / "apps" / "web" / "app" / "api" / "v1" / "line" / "webhooks" / "[
 WORKER_ROUTE = (ROOT / "apps" / "web" / "app" / "api" / "v1" / "line" / "worker" / "route.ts").read_text(encoding="utf-8")
 WORKER_RUNTIME = (ROOT / "apps" / "app" / "api" / "v1" / "line" / "worker" / "runtime.ts").read_text(encoding="utf-8") if (ROOT / "apps" / "app").exists() else (ROOT / "apps" / "web" / "app" / "api" / "v1" / "line" / "worker" / "runtime.ts").read_text(encoding="utf-8")
 RUNTIME_SQL = (ROOT / "supabase" / "migrations" / "20260813010000_line_chat_runtime.sql").read_text(encoding="utf-8")
+VERCEL_CONFIG = (ROOT / "vercel.json").read_text(encoding="utf-8")
 
 UNIT_TEST_IDS = [
     "P9-CAN-LINE-INBOX-DELIVERY",
@@ -57,6 +58,12 @@ class LineWebhookApiContractTests(unittest.TestCase):
         self.assertIn("after(async () =>", ROUTE)
         self.assertIn('workerStatus = "DEFERRED"', ROUTE)
         self.assertNotIn("workerStatus = (await runLineWorkerBatch", ROUTE)
+
+    def test_line_runtime_is_colocated_and_emits_privacy_safe_timing(self) -> None:
+        self.assertIn('"regions": ["sin1"]', VERCEL_CONFIG)
+        self.assertIn('console.info("line_webhook_accepted"', ROUTE)
+        for forbidden in ("webhookKey:", "signature:", "rawBody:", "destination:"):
+            self.assertNotIn(forbidden, ROUTE.split('console.info("line_webhook_accepted"', 1)[1])
 
     def test_grounding_and_fail_closed_boundaries_are_explicit(self) -> None:
         for marker in ("ai_chat_enabled", "PUBLIC", "ACTIVE", "effective", "retrieve", "decideAnswerability", "DEPENDENCY_NOT_READY"):

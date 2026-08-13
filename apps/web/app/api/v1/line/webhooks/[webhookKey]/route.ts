@@ -12,6 +12,7 @@ export const maxDuration = 60;
 const store = new PostgresLineWebhookStore();
 
 export async function POST(request: Request, { params }: { params: Promise<{ webhookKey: string }> }): Promise<NextResponse> {
+  const startedAt = Date.now();
   const requestId = request.headers.get("x-request-id") ?? randomUUID();
   const correlationId = randomUUID();
   const hashSecret = process.env.LINE_WEBHOOK_HASH_SECRET;
@@ -33,5 +34,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ web
       }
     });
   }
+  console.info("line_webhook_accepted", {
+    requestId: result.requestId,
+    durationMs: Date.now() - startedAt,
+    acceptedEventCount: result.acceptedEventIds.length,
+    duplicateEventCount: result.duplicateEventIds.length,
+    workerStatus,
+  });
   return NextResponse.json({ accepted: true, requestId: result.requestId, correlationId: result.correlationId, acceptedEventIds: result.acceptedEventIds, duplicateEventIds: result.duplicateEventIds, workerStatus }, { status: 200 });
 }
