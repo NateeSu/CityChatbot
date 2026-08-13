@@ -4,6 +4,44 @@ Status: **DONE** (2026-08-12)
 
 This gate records the MVP production deployment gate only. It does not close P8 hardening, canary, hypercare, UAT or the project as a whole.
 
+## Current continuation checkpoint (2026-08-13)
+
+The repository-side P9 implementation sequence through `P9-CLOSE-001` is unit
+green and recorded by the automatic gate runner. The latest release-close
+revision is `619dff11f65412be42285edc05ff961999cae932`; its required tests passed
+`3/3` with report hash
+`42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428`.
+
+The close-phase action was intentionally recorded as
+`DEFERRED_FAIL_CLOSED` because no external dispatcher is configured in the
+repository runner. This does not create a human approval dependency.
+
+The production LINE runtime remains **NOT VERIFIED / FAIL-CLOSED** for the new
+durable worker: migration `supabase/migrations/20260813010000_line_chat_runtime.sql`
+and the scoped Vercel environment values have not been evidenced as applied in
+this workspace. The deployed boundary must therefore continue returning the
+configuration-safe failure response until those dependencies are applied and
+smoke-tested. Direct LINE chat is not claimed live by this gate.
+
+### Latest repository verification
+
+On the current workspace after `P9-CLOSE-001`, the release pipeline passed:
+
+- `pnpm lint` — PASS
+- `pnpm typecheck` and `pnpm typecheck:packages` — PASS
+- `pnpm test:unit` — PASS, `63` files / `387` tests
+- `pnpm security:scan` — PASS
+- `python scripts/unit_gate.py --validate-only` — PASS
+- `pnpm build` — PASS
+- `pnpm release:manifest` and `pnpm release:verify` — PASS
+- `pnpm release:rc` and `pnpm release:rc:verify` — PASS; current RC digest
+  `222cce8ae51acb22db984a506f8b9f703595121f8f0cd6728a7a808b95344bad`
+- `pnpm test:all` — PASS; Python contract suite `329/329`
+
+These results validate the repository release artifact. They do not substitute
+for external Supabase migration execution, scoped Vercel environment evidence,
+LINE delivery, or a live citizen/RAG provider smoke test.
+
 ## Gate traceability
 
 - Gate: `P9-GATE`
@@ -46,7 +84,9 @@ Keep feature flags off and promote the last `READY` Vercel deployment or redeplo
 
 ## Open work after the gate
 
-- `P9-CAN-001` is the next executable task.
+- No repository implementation task remains in the unit-gate manifest after
+  `P9-CLOSE-001`; the next executable work is external migration/environment
+  configuration and its production smoke evidence.
 - `P8-GATE` remains blocked by external certification/hardening prerequisites.
 - Supabase project provisioning, LINE developer authentication, tenant data wiring and independent RAG certification are not approved by this gate.
 - Project completion is **not claimed**.

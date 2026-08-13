@@ -1525,8 +1525,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: M (3) | Trace: RF-07, RF-08, RF-15, RF-16, RF-18
   - หลักฐาน: [Evidence](./evidence/P9-BAU-001/index.md)
 
-- [ ] `P9-CLOSE-001` ปิด release และทำ post-implementation review
-  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
+- [x] `P9-CLOSE-001` ปิด release และทำ post-implementation review
+  - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428; revision=619dff11f65412be42285edc05ff961999cae932)
   - เจ้าของ: PO + TL; ผู้ร่วม: ทุก owner
   - Prerequisites: P9-HC-001, P9-KT-001, P9-BAU-001
   - Deliverables: achieved outcomes/SLO/cost/quality; automated defect/debt summary; next-phase backlog; machine production record; archived evidence index
@@ -2103,6 +2103,8 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 `P9-KT-001` is now DONE via automatic unit gate report `b3b089304acd013b134c7eaa8e499af7020f30c4df0cd4b98e2e54e90846f87b` at revision `f21cb28e7132c2786a74a29a0e016b62812aa385`; docs/link, runbook safety and inventory/config checks passed `3/3`. The next executable task is `P9-BAU-001`, queued automatically. Live provider configuration remains external and fail-closed.
 
 `P9-BAU-001` is now DONE via automatic unit gate report `01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985` at revision `d68b521252d594342f08d36f4ac4b5f03b268289`; cadence, expiry/stale-source, regression and alert/rollback controls passed `4/4`. The next executable task is `P9-CLOSE-001`, queued automatically. Calendar execution remains separately observable and does not alter this unit-gate result.
+
+`P9-CLOSE-001` is now DONE via automatic unit gate report `42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428` at revision `619dff11f65412be42285edc05ff961999cae932`; release evidence, traceability, archive hashing and idempotency passed `3/3`. The requested `CLOSE_PHASE` action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no external dispatcher. No human approval is pending. The next executable work is external Supabase migration/Vercel environment configuration and production smoke verification; project completion is not claimed.
 
 # Final Release Rule
 

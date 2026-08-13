@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "manifestVersion": "task-unit-gates.v1",
+  "manifestSha256": "81e416d55cda7fa85d1cbcf9e2b2ecac2fb12add6c2a828fc0102a4af1dcbd84",
+  "executionManifestSha256": "e03b6fdddab36c1e287f24dcb85f73434ac76a4fa65089b4d48282a74011c0fd",
+  "taskId": "P9-CLOSE-001",
+  "revision": "619dff11f65412be42285edc05ff961999cae932",
+  "actor": "SYSTEM_UNIT_GATE",
+  "idempotencyKey": "e1ef7e51940c1b7af4e8769ef1381ae45bcd969cd021612fc8898cf239522a3b",
+  "attempt": 1,
+  "status": "PASSED",
+  "startedAt": "2026-08-12T23:52:23Z",
+  "finishedAt": "2026-08-12T23:52:28Z",
+  "requiredTestIds": [
+    "P9-CLOSE-EVIDENCE",
+    "P9-CLOSE-TRACE",
+    "P9-CLOSE-IDEMPOTENCY"
+  ],
+  "passedTestIds": [
+    "P9-CLOSE-EVIDENCE",
+    "P9-CLOSE-TRACE",
+    "P9-CLOSE-IDEMPOTENCY"
+  ],
+  "passCount": 3,
+  "totalCount": 3,
+  "commandPassCount": 1,
+  "commandTotalCount": 1,
+  "commands": [
+    {
+      "command": "pnpm exec tsc -p packages/job-ops/tsconfig.json --noEmit && pnpm exec vitest run packages/job-ops/src/release-close.test.ts packages/job-ops/src/continuous-correctness.test.ts packages/job-ops/src/operations-handoff.test.ts packages/job-ops/src/hypercare-monitor.test.ts packages/job-ops/src/rollout-checkpoints.test.ts packages/job-ops/src/canary-rollout.test.ts packages/job-ops/src/job-ops.test.ts --reporter=dot && python -m unittest scripts.test_release_close -v",
+      "exitCode": 0,
+      "passed": true,
+      "forbiddenTestMarker": false,
+      "stdout": "\n RUN  v4.1.10 D:/codex/CityChatbot\n\n·······························\n\n Test Files  7 passed (7)\n      Tests  31 passed (31)\n   Start at  06:52:26\n   Duration  816ms (transform 722ms, setup 0ms, import 1.21s, tests 94ms, environment 1ms)\n\n",
+      "stderr": "test_close_is_idempotent (scripts.test_release_close.ReleaseCloseContractTests.test_close_is_idempotent) ... ok\ntest_evidence_link_and_summary_contract (scripts.test_release_close.ReleaseCloseContractTests.test_evidence_link_and_summary_contract) ... ok\ntest_trace_and_archive_contract (scripts.test_release_close.ReleaseCloseContractTests.test_trace_and_archive_contract) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.000s\n\nOK\n"
+    }
+  ],
+  "onPass": [
+    "CLOSE_TASK",
+    "CLOSE_PHASE"
+  ],
+  "actions": [
+    {
+      "action": "CLOSE_PHASE",
+      "status": "DEFERRED_FAIL_CLOSED",
+      "reason": "external dispatcher is not configured in repository runner"
+    }
+  ],
+  "reportHash": "42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428"
+}
