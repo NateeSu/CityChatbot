@@ -2,6 +2,32 @@
 
 Status: **DONE** (2026-08-12)
 
+## Current production verification checkpoint (2026-08-13)
+
+The GitHub-linked Vercel production deployment for the latest pushed revision
+completed successfully:
+
+| Item | Current verified result |
+|---|---|
+| Source commit | `c22a0e409d9d6453feca4025e649f4b73a54d9f8` |
+| Deployment | `dpl_5iUcCnsQukifmt9gB8X3g7G221MD` — `READY` |
+| Production alias | `https://city-chatbot-murex.vercel.app` |
+| `/api/health` | HTTP `200`, production JSON status `ok` |
+| `/api/v1/citizen/services` | HTTP `503`, `CONFIGURATION_UNAVAILABLE` (expected fail-closed) |
+| `/api/v1/line/worker` GET | HTTP `405` (expected method guard) |
+| Vercel runtime errors | none found in the selected last-hour window |
+
+The repository release verification also passed on this continuation: `63`
+Vitest files / `387` tests, `329/329` Python contract tests in `pnpm test:all`,
+security scan, production build, release manifest and release-candidate
+verification. The current RC digest is
+`222cce8ae51acb22db984a506f8b9f703595121f8f0cd6728a7a808b95344bad`.
+
+Direct LINE chat is **not claimed live**. The durable worker migration and its
+scoped production environment values remain unverified in this workspace, so
+the citizen/provider boundary remains safely disabled until external migration,
+configuration and a real LINE delivery smoke test are evidenced.
+
 ## Scope and traceability
 
 - Task: `P9-DEP-001`
@@ -30,7 +56,11 @@ The project is connected to the GitHub repository. Production-only environment v
 
 The supplied OpenRouter key was typed only into the Vercel secret field. Generated CSRF and tenant-credential key material was also typed only into Vercel. No secret was written to the repository, shell command, evidence, screenshot or log.
 
-Supabase and LINE are intentionally not claimed as configured: the authenticated Supabase account has no CityChatbot project and the LINE developer tab is not authenticated. Citizen/provider features therefore remain disabled and fail closed; no synthetic data was promoted.
+Historical baseline: Supabase and LINE were not claimed as configured in the
+initial foundation deployment. In the current continuation, their durable
+runtime configuration is still not evidenced in this workspace. Citizen/provider
+features therefore remain disabled and fail closed; no synthetic data was
+promoted.
 
 ## Deployment history and fix
 
@@ -96,4 +126,4 @@ Supabase and LINE are intentionally not claimed as configured: the authenticated
 
 - This is a production foundation deployment, not a claim that the CityChatbot citizen experience is live. Supabase/LINE external configuration and P8 hardening remain open.
 - No earlier `READY` deployment existed at the first successful promotion, so an automatic previous-artifact promotion was not exercised; the safe no-traffic/fail-closed path is available and subsequent Vercel deployments create a rollback candidate.
-- `P8-E2E-001` remains blocked by seven external dependencies; `P9-CAN-001` is the next executable task after this deployment.
+- `P8-E2E-001` remains blocked by seven external dependencies. The repository-side P9 implementation sequence through `P9-CLOSE-001` is unit-green; the next executable work is external migration/environment configuration and production smoke verification, not a new repository task.
