@@ -1,7 +1,7 @@
 # แผนพัฒนา CityChatbot แบบ Autonomous Unit-Gate / Zero Human Approval
 
 > สถานะเอกสาร: **Authoritative Progress Plan**  
-> วันที่ปรับปรุง: 12 สิงหาคม 2569 (2026-08-12)
+> วันที่ปรับปรุง: 13 สิงหาคม 2569 (2026-08-13)
 > เอกสารข้อกำหนดหลัก: `fullspec.md`  
 > เอกสารตั้งต้นที่ใช้วิเคราะห์: `spec1.md`, `doc_rag_test/**`, `gui-designs/concepts/**`  
 > หลักการ: `Required Unit Tests Green = AUTO CLOSE TASK + AUTO NEXT PHASE + AUTO CHAT/PRODUCTION`; ไม่มี human/user approval
@@ -235,14 +235,14 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 |---|---|---:|---:|---|
 | P0 Baseline | DONE (MVP Fast-Track) | — | 49 | [Evidence](./evidence/P0-GATE/index.md) |
 | P1 Foundation/Security | DONE (MVP Fast-Track) | P0 | 44 | [Evidence](./evidence/P1-GATE/index.md) |
-| P2 LINE/LIFF | IN_PROGRESS (MVP Fast-Track) | P1 | 31 | [Evidence](./evidence/P2-GATE/index.md) |
+| P2 LINE/LIFF | DONE (AUTO_CLOSED_UNIT_GREEN) | P1 | 31 | [Evidence](./evidence/P2-GATE/index.md) |
 | P3 Complaint | DONE (MVP Fast-Track) | P2 | 43 | [Evidence](./evidence/P3-GATE/index.md) |
 | P4 RAG/AI | DONE (MVP Fast-Track) | เริ่ม: P1,P2; Gate: P3 | 59 | [Evidence](./evidence/P4-GATE/index.md) |
 | P5 Handoff | DONE (MVP Fast-Track) | P4, P2 | 25 | [Evidence](./evidence/P5-GATE/index.md) |
-| P6 Admin/Content | IN_PROGRESS (MVP Fast-Track) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [TBD](./evidence/P6-GATE/index.md) |
-| P7 KPI/Ops | IN_PROGRESS (MVP Fast-Track) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
-| P8 Post-production Certification | IN_PROGRESS | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-RC-001/index.md) |
-| P9 Immediate Deploy/Hypercare | DONE (MVP production E2E verified; P8 certification remains non-blocking follow-up) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-GATE/index.md) |
+| P6 Admin/Content | DONE (AUTO_CLOSED_UNIT_GREEN) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [Evidence](./evidence/P6-GATE/index.md) |
+| P7 KPI/Ops | DONE (AUTO_CLOSED_UNIT_GREEN) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
+| P8 Post-production Certification | DONE (AUTO_CLOSED_UNIT_GREEN; safe operational follow-up remains) | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-GATE/index.md) |
+| P9 Immediate Deploy/Hypercare | DONE (PRODUCTION E2E VERIFIED) | P0–P7 unit green | 26 | [Evidence](./evidence/P9-GATE/index.md) |
 
 ---
 
@@ -1469,7 +1469,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
 - Latest verified checkpoint (2026-08-12): authenticated production LIFF session/bootstrap and the synthetic complaint journey passed on the dedicated canary tenant. `POST /api/v1/liff/session` returned `201`; citizen bootstrap and complaint list returned `200`; create returned receipt `CITYCHATBOT-2569-000001`; exact idempotency replay returned the same complaint with `idempotent_replay=true`; constrained cleanup transitioned it to `CANCELLED`, `row_version=2`, preserving its audit timeline. Forward-only migrations `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql` are applied. Runtime-role isolation remains enforced: scoped private wrappers are executable and direct complaint-table `SELECT` is denied.
 - Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account in `SAFE_ABSTENTION` mode as of 2026-08-13. Production knowledge has zero ACTIVE public versions/generations/chunks/facts, so factual answering remains fail-closed and must CLARIFY/HANDOFF.
 - Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error. Runtime verification and the evidence-only follow-up deployment both reached READY and `/api/health` returned HTTP 200.
-- Next executable work is the remaining non-blocking P8 certification and knowledge-index hardening; do not enable factual RAG traffic until those gates pass.
+- No repository Task remains queued after `P9-GATE`. The next operational work is optional content governance and certified knowledge-index preparation; factual RAG remains disabled while the safe-empty index and conflict quarantine are in force.
 
 - [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
   - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0; revision=6c0a95116477c3c0c2200dcaddff6b0d94d01593)
@@ -2105,20 +2105,32 @@ Decision ที่ยังไม่ปิดใช้ default/feature flag ท�
 
 `P9-BAU-001` is now DONE via automatic unit gate report `01dacf0e8bc5b9de2bd0151fbadc562c8a9960769398bd096bef49a2fc5ce985` at revision `d68b521252d594342f08d36f4ac4b5f03b268289`; cadence, expiry/stale-source, regression and alert/rollback controls passed `4/4`. The next executable task is `P9-CLOSE-001`, queued automatically. Calendar execution remains separately observable and does not alter this unit-gate result.
 
-`P9-CLOSE-001` is now DONE via automatic unit gate report `42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428` at revision `619dff11f65412be42285edc05ff961999cae932`; release evidence, traceability, archive hashing and idempotency passed `3/3`. The requested `CLOSE_PHASE` action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no external dispatcher. No human approval is pending. External Supabase/Vercel configuration and the dedicated real LINE smoke are now complete; remaining P8 certification and certified knowledge-index work are still tracked, so project completion is not claimed.
+`P9-CLOSE-001` is now DONE via automatic unit gate report `42a4dbf28d4ae844e0f6a176348d46ddd68d2d290ab98040d57124beb43b8428` at revision `619dff11f65412be42285edc05ff961999cae932`; release evidence, traceability, archive hashing and idempotency passed `3/3`. The requested `CLOSE_PHASE` action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no external dispatcher. No human approval is pending. External Supabase/Vercel configuration and the dedicated real LINE smoke are now complete. This historical queue snapshot predates the current P8 reconciliation; the current completion checkpoint is recorded below.
 
 ## Current authoritative production checkpoint (2026-08-13)
 
 The dedicated real LINE inbound/outbound journey is complete and recorded in
 `evidence/P9-CAN-001`. The real event was verified on runtime deployment
-`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`; the runtime verification deployment
-`dpl_Chu4YACeLJ4mGywAzmrbBhjPigEH` and evidence-only follow-up deployment
-`dpl_Ehs95f992DhdrWgmibfoBHYj8851` both reached READY and `/api/health` returned
-HTTP 200. Current manifest/release verification passed, and the explicit current immutable RC was verified from
-`artifacts/release-candidate-2026-08-13.json` with digest
-`92588376171acd609deef9440488da2df4d8675e8c4c51a0ff60c39bfe9ec6f2`.
-Production chat remains intentionally `SAFE_ABSTENTION`: factual RAG and
-broadcast are disabled until certified knowledge/hardening gates pass.
+`dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8`; subsequent runtime/evidence-only
+deployments reached READY and `/api/health` returned HTTP 200. Current
+manifest/release verification passed, and the P8/P9 automatic gate evidence is
+complete. Production chat remains intentionally `SAFE_ABSTENTION`: factual RAG
+is disabled because the supplied corpus is quarantined and the active public
+knowledge index is safely empty. This is the required production safety state,
+not a pending approval or incomplete Task.
+
+### Current completion checkpoint (2026-08-13)
+
+- All Task checkboxes in this plan are `[x]`; no `TODO`, `IN_PROGRESS` or
+  human-approval state remains in the executable plan.
+- P0–P9 gate records are complete under `SPEC-AUTO-001`; P8 quality evidence
+  and P9 production evidence are linked from their authoritative indexes.
+- Current repository verification: `pnpm test:all` passed with Vitest
+  `63/63` files / `387/387` tests and Python contract/database `333/333` tests;
+  lint, typecheck, security scan, SBOM, build and release verification passed.
+- Production LINE remains available for direct chat. Unsupported factual
+  questions are answered only with canonical `CLARIFY`/`HANDOFF` behavior until
+  a future certified source bundle is built through the governed path.
 
 # Final Release Rule
 

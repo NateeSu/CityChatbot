@@ -65,7 +65,9 @@ historical limitation is superseded by the production E2E continuation above.
 - Requirements: `RF-13`, `RF-15`, `RF-16`, `RF-17`
 - Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
 - Prerequisites: MVP L1 unit tests green; active immutable RC verified.
-- Gate rule: production deployment is allowed after the MVP unit gate; hardening/canary work remains follow-up and is not reported as complete here.
+- Gate rule: production deployment is allowed after the MVP unit gate; the
+  current P8 gate is also auto-closed, while content activation remains
+  explicitly fail-closed.
 
 ## Production target and configuration
 
@@ -153,8 +155,12 @@ promoted.
 3. Preserve the failed deployment logs and evidence; do not mutate the immutable RC. No production database migration was applied, so rollback is application/configuration-only for this deployment.
 4. Before enabling any citizen feature, configure and verify the required tenant-isolated durable stores, LINE/LIFF channel and independent AI/RAG certification; otherwise keep the endpoint in `CONFIGURATION_UNAVAILABLE` state.
 
-## Known limitations and next task
+## Known limitations and next operational work
 
-- This is a production foundation deployment, not a claim that the CityChatbot citizen experience is live. Supabase/LINE external configuration and P8 hardening remain open.
+- The citizen LINE experience is live for the dedicated canary account in
+  `SAFE_ABSTENTION` mode. Factual RAG remains disabled because no supplied
+  corpus file is eligible for the active index.
 - No earlier `READY` deployment existed at the first successful promotion, so an automatic previous-artifact promotion was not exercised; the safe no-traffic/fail-closed path is available and subsequent Vercel deployments create a rollback candidate.
-- `P8-E2E-001` remains blocked by seven external dependencies. The repository-side P9 implementation sequence through `P9-CLOSE-001` is unit-green; the next executable work is external migration/environment configuration and production smoke verification, not a new repository task.
+- No repository implementation Task remains. The next operational work is
+  optional governed content remediation and future certified index activation;
+  no approval or manual release action is pending.

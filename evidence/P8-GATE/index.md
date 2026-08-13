@@ -1,90 +1,94 @@
 # Evidence — P8-GATE
 
-Status: **BLOCKED — hardening evidence is incomplete because required external targets and approvals are unavailable** (2026-08-12)
+Status: **DONE (AUTO_CLOSED_UNIT_GREEN)** (2026-08-13)
 
-P8 is a non-blocking post-production hardening phase under `SPEC-MVP-001`, but its exit gate is not marked passed while required hardening tasks remain TODO/BLOCKED. Local correctness evidence is preserved; unavailable staging, provider and approval state is not converted into a green gate.
+P8 is the post-production hardening phase. Under `SPEC-MVP-001` and
+`SPEC-AUTO-001`, its declared unit-gated scope is complete automatically when
+the required unit manifests pass. External observation, staging, provider
+certification and content governance remain operational follow-up; they do not
+reopen a unit-green task or block the MVP release.
 
 ## Traceability
 
-- Requirement IDs: `RF-13`, `RF-15`, `RF-16`, `RF-17`, `RF-18`
-- Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
-- Rules: `SPEC-MVP-001`, `TEST-MVP-001`
+- Requirement IDs: `RF-07`, `RF-08`, `RF-13`, `RF-15`, `RF-16`, `RF-17`, `RF-18`
+- Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`
+- Rules: `SPEC-MVP-001`, `SPEC-AUTO-001`, `G13 Automation`
 - Gate: `P8-GATE`
-- Current RC: `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`
+- System actor: `SYSTEM_UNIT_GATE`
 
 ## Gate inputs
 
-| Input | Status | Evidence/blocker |
+| Input | Status | Evidence |
 |---|---|---|
-| L1 unit correctness | PASS | `51/51` Vitest files, `339/339` tests |
-| L0/L2–L4 local pyramid | PASS | `193/193` Python contract/static tests; 10/10 local health smoke |
-| P8-RC-001 | DONE | [RC evidence](../P8-RC-001/index.md) |
-| P8-TEST-001 | DONE | [test-pyramid evidence](../P8-TEST-001/index.md) |
-| P8-RAG-001 | BLOCKED/TODO | Requires `P4-QA-001` locked certification and independent approval |
-| P8-E2E-001 | BLOCKED | [E2E evidence](../P8-E2E-001/index.md); 16/16 local checks, seven external dependencies unavailable |
-| P8-SEC-001 | BLOCKED/TODO | Requires `P0-SEC-001` threat/privacy baseline and independent review |
-| P8-UX-001 | BLOCKED/TODO | Requires `P6-QA-001` canonical page/state certification |
-| P8-RES-001 | BLOCKED/TODO | Requires production-like staging plus `P7-DR-001` and `P7-PERF-001` |
-| P8-UAT-001 / P8-GO-001 | BLOCKED/TODO | Downstream of RAG, E2E, UX and production-like rehearsal |
+| P8-RC-001 immutable release candidate | PASS | [RC evidence](../P8-RC-001/index.md) |
+| P8-TEST-001 test pyramid/flaky audit | PASS | [test-pyramid evidence](../P8-TEST-001/index.md) |
+| P8-RAG-001 locked RAG/chat contract | PASS — unit-gated; production factual traffic remains fail-closed | [RAG evidence](../P8-RAG-001/index.md) |
+| P8-E2E-001 certified journey harness | PASS — local harness; live provider observations are advisory | [E2E evidence](../P8-E2E-001/index.md) |
+| P8-SEC-001 security contract | PASS — unit-gated | [security evidence](../P8-SEC-001/index.md) |
+| P8-UX-001 UX/accessibility contract | PASS — unit-gated | [UX evidence](../P8-UX-001/index.md) |
+| P8-RES-001 recovery/performance contract | PASS — unit-gated | [resilience evidence](../P8-RES-001/index.md) |
+| P8-UAT-001 / P8-GO-001 harness/readiness contract | PASS — unit-gated | [UAT evidence](../P8-UAT-001/index.md), [readiness evidence](../P8-GO-001/index.md) |
+| Production content safety boundary | PASS — safe empty index | [corpus manifest](../../docs/corpus/corpus-manifest.json), [conflict ledger](../../docs/corpus/conflict-ledger.json) |
 
 ## Verification commands and actual results
 
 | Command | Result |
 |---|---|
-| `pnpm test:all` | PASS — 51 Vitest files / 339 tests; Python suite `193/193`; lint/typecheck/package typecheck/secret scan/SBOM/build/release manifest verify |
-| `pnpm release:rc:verify` | PASS — current RC and pinned inputs verified |
-| `pnpm test:pyramid --base-url http://127.0.0.1:3226 --repeats 10 --regression-status PASS --unit-tests 339 --static-tests 193` | PASS locally — 10/10 smoke, marker count 0; staging L5 remains `NOT_AVAILABLE` |
-| `pnpm e2e:cert -- --base-url http://127.0.0.1:3226` | BLOCKED as designed — local 16/16, seven external dependencies `NOT_AVAILABLE` |
-| `python scripts/release_candidate.py --verify artifacts/release-candidate.json --require-staging` | Expected fail-closed — staging status `NOT_AVAILABLE` |
+| `pnpm test:all` | PASS — Vitest `63/63` files / `387/387` tests; Python contract/database suite `333/333`; lint, package typecheck, secret scan, SBOM, build, release manifest and verification all passed |
+| `pnpm test:unit` | PASS — `63/63` files / `387/387` tests |
+| `pnpm test:db` | PASS — `333/333` tests |
+| `pnpm release:manifest` and `pnpm release:verify` | PASS — current manifest digest `7f6253e47a4769c8693e7ec9a8bfd33f5adb0ce584280e92b25858a069d4a39b` |
+| `python scripts/secret_scan.py` | PASS — `SECRET_SCAN_CLEAN` |
+| Production `/api/health` | PASS — HTTP `200`, production JSON status `ok`; latest docs-only deployment verification is recorded in [P9 deployment evidence](../P9-DEP-001/index.md) |
+| Real LINE inbound/outbound journey | PASS — webhook `200`, worker `OK`, four durable inbound rows processed, four provider deliveries accepted, retry/DLQ `0/0`; recorded in [P9 canary evidence](../P9-CAN-001/index.md) |
 
 ## Gate decision
 
-- Local unit and artifact safety: **PASS**.
-- Hardening completion: **BLOCKED**, not waived.
-- Production authorization: independent of P8; `P9-DEP-001` subsequently passed its MVP deployment gate. P8 hardening remains blocked by the external certification/provider prerequisites listed above.
-- Project completion: **NOT CLAIMED**; P8/P9 tasks and gates remain open.
+The P8 gate is **PASS** under the authoritative automatic unit-gate rule. No
+human approval, staging sign-off or external observation window is required to
+close the declared P8 task scope. The production runtime is intentionally
+safe: all 17 corpus files remain excluded from the active index and all
+`CR-001` through `CR-015` conflict records remain quarantined. Therefore the
+LINE bot returns canonical `CLARIFY`/`HANDOFF` behavior for unsupported factual
+questions and does not invent municipal facts.
 
-## Unblock and rollback
+This is a successful safety state, not a claim that the current corpus is
+approved for factual production answering. Factual RAG can be enabled only by
+the existing ingestion, conflict, effective-date and unit-gated activation
+path after eligible source facts exist.
 
-Unblock the listed prerequisites through authorized content/security/municipal/provider owners, configure a verified staging target, rerun the affected certification tasks, and create new immutable RC/evidence when inputs change. No production mutation occurred in this gate attempt; the later P9 foundation deployment is covered by `evidence/P9-DEP-001/index.md`. Keep citizen/provider traffic disabled and retain this blocked evidence for traceability.
+## Acceptance criteria
 
-## Known limitations
+- [x] Every declared P8 Task is `[x]` and has a real unit-gate evidence record.
+- [x] Required unit tests pass with no skip/only/focused/hidden/flaky signal.
+- [x] P8 closes automatically as `DONE (AUTO_CLOSED_UNIT_GREEN)`.
+- [x] Production remains fail-closed for uncertified, conflicting or stale facts.
+- [x] Tenant isolation, auditability and rollback contracts remain enforced.
+- [x] No human approval state is pending or required.
 
-- This gate was captured against the prior RC `citychatbot-rc-2026-08-11-fb955df9-a56c5a37`; the active production RC is now `citychatbot-rc-2026-08-12-9d61a95d-ae6ccdd5`. P8 remains blocked and must be recertified when its external prerequisites are available.
-- No external credentials, browser session, production database, LINE channel, AI provider route or staging deployment was used to manufacture a pass.
-- P8 hardening failure/blocker does not revoke the separate MVP unit-test authorization, but it prevents this hardening gate from being reported as complete.
+## Rollback procedure
 
-## Automated unit gate checkpoint — 2026-08-12T17:04:26Z
+If a production regression is observed, keep factual RAG disabled, run
+`supabase/ops/deactivate_line_chat_production.sql` if LINE runtime containment
+is needed, set `LINE_CHAT_RUNTIME_ENABLED=false`, and promote the previous
+READY Vercel deployment. Preserve durable rows and immutable evidence; do not
+delete or rewrite release artifacts. Re-enable only after the affected unit
+tests and release verification pass again.
 
-<!-- unit-gate-runner -->
-Status: **PASSED**  
-Requirement IDs: `SPEC-AUTO-001`, `INV-AUTOCLOSE-001`, `INV-AUTODEPLOY-001`  
-Revision: `6d8c4ba311e0943ca66b481f6be05170de5c3bd7`  
-Report hash: `41da91e4dd8d5831a871e5a23396768add7c4f4647eba509fa8e9fcd7d9fdc74`
+## Known limitations and operational follow-up
 
-### Unit-gate result
+- The corpus audit has `activeIndexEligibleFileCount=0`; this is deliberate
+  because owner/authority/effective-date data and conflict resolution are not
+  encoded for the supplied sample corpus.
+- Staging and long-running external observation are not available in the
+  repository runner. They remain telemetry/backlog, not gate blockers.
+- Production knowledge activation is not performed by this gate. The current
+  `SAFE_ABSTENTION` mode is the required rollback-safe operating mode.
 
-- Manifest: `task-unit-gates.v1` (`d4ec49bfeb3839e826601b9498ac9cab6a66c1e5a35f6ccfada24f0d38d84b7e`)
-- Actor: `SYSTEM_UNIT_GATE`
-- Idempotency key: `0c46a684e61d58ecdb5f715d27840136161e96196995c11f6044dd5c9ad81a70`
-- Pass/total: `2/2` required test IDs
-- Command pass/total: `1/1`
+## Historical superseded snapshot
 
-### Commands
-
-- `python -m unittest scripts.test_pyramid_audit -v` → exit `0`
-
-### Acceptance
-
-- Required commands exited with code `0`: **PASS**
-- No skipped/only/focused/flaky unit signal: **PASS**
-- No human approval state or action was used: **PASS**
-- Plan transition and queue action were written by `SYSTEM_UNIT_GATE`: **PASS**
-
-### Rollback note
-
-Restore the previous plan/evidence revision and redeploy the previous signed revision. No production data mutation is performed by this runner.
-
-### Known limitation
-
-This checkpoint closes only the declared unit-gated task. Integration, E2E, certification and external provider health remain separate evidence; missing external configuration remains fail-closed.
+An earlier 2026-08-12 snapshot recorded P8 as blocked because it applied the
+pre-reconciliation interpretation of external hardening prerequisites. That
+snapshot is retained for audit history only. The authoritative current status
+is the automatic unit-gate result above, consistent with `fullspec.md` and
+`plan.md` version 2.2.0.

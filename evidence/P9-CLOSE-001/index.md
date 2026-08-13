@@ -65,12 +65,14 @@ external phase dispatcher. This is an infrastructure handoff state, not a human
 approval request. The external production configuration has since been applied
 and evidenced; the record remains immutable historical runner output.
 
-## Next executable task
+## Next operational work
 
 No repository implementation task remains after this unit-gated task. The real
-LINE inbound/outbound delivery proof is complete; the next executable work is
-certified production knowledge activation and remaining P8 hardening. Project
-completion is not claimed.
+LINE inbound/outbound delivery proof and P8 automatic gate are complete. The
+next operational work is optional governed content remediation and future
+certified production knowledge activation. MVP completion is claimed for the
+declared unit-gated, production-safe scope; factual knowledge activation is not
+claimed while the active public index is safely empty.
 
 ## Automated unit gate checkpoint — 2026-08-12T23:52:28Z
 

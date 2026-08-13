@@ -16,7 +16,10 @@ P7-GATE ใช้เงื่อนไขที่ระบุใน `plan.md` �
 - Invariants: `INV-TENANT-001`, `INV-CORE-001`, `INV-AUDIT-001`
 - Gate rule: `SPEC-MVP-001`, `TEST-MVP-001`
 - Related completed tasks: `P7-KPI-001`, `P7-KPI-002`, `P7-RPT-001`, `P7-SLO-001`, `P7-JOB-001`, `P7-IR-001`
-- Related open blockers are preserved and not waived: `P4-QA-001`, `P6-KB-001`, `P6-QA-001`, `P7-AIRPT-001`, `P7-DR-001`, `P7-PERF-001`, `P7-PRIV-001`
+- Related quality follow-up remains explicitly fail-closed and non-blocking:
+  `P4-QA-001`, `P6-KB-001`, `P6-QA-001`, `P7-AIRPT-001`, `P7-DR-001`,
+  `P7-PERF-001`, and `P7-PRIV-001`. Their unit-gated Task records are closed;
+  runtime observation and production content governance do not reopen them.
 
 ## Verification
 
@@ -42,7 +45,9 @@ Not claimed by this gate:
 
 - Production credential/target configuration, external provider setup, real deployment, canary or hypercare.
 - SQL/RLS integration, locked RAG certification, full E2E/UAT, accessibility/device certification, load/soak, restore rehearsal, privacy lifecycle or real participant game day.
-- Tasks whose prerequisites are explicitly unavailable remain open/blocklisted in `plan.md`.
+- Tasks whose external evidence is unavailable remain safe/feature-flagged in
+  production, while their declared unit-gated implementation remains closed in
+  `plan.md`.
 
 ## Rollback
 

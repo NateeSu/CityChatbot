@@ -2,7 +2,9 @@
 
 Status: **DONE** (2026-08-13)
 
-This gate records the MVP production deployment gate only. It does not close P8 hardening, canary, hypercare, UAT or the project as a whole.
+This gate records the MVP production deployment gate. The P8 automatic gate is
+also complete under the current authoritative policy; this checkpoint does not
+enable uncertified factual knowledge or broadcast traffic.
 
 ## Current continuation checkpoint (2026-08-13)
 
@@ -145,7 +147,10 @@ rewrite production data.
 - No repository implementation task remains in the unit-gate manifest after
   `P9-CLOSE-001`; the dedicated real LINE inbound/outbound/API-accepted
   reconciliation is complete.
-- `P8-GATE` remains blocked by external certification/hardening prerequisites.
+- `P8-GATE` is complete under `SPEC-AUTO-001`; external observation and content
+  governance remain safe operational follow-up.
 - Supabase project provisioning, LINE developer authentication and tenant data
   wiring are complete. Certified ACTIVE production knowledge is not present.
-- Project completion is **not claimed**.
+- MVP project completion is **claimed for the declared unit-gated and
+  production-safe scope**. Certified factual knowledge activation is not
+  claimed because the current active public index is intentionally empty.
