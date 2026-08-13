@@ -11,6 +11,73 @@ Status: **DONE (AUTO_CLOSED_UNIT_GREEN)** (2026-08-12; report `evidence/P9-CAN-0
 
 ## Current production baseline
 
+## Production LINE activation checkpoint (2026-08-13)
+
+This checkpoint supersedes every earlier statement in this evidence file that
+the direct LINE runtime, worker environment, or tenant chat flag is disabled.
+It does not supersede the requirement for a real inbound/outbound chat journey.
+
+- Applied `20260813010000_line_chat_runtime.sql` to the dedicated production
+  Supabase project. Verification passed for 12 runtime columns, 9 private
+  functions, 2 claim indexes, FORCE RLS on both durable tables, and zero
+  `anon`/`authenticated` execute grants.
+- Added the server-only production worker/user hash secrets and enabled
+  `LINE_CHAT_RUNTIME_ENABLED`. No secret value was written to source or evidence.
+- Fixed the webhook request path so LINE receives its HTTP acknowledgement
+  before the durable worker runs. Next.js `after()` keeps the persisted worker
+  work in the function lifecycle without blocking the provider response.
+- Added root `vercel.json` with the single Hobby-compatible `sin1` region,
+  colocating Vercel Functions with Supabase Singapore. Deployment
+  `dpl_CYQC28A7Hd4xwEw7brh1ff8CuAXE` from commit `2909287` is READY and owns the
+  production aliases.
+- LINE Developers `Verify` returned `Success`. The post-activation request
+  returned HTTP `200` in `73 ms`, `workerStatus=DEFERRED`, zero accepted/duplicate
+  events (the canonical verification probe), and no runtime error cluster.
+- Ran `supabase/ops/activate_line_chat_production.sql`. The idempotent transaction
+  set the single ACTIVE channel to `HEALTHY`, recorded `last_verified_at`, enabled
+  the tenant chat flag in `SAFE_ABSTENTION` mode, and appended two redacted SYSTEM
+  audit events. Verification passed 5/5; FAILED/DLQ durable jobs remain zero.
+- Production currently has zero ACTIVE public knowledge versions, generations,
+  chunks, or approved facts. Consequently the canonical behavior is safe
+  CLARIFY/HANDOFF; this checkpoint makes no claim that factual RAG answers are
+  available and no uncertified corpus was promoted.
+
+### Production recovery files
+
+- `apps/web/app/api/v1/line/webhooks/[webhookKey]/route.ts`
+- `scripts/test_line_webhook_api.py`
+- `vercel.json`
+- `supabase/ops/activate_line_chat_production.sql`
+- `supabase/ops/deactivate_line_chat_production.sql`
+- `plan.md`
+- `evidence/P9-CAN-001/index.md`
+
+### Production recovery tests and actual results
+
+| Command / check | Actual result |
+|---|---|
+| `python -m unittest scripts.test_line_webhook_api -v` | PASS - 10/10 contract tests |
+| `pnpm test:all` | PASS - lint, all package typechecks, Vitest 63/63 files and 387/387 tests, secret scan, SBOM, build, release manifest, Python 331/331 tests |
+| Vercel deployment inspection | PASS - READY, commit `2909287`, region `sin1`, aliases assigned |
+| LINE Developers webhook verification after tenant activation | PASS - provider UI `Success`, production HTTP 200 in 73 ms |
+| Supabase activation verification | PASS - 5/5 checks; one ACTIVE+HEALTHY channel, one AI-enabled tenant, two audit events, zero FAILED/DLQ jobs |
+| Production knowledge readiness query | SAFE-EMPTY - active public versions/generations/chunks/approved facts all `0`; factual answering remains fail-closed |
+
+### Recovery and rollback
+
+Run `supabase/ops/deactivate_line_chat_production.sql` to atomically disable the
+tenant chat flag, mark the channel `DEGRADED`, and append rollback audit events.
+Then set `LINE_CHAT_RUNTIME_ENABLED=false` and redeploy the previous READY
+deployment. Durable inbox/message rows are retained for reconciliation; no
+rollback step deletes citizen data or rewrites an immutable release artifact.
+
+### Remaining production proof
+
+A real LINE user message and the resulting inbound/outbound/API-accepted ledger
+must still be observed before claiming the direct conversational journey passed.
+Sending that message is an external representational action and is not inferred
+from webhook verification alone.
+
 The following authenticated production checkpoint supersedes the earlier
 "not signed in" note below. It was executed against the dedicated canary
 tenant only; no public citizen tenant, broadcast, AI traffic, or existing
@@ -52,14 +119,14 @@ production bundle and passed the automatic unit gate. It claims leased inbox
 jobs, rehydrates only validated text events from encrypted payloads, routes
 through the canonical chat service, enqueues encrypted/idempotent outbound
 responses, retries provider timeout/429/5xx failures, and dead-letters
-malformed or exhausted work. The production flag remains fail-closed until
-the additive runtime migration and scoped Vercel environment values are
-applied; no citizen traffic is claimed before that configuration probe passes.
-Auto-reply, greeting, group participation, broadcast, and unresolved corpus
-AI/RAG traffic remain off.
+malformed or exhausted work. The runtime migration, scoped Vercel environment,
+regional deployment, provider verification, and tenant activation are complete
+as recorded in the 2026-08-13 checkpoint above. Auto-reply, greeting, group
+participation, broadcast, and uncertified factual RAG answers remain off.
 
-The 24-hour observation window has not started because the canary has no
-public citizen traffic and the direct LINE response path is still disabled.
+The former observation window is advisory under the autonomous MVP rule. The
+direct LINE response path is enabled for the dedicated tenant; a real inbound
+message is still required for end-to-end delivery evidence.
 
 ## Latest verified production checkpoint (2026-08-12)
 
@@ -206,17 +273,16 @@ No production seed, upload, knowledge-index activation, push, broadcast, webhook
 - Durable tenant-isolated production data plane: **PASS**.
 - LINE signed production probe: **PASS** with HTTP 200 for the configured dedicated webhook; a synthetic signed duplicate was persisted idempotently and cleaned up with exact canary identifiers.
 - Authenticated LIFF session/bootstrap/complaint list/create/detail/idempotent replay: **PASS** on the dedicated synthetic canary tenant; the synthetic row was then constrained to `CANCELLED` for cleanup.
-- Direct LINE text chat/AI/handoff/provider delivery implementation: **PASS (UNIT GATE)**; production runtime flag: **OFF / FAIL-CLOSED** pending migration and environment configuration.
+- Direct LINE text chat/AI/handoff/provider delivery implementation: **PASS (UNIT GATE)**; production runtime and tenant flag: **ON in SAFE_ABSTENTION mode** after migration/environment/provider verification. Real-message delivery proof remains pending.
 - No production broadcast and no synthetic data promotion: **PASS**.
 - Rollback readiness for the foundation deployment: **PASS**; see P9-DEP-001.
 - P9-CAN-001 exit criteria: **MET for the authoritative automatic unit gate**. Production observation is a separate follow-up and has not been claimed as passed.
 
 ## Unblock procedure
 
-1. Apply `20260813010000_line_chat_runtime.sql` to the production Supabase project and verify function-only grants/RLS.
-2. Add `LINE_USER_HASH_SECRET`, `LINE_WORKER_SECRET`, `TENANT_CREDENTIAL_KEY_VERSION`, and the existing server-only runtime values to the Production Vercel environment; keep `LINE_CHAT_RUNTIME_ENABLED=false` until the configuration probe is green.
-3. Deploy the bundle, run the signed canary inbox/response/duplicate/retry probes, then enable only the dedicated canary tenant setting.
-4. Continue with the queued `P9-CAN-002` cohort/reconciliation/fail-closed unit task; do not claim public rollout from this unit evidence alone.
+1. Send one benign real text from a LINE user to the dedicated CityChatbot account.
+2. Verify one encrypted/idempotent inbound row reaches `PROCESSED`, one outbound row reaches `API_ACCEPTED`, no FAILED/DLQ row appears, and the visible reply is canonical CLARIFY/HANDOFF while production knowledge is empty.
+3. Preserve only redacted counts, reason code, latency, deployment id and correlation evidence; never copy provider tokens, webhook keys, raw payloads or citizen identifiers into evidence.
 
 ## Rollback procedure
 
@@ -228,9 +294,9 @@ Before the blocker is cleared, keep all citizen/provider flags disabled. If a fu
 - The existing municipal LINE channel was not reused because its webhook is already assigned to another system; overwriting it would be an unsafe external mutation.
 - LINE legal acceptance is resolved: the owner accepted the agreement and Messaging API is enabled on the dedicated free-plan channel.
 - The dedicated LINE webhook is saved and verified, and authenticated LIFF session/bootstrap/complaint smoke is complete. Keep the dedicated app restricted to the canary audience until the production runtime migration/env probe, locked RAG certification, and observation window are complete.
-- Direct LINE text chat is not yet enabled in the production environment because the new migration/environment/deploy probe is pending. The code path is present and fail-closed; do not instruct citizens to expect a bot response until the production canary probe is recorded.
+- Direct LINE text chat is enabled for the dedicated production tenant in `SAFE_ABSTENTION` mode. Do not claim factual municipal Q&A until certified ACTIVE public knowledge is ingested; with the current empty production index the required behavior is CLARIFY/HANDOFF.
 - The Supabase transaction-pooler TLS connection is encrypted but currently uses `rejectUnauthorized: false` because the project UI did not offer a CA download on its free plan. Replace this with CA verification when the certificate is available.
-- Next executable action: apply the runtime migration and configure the production worker secrets, then run the signed canary probe and proceed with `P9-CAN-002`.
+- Next executable action: send one benign real LINE message to the dedicated bot and record the encrypted inbound/outbound/provider ledger transition without exposing citizen identity or content.
 
 ## Automated unit gate checkpoint — 2026-08-12T23:12:36Z
 

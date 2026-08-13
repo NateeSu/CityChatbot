@@ -51,26 +51,26 @@ idempotency key after correcting links or trace rows.
 
 ## Known limitations
 
-- The generator closes only the records supplied to it. It cannot prove live
-  Supabase migration, Vercel environment, LINE delivery or calendar observation
-  without external control-plane evidence.
-- Existing production remains fail-closed for the new LINE chat runtime until
-  those external dependencies are applied and verified.
+- The generator closes only the records supplied to it. Live Supabase migration,
+  Vercel environment and LINE provider verification are now recorded separately
+  in `evidence/P9-CAN-001`; real inbound/outbound delivery still requires an
+  external LINE user message.
+- The LINE runtime is enabled in `SAFE_ABSTENTION` mode. Factual answers remain
+  fail-closed because production has no certified ACTIVE public knowledge.
 
 ## Phase close action
 
 The automatic unit gate passed and closed this task. Its requested `CLOSE_PHASE`
 action is recorded as `DEFERRED_FAIL_CLOSED` because the repository runner has no
 external phase dispatcher. This is an infrastructure handoff state, not a human
-approval request. The P9 release evidence and production configuration must
-remain explicitly observable; missing Supabase migration or Vercel environment
-values continue to keep direct LINE chat fail-closed.
+approval request. The external production configuration has since been applied
+and evidenced; the record remains immutable historical runner output.
 
 ## Next executable task
 
 No repository implementation task remains after this unit-gated task. The next
-executable work is external production configuration and verification, followed
-by the aggregate P9 release/production gate. Project completion is not claimed.
+executable work is one real LINE inbound/outbound delivery proof and subsequent
+certified production knowledge activation. Project completion is not claimed.
 
 ## Automated unit gate checkpoint — 2026-08-12T23:52:28Z
 

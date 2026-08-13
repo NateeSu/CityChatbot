@@ -16,21 +16,18 @@ The close-phase action was intentionally recorded as
 `DEFERRED_FAIL_CLOSED` because no external dispatcher is configured in the
 repository runner. This does not create a human approval dependency.
 
-The production LINE runtime remains **NOT VERIFIED / FAIL-CLOSED** for the new
-durable worker: migration `supabase/migrations/20260813010000_line_chat_runtime.sql`
-and the scoped Vercel environment values have not been evidenced as applied in
-this workspace. The deployed boundary must therefore continue returning the
-configuration-safe failure response until those dependencies are applied and
-smoke-tested. Direct LINE chat is not claimed live by this gate.
+The production LINE runtime is **CONFIGURED AND PROVIDER-VERIFIED** for the new
+durable worker. Migration `supabase/migrations/20260813010000_line_chat_runtime.sql`
+is applied, scoped Vercel environment values are configured, the tenant flag is
+enabled in audited `SAFE_ABSTENTION` mode, and LINE Developers `Verify` passes.
+The current production knowledge index is empty, so factual answers remain
+fail-closed and must use canonical CLARIFY/HANDOFF behavior.
 
 The verified application deployment in this checkpoint is
-`dpl_5iUcCnsQukifmt9gB8X3g7G221MD` from source commit
-`c22a0e409d9d6453feca4025e649f4b73a54d9f8`, state `READY`, with the production
-alias `https://city-chatbot-murex.vercel.app`. The subsequent evidence-only
-commit also produced READY deployment
-`dpl_AbRfCqNtXqkcS6jizykFyzPTsn8u`. Read-only checks on both returned health
-`200`, the expected citizen configuration `503`, and the expected worker GET
-method guard `405`; Vercel reported no runtime errors in the selected window.
+`dpl_CYQC28A7Hd4xwEw7brh1ff8CuAXE` from source commit `2909287`, state `READY`,
+region `sin1`, with the production alias
+`https://city-chatbot-murex.vercel.app`. LINE verification returned HTTP `200`
+in `73 ms`; Vercel reported no runtime errors in the selected window.
 
 ### Latest repository verification
 
@@ -47,9 +44,10 @@ On the current workspace after `P9-CLOSE-001`, the release pipeline passed:
   `222cce8ae51acb22db984a506f8b9f703595121f8f0cd6728a7a808b95344bad`
 - `pnpm test:all` — PASS; Python contract suite `329/329`
 
-These results validate the repository release artifact. They do not substitute
-for external Supabase migration execution, scoped Vercel environment evidence,
-LINE delivery, or a live citizen/RAG provider smoke test.
+These results validate the repository release artifact. External Supabase,
+Vercel and LINE provider verification is now separately recorded in
+`evidence/P9-CAN-001`; one real inbound/outbound LINE journey and certified
+ACTIVE production knowledge remain distinct operational evidence.
 
 ## Gate traceability
 
@@ -73,7 +71,7 @@ LINE delivery, or a live citizen/RAG provider smoke test.
 
 ## Decision
 
-The P9 immediate production gate is **PASS** because the active RC passed the L1 unit gate and a real production deployment completed and passed read-only smoke checks. Citizen AI/LINE/provider traffic is not enabled because its external dependencies are not configured; the fail-closed boundary remains in force.
+The P9 immediate production gate is **PASS** because the active RC passed the L1 unit gate and a real production deployment completed. Dedicated LINE traffic is enabled in `SAFE_ABSTENTION` mode after migration, environment, RLS/grant, regional deployment and provider verification. Factual RAG answers remain fail-closed while the production knowledge index is empty.
 
 ## Verification commands
 
@@ -89,13 +87,18 @@ The P9 immediate production gate is **PASS** because the active RC passed the L1
 
 ## Rollback
 
-Keep feature flags off and promote the last `READY` Vercel deployment or redeploy the active RC source commit if any production smoke or runtime gate fails. Preserve the failed deployment and evidence. No database migration was executed by this deployment, so no schema rollback is required.
+Run `supabase/ops/deactivate_line_chat_production.sql`, set
+`LINE_CHAT_RUNTIME_ENABLED=false`, and promote the prior READY deployment if a
+production smoke or runtime gate fails. Preserve durable rows and evidence.
+The additive runtime schema remains in place; rollback does not delete or
+rewrite production data.
 
 ## Open work after the gate
 
 - No repository implementation task remains in the unit-gate manifest after
-  `P9-CLOSE-001`; the next executable work is external migration/environment
-  configuration and its production smoke evidence.
+  `P9-CLOSE-001`; the next executable proof is one benign real LINE message and
+  its encrypted inbound/outbound/API-accepted reconciliation.
 - `P8-GATE` remains blocked by external certification/hardening prerequisites.
-- Supabase project provisioning, LINE developer authentication, tenant data wiring and independent RAG certification are not approved by this gate.
+- Supabase project provisioning, LINE developer authentication and tenant data
+  wiring are complete. Certified ACTIVE production knowledge is not present.
 - Project completion is **not claimed**.

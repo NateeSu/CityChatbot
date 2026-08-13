@@ -12,6 +12,8 @@ WORKER_ROUTE = (ROOT / "apps" / "web" / "app" / "api" / "v1" / "line" / "worker"
 WORKER_RUNTIME = (ROOT / "apps" / "app" / "api" / "v1" / "line" / "worker" / "runtime.ts").read_text(encoding="utf-8") if (ROOT / "apps" / "app").exists() else (ROOT / "apps" / "web" / "app" / "api" / "v1" / "line" / "worker" / "runtime.ts").read_text(encoding="utf-8")
 RUNTIME_SQL = (ROOT / "supabase" / "migrations" / "20260813010000_line_chat_runtime.sql").read_text(encoding="utf-8")
 VERCEL_CONFIG = (ROOT / "vercel.json").read_text(encoding="utf-8")
+ACTIVATION_SQL = (ROOT / "supabase" / "ops" / "activate_line_chat_production.sql").read_text(encoding="utf-8")
+ROLLBACK_SQL = (ROOT / "supabase" / "ops" / "deactivate_line_chat_production.sql").read_text(encoding="utf-8")
 
 UNIT_TEST_IDS = [
     "P9-CAN-LINE-INBOX-DELIVERY",
@@ -64,6 +66,13 @@ class LineWebhookApiContractTests(unittest.TestCase):
         self.assertIn('console.info("line_webhook_accepted"', ROUTE)
         for forbidden in ("webhookKey:", "signature:", "rawBody:", "destination:"):
             self.assertNotIn(forbidden, ROUTE.split('console.info("line_webhook_accepted"', 1)[1])
+
+    def test_production_activation_is_idempotent_audited_and_reversible(self) -> None:
+        for marker in ("ai_chat_enabled = true", "health = 'HEALTHY'", "AI_CHAT_ENABLED", "LINE_WEBHOOK_VERIFIED", "pg_advisory_xact_lock"):
+            self.assertIn(marker, ACTIVATION_SQL)
+        for marker in ("ai_chat_enabled = false", "health = 'DEGRADED'", "AI_CHAT_DISABLED", "LINE_CHANNEL_DEGRADED", "pg_advisory_xact_lock"):
+            self.assertIn(marker, ROLLBACK_SQL)
+        self.assertNotRegex(ACTIVATION_SQL + ROLLBACK_SQL, r"sk-or-v1-[A-Za-z0-9_-]+")
 
     def test_grounding_and_fail_closed_boundaries_are_explicit(self) -> None:
         for marker in ("ai_chat_enabled", "PUBLIC", "ACTIVE", "effective", "retrieve", "decideAnswerability", "DEPENDENCY_NOT_READY"):
