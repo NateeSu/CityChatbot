@@ -2,20 +2,24 @@
 
 Status: **DONE** (2026-08-12)
 
-## Current production verification checkpoint (2026-08-13)
+## Verified production checkpoint (2026-08-13)
 
-The GitHub-linked Vercel production deployment for the latest pushed revision
-completed successfully:
+The GitHub-linked Vercel production deployment for the application revision
+under verification completed successfully:
 
 | Item | Current verified result |
 |---|---|
-| Source commit | `c22a0e409d9d6453feca4025e649f4b73a54d9f8` |
+| Verified application source commit | `c22a0e409d9d6453feca4025e649f4b73a54d9f8` |
 | Deployment | `dpl_5iUcCnsQukifmt9gB8X3g7G221MD` — `READY` |
 | Production alias | `https://city-chatbot-murex.vercel.app` |
 | `/api/health` | HTTP `200`, production JSON status `ok` |
 | `/api/v1/citizen/services` | HTTP `503`, `CONFIGURATION_UNAVAILABLE` (expected fail-closed) |
 | `/api/v1/line/worker` GET | HTTP `405` (expected method guard) |
 | Vercel runtime errors | none found in the selected last-hour window |
+
+The subsequent evidence-only commit `2858652550418799ad7516143f9b70a079363472`
+also produced READY deployment `dpl_AbRfCqNtXqkcS6jizykFyzPTsn8u`; its health,
+fail-closed citizen and method-guard smoke checks returned the same results.
 
 The repository release verification also passed on this continuation: `63`
 Vitest files / `387` tests, `329/329` Python contract tests in `pnpm test:all`,

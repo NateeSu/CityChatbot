@@ -23,12 +23,14 @@ this workspace. The deployed boundary must therefore continue returning the
 configuration-safe failure response until those dependencies are applied and
 smoke-tested. Direct LINE chat is not claimed live by this gate.
 
-The latest GitHub-linked production deployment is `dpl_5iUcCnsQukifmt9gB8X3g7G221MD`
-from source commit `c22a0e409d9d6453feca4025e649f4b73a54d9f8`, state `READY`, with
-the production alias `https://city-chatbot-murex.vercel.app`. Read-only checks
-returned health `200`, the expected citizen configuration `503`, and the
-expected worker GET method guard `405`; Vercel reported no runtime errors in the
-selected last-hour window.
+The verified application deployment in this checkpoint is
+`dpl_5iUcCnsQukifmt9gB8X3g7G221MD` from source commit
+`c22a0e409d9d6453feca4025e649f4b73a54d9f8`, state `READY`, with the production
+alias `https://city-chatbot-murex.vercel.app`. The subsequent evidence-only
+commit also produced READY deployment
+`dpl_AbRfCqNtXqkcS6jizykFyzPTsn8u`. Read-only checks on both returned health
+`200`, the expected citizen configuration `503`, and the expected worker GET
+method guard `405`; Vercel reported no runtime errors in the selected window.
 
 ### Latest repository verification
 
