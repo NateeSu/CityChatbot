@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "P9-KNOW-002",
-  "verifiedAt": "2026-08-14T03:26:00Z",
+  "verifiedAt": "2026-08-14T04:41:00Z",
   "tenantScopeSha256Prefix": "a94eb94221d8",
   "activation": {
     "mode": "safe-facts-mvp",
@@ -14,10 +14,10 @@
     "approvedPublicFacts": 6
   },
   "lineProbe": {
-    "requestId": "64441e7d-c742-437f-be1b-8805dfad8078",
-    "receivedAt": "2026-08-14T03:12:34Z",
+    "requestId": "7587dfa8-8e63-42e4-84cb-08387e42078f",
+    "receivedAt": "2026-08-14T04:40:53Z",
     "httpStatus": 200,
-    "acceptedEventCount": 1,
+    "acceptedEventCount": 0,
     "duplicateEventCount": 0,
     "knowledgeChunks": 18,
     "knowledgeFacts": 6,
@@ -29,10 +29,25 @@
     "deadLettered": 0,
     "visibleReplyVerified": true
   },
+  "regressionCheckpoint": {
+    "groundingCommit": "42f1fca85c65afd9081e2e1845bb2e28e7b0620f",
+    "deploymentId": "dpl_3YWTFwsE8sXBntmePxHEdnA2pxDj",
+    "supabaseClockPostconditions": {
+      "webhookClockFixActive": true,
+      "webhookClaimUsesBoundedClock": true,
+      "deliveryClockFixActive": true
+    },
+    "drainChatProcessed": 1,
+    "drainDeliveryAccepted": 1,
+    "retryScheduled": 0,
+    "deadLettered": 0,
+    "visibleReply": "ค่าบริการรายครั้ง 30 บาท\nแหล่งข้อมูล: ฟิตเนส",
+    "sameWebhookFreshProbePending": true
+  },
   "finalRelease": {
-    "commit": "5f98004ef8a675ee033e3d56d89a274f9c7bb6af",
-    "deploymentId": "dpl_BJ98vGo16dm6HjRh2HWBgcgka4Qn",
-    "deploymentUrl": "city-chatbot-escgs6twz-nateesus-projects.vercel.app",
+    "commit": "42f1fca85c65afd9081e2e1845bb2e28e7b0620f",
+    "deploymentId": "dpl_3YWTFwsE8sXBntmePxHEdnA2pxDj",
+    "deploymentUrl": "city-chatbot-fil7nl5i7-nateesus-projects.vercel.app",
     "productionAlias": "city-chatbot-murex.vercel.app",
     "region": "sin1",
     "state": "READY",
@@ -41,7 +56,7 @@
     "releaseManifestDigest": "606c47ccc98bd20ba63c407282529739d42b95df2b6aacde161193f4cfb12014"
   },
   "automatedChecks": {
-    "vitest": "66 files / 399 tests passed",
+    "vitest": "67 files / 400 tests passed",
     "pythonContracts": "341 tests passed",
     "targetedKnowledge": "22 tests passed",
     "lint": "passed",

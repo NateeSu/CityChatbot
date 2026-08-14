@@ -1,6 +1,6 @@
 # Evidence — P9-KNOW-002
 
-Status: **DONE** (2026-08-14)
+Status: **IN_PROGRESS** (2026-08-14 — final same-webhook LINE probe pending)
 
 ## Traceability
 
@@ -27,6 +27,10 @@ The visible probe reply also exposed an entity-relevance defect: two independent
 - `packages/knowledge/src/runtime-context.ts`
 - `packages/knowledge/src/runtime-context.test.ts`
 - `packages/knowledge/src/index.ts`
+- `packages/chat/src/grounding.ts`
+- `packages/chat/src/production-fitness-answer.test.ts`
+- `supabase/migrations/20260814010000_fix_line_delivery_clock_skew.sql`
+- `scripts/test_line_runtime_schema.py`
 - `evidence/P9-KNOW-002/index.md`
 - `evidence/P9-KNOW-002/production-verification.json`
 - `plan.md`
@@ -48,6 +52,14 @@ The visible probe reply also exposed an entity-relevance defect: two independent
 | Production health | PASS — `GET /api/health` returned HTTP `200` and production status `ok` |
 | Runtime error scan | PASS — no grouped runtime errors in the selected 30-minute window |
 
+## 2026-08-14 grounding and queue-clock regression checkpoint
+
+The original visible reply was not acceptable: it merged the Fitness fee with a free KCC fact, repeated the fee label and emitted a generic citation. Commit `42f1fca` now renders only the exact matched fact and limits citations to chunks supporting that fact. The deterministic final-render regression locks the LINE output to `ค่าบริการรายครั้ง 30 บาท` plus `แหล่งข้อมูล: ฟิตเนส` and rejects KCC/free-service leakage.
+
+The first post-release live probe exposed a separate production timing defect. Postgres stamped newly queued jobs after the Vercel host timestamp passed into the claim RPC, so inbound and outbound jobs could miss the same worker invocation by milliseconds and move one probe behind. Migration `20260814010000_fix_line_delivery_clock_skew.sql` replaces both claim functions with database-bounded `claim_at := greatest(p_now, statement_timestamp())` semantics. Supabase production postconditions passed for webhook, delivery and queue eligibility (`true / true / true`).
+
+After the migration, the LINE Developers provider Verify probe succeeded and drained the pending real message. Vercel request `7587dfa8-8e63-42e4-84cb-08387e42078f` completed `OK` with `chatProcessed=1`, `deliveryAccepted=1`, retry `0`, DLQ `0`. LINE Desktop visibly showed the exact two-line Fitness answer at 11:40 Asia/Bangkok. A final fresh real-message probe remains required to prove that both counts occur in the originating webhook invocation, rather than during a drain probe; therefore this task remains IN_PROGRESS.
+
 The LINE webhook path, channel credentials, LINE user identifier, source PII, and database credentials are intentionally omitted. The Vercel runtime log retained only a tenant hash, input shape/hash, counts, canonical outcomes, and request identifier.
 
 ## Verification commands and actual results
@@ -55,7 +67,7 @@ The LINE webhook path, channel credentials, LINE user identifier, source PII, an
 | Command/check | Result |
 |---|---|
 | `pnpm exec vitest run packages/knowledge/src/runtime-context.test.ts packages/knowledge/src/retriever.test.ts packages/chat/src/grounding.test.ts apps/web/src/server/database-timestamp.test.ts --reporter=dot` | PASS — `4` files / `25` tests |
-| `pnpm test:unit` | PASS — `66` files / `399` tests |
+| `pnpm test:unit` | PASS — `67` files / `400` tests |
 | `pnpm lint` | PASS |
 | `pnpm typecheck && pnpm typecheck:packages` | PASS |
 | `pnpm security:scan` | PASS — `SECRET_SCAN_CLEAN` |
@@ -66,6 +78,10 @@ The LINE webhook path, channel credentials, LINE user identifier, source PII, an
 | `python scripts/unit_gate.py --validate-only` | PASS — manifest valid |
 | Vercel deployment inspection | PASS — final deployment READY with production aliases and no alias error |
 | Vercel authenticated health fetch | PASS — HTTP `200` |
+| `python -m unittest scripts.test_line_runtime_schema scripts.test_line_webhook_api` | PASS — `17/17` |
+| Supabase production claim-function postconditions | PASS — webhook clock, webhook queue eligibility and delivery clock all `true` |
+| LINE Developers provider Verify | PASS — webhook verification `Success` |
+| Production drain telemetry | PASS — request `7587dfa8-8e63-42e4-84cb-08387e42078f`; chat `1`, delivery accepted `1`, retry/DLQ `0/0` |
 
 The first `pnpm test:db` attempt correctly failed three release-candidate tests because the local production build had changed `.next/BUILD_ID` after the previous release manifest. The release manifest was regenerated and verified; the entire Python suite then passed `341/341`. This recovery is part of the actual test record rather than being hidden.
 
@@ -91,5 +107,5 @@ The first `pnpm test:db` attempt correctly failed three release-candidate tests 
 ## Known limitations
 
 - The production MVP intentionally exposes only six certified exact-fact anchors. Questions outside that small surface safely return `CLARIFY` or `HANDOFF`; the remaining screened corpus is not bulk-answerable.
-- The one action-time-confirmed LINE probe ran on the timestamp-normalization deployment and proved real inbound, retrieval, answer generation and outbound delivery. The subsequent entity-scoping/source-title guard is verified by `399/399` unit tests, build/health checks and the READY final deployment; no additional representational LINE message was sent without a new confirmation.
+- Grounding and queue-clock fixes are active and the corrected answer is visible. Task closure still requires one fresh real-message probe whose own webhook telemetry records both chat processing and provider acceptance; no additional representational LINE message will be sent without a new action-time confirmation.
 - Source screenshots and raw production identifiers are deliberately not stored in repository evidence. The redacted telemetry record is sufficient to reproduce counts and canonical outcomes without exposing PII or credentials.

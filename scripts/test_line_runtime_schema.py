@@ -11,6 +11,8 @@ SQL = (ROOT / "supabase" / "migrations" / "20260812130000_line_runtime_functions
 NORMALIZED = re.sub(r"\s+", " ", SQL).lower()
 CLAIM_FIX_SQL = (ROOT / "supabase" / "migrations" / "20260813020000_fix_line_runtime_claim_qualification.sql").read_text(encoding="utf-8")
 CLAIM_FIX_NORMALIZED = re.sub(r"\s+", " ", CLAIM_FIX_SQL).lower()
+CLOCK_FIX_SQL = (ROOT / "supabase" / "migrations" / "20260814010000_fix_line_delivery_clock_skew.sql").read_text(encoding="utf-8")
+CLOCK_FIX_NORMALIZED = re.sub(r"\s+", " ", CLOCK_FIX_SQL).lower()
 
 
 class LineRuntimeSchemaTests(unittest.TestCase):
@@ -60,6 +62,18 @@ class LineRuntimeSchemaTests(unittest.TestCase):
             "where tenant_id = selected_message.tenant_id",
         ):
             self.assertNotIn(ambiguous, CLAIM_FIX_NORMALIZED)
+
+    def test_line_delivery_claim_uses_database_bounded_clock(self) -> None:
+        self.assertIn("create or replace function private.claim_line_webhook_job", CLOCK_FIX_NORMALIZED)
+        self.assertIn("create or replace function private.claim_line_message_job", CLOCK_FIX_NORMALIZED)
+        self.assertEqual(CLOCK_FIX_NORMALIZED.count("claim_at := greatest(p_now, statement_timestamp())"), 2)
+        self.assertEqual(CLOCK_FIX_NORMALIZED.count("j.next_attempt_at <= claim_at"), 2)
+        self.assertEqual(CLOCK_FIX_NORMALIZED.count("j.lease_expires_at < claim_at"), 2)
+        self.assertEqual(CLOCK_FIX_NORMALIZED.count("lease_until := claim_at + make_interval"), 2)
+        self.assertIn("inbox.lease_expires_at < claim_at", CLOCK_FIX_NORMALIZED)
+        self.assertNotIn("j.next_attempt_at <= p_now", CLOCK_FIX_NORMALIZED)
+        self.assertNotIn("j.lease_expires_at < p_now", CLOCK_FIX_NORMALIZED)
+        self.assertNotRegex(CLOCK_FIX_SQL, r"sk-or-v1-[A-Za-z0-9_-]+")
 
 
 if __name__ == "__main__":
