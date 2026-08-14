@@ -30,6 +30,11 @@ import {
 } from "@citychatbot/knowledge";
 import { decryptSecret, encryptSecret, type EncryptedSecret } from "@citychatbot/security/secret-vault";
 
+import {
+  databaseTimestamp,
+  optionalDatabaseTimestamp,
+  type DatabaseTimestamp,
+} from "../../../../../src/server/database-timestamp";
 import { databasePool } from "../../../../../src/server/runtime-database";
 
 type WebhookClaimRow = {
@@ -87,15 +92,15 @@ type KnowledgeChunkRow = {
   visibility: "PUBLIC";
   owner_department_id: string;
   authority_level: number;
-  valid_from: string | null;
-  valid_until: string | null;
+  valid_from: DatabaseTimestamp | null;
+  valid_until: DatabaseTimestamp | null;
   source_locator_json: unknown;
   source_hash: string;
   token_count: number;
   language: "th" | "en" | "mixed";
   previous_chunk_id: string | null;
   next_chunk_id: string | null;
-  created_at: string;
+  created_at: DatabaseTimestamp;
 };
 
 type KnowledgeFactRow = {
@@ -110,8 +115,8 @@ type KnowledgeFactRow = {
   value_json: unknown;
   normalized_value: string;
   unit: string | null;
-  valid_from: string | null;
-  valid_until: string | null;
+  valid_from: DatabaseTimestamp | null;
+  valid_until: DatabaseTimestamp | null;
   authority_level: number;
   visibility: "PUBLIC";
   source_chunk_id: string;
@@ -119,7 +124,7 @@ type KnowledgeFactRow = {
   source_quote: string;
   extraction_method: "RULE" | "MODEL" | "HUMAN";
   review_status: "APPROVED";
-  reviewed_at: string | null;
+  reviewed_at: DatabaseTimestamp | null;
 };
 
 const CONTROL_PATTERN = /[\u0000-\u001f\u007f]/;
@@ -218,55 +223,64 @@ const sourceLocator = (value: unknown): IndexChunk["sourceLocator"] => {
   };
 };
 
-const mapChunk = (row: KnowledgeChunkRow): IndexChunk => ({
-  id: databaseId(row.id),
-  tenantId: databaseId(row.tenant_id),
-  documentVersionId: databaseId(row.document_version_id),
-  ...(row.parent_chunk_id ? { parentChunkId: databaseId(row.parent_chunk_id) } : {}),
-  chunkType: databaseEnum(row.chunk_type) as IndexChunk["chunkType"],
-  chunkIndex: row.chunk_index,
-  displayText: row.display_text,
-  searchText: row.search_text,
-  entityKeys: stringArray(row.entity_keys),
-  topicKeys: stringArray(row.topic_keys),
-  factTypes: stringArray(row.fact_types).map(databaseEnum) as IndexChunk["factTypes"],
-  visibility: databaseEnum(row.visibility) as IndexChunk["visibility"],
-  ownerDepartmentId: databaseId(row.owner_department_id),
-  authorityLevel: row.authority_level,
-  ...(row.valid_from ? { validFrom: row.valid_from } : {}),
-  ...(row.valid_until ? { validUntil: row.valid_until } : {}),
-  sourceLocator: sourceLocator(row.source_locator_json),
-  sourceHash: row.source_hash.trim(),
-  tokenCount: row.token_count,
-  language: databaseLanguage(row.language),
-  ...(row.previous_chunk_id ? { previousChunkId: databaseId(row.previous_chunk_id) } : {}),
-  ...(row.next_chunk_id ? { nextChunkId: databaseId(row.next_chunk_id) } : {}),
-  createdAt: row.created_at,
-});
+const mapChunk = (row: KnowledgeChunkRow): IndexChunk => {
+  const validFrom = optionalDatabaseTimestamp(row.valid_from, "knowledge chunk valid_from");
+  const validUntil = optionalDatabaseTimestamp(row.valid_until, "knowledge chunk valid_until");
+  return ({
+    id: databaseId(row.id),
+    tenantId: databaseId(row.tenant_id),
+    documentVersionId: databaseId(row.document_version_id),
+    ...(row.parent_chunk_id ? { parentChunkId: databaseId(row.parent_chunk_id) } : {}),
+    chunkType: databaseEnum(row.chunk_type) as IndexChunk["chunkType"],
+    chunkIndex: row.chunk_index,
+    displayText: row.display_text,
+    searchText: row.search_text,
+    entityKeys: stringArray(row.entity_keys),
+    topicKeys: stringArray(row.topic_keys),
+    factTypes: stringArray(row.fact_types).map(databaseEnum) as IndexChunk["factTypes"],
+    visibility: databaseEnum(row.visibility) as IndexChunk["visibility"],
+    ownerDepartmentId: databaseId(row.owner_department_id),
+    authorityLevel: row.authority_level,
+    ...(validFrom === undefined ? {} : { validFrom }),
+    ...(validUntil === undefined ? {} : { validUntil }),
+    sourceLocator: sourceLocator(row.source_locator_json),
+    sourceHash: row.source_hash.trim(),
+    tokenCount: row.token_count,
+    language: databaseLanguage(row.language),
+    ...(row.previous_chunk_id ? { previousChunkId: databaseId(row.previous_chunk_id) } : {}),
+    ...(row.next_chunk_id ? { nextChunkId: databaseId(row.next_chunk_id) } : {}),
+    createdAt: databaseTimestamp(row.created_at, "knowledge chunk created_at"),
+  });
+};
 
-const mapFact = (row: KnowledgeFactRow): IndexFact => ({
-  id: databaseId(row.id),
-  tenantId: databaseId(row.tenant_id),
-  documentVersionId: databaseId(row.document_version_id),
-  entityType: row.entity_type,
-  entityKey: row.entity_key.trim(),
-  entityDisplayName: row.entity_display_name,
-  factType: databaseEnum(row.fact_type) as IndexFact["factType"],
-  factKey: row.fact_key.trim(),
-  valueJson: isRecord(row.value_json) ? row.value_json : { value: row.value_json },
-  normalizedValue: row.normalized_value.trim(),
-  ...(row.unit ? { unit: row.unit } : {}),
-  ...(row.valid_from ? { validFrom: row.valid_from } : {}),
-  ...(row.valid_until ? { validUntil: row.valid_until } : {}),
-  authorityLevel: row.authority_level,
-  visibility: databaseEnum(row.visibility) as IndexFact["visibility"],
-  sourceChunkId: databaseId(row.source_chunk_id),
-  sourceLocator: sourceLocator(row.source_locator_json),
-  sourceQuote: row.source_quote,
-  extractionMethod: databaseEnum(row.extraction_method) as IndexFact["extractionMethod"],
-  reviewStatus: databaseEnum(row.review_status) as IndexFact["reviewStatus"],
-  ...(row.reviewed_at ? { reviewedAt: row.reviewed_at } : {}),
-});
+const mapFact = (row: KnowledgeFactRow): IndexFact => {
+  const validFrom = optionalDatabaseTimestamp(row.valid_from, "knowledge fact valid_from");
+  const validUntil = optionalDatabaseTimestamp(row.valid_until, "knowledge fact valid_until");
+  const reviewedAt = optionalDatabaseTimestamp(row.reviewed_at, "knowledge fact reviewed_at");
+  return ({
+    id: databaseId(row.id),
+    tenantId: databaseId(row.tenant_id),
+    documentVersionId: databaseId(row.document_version_id),
+    entityType: row.entity_type,
+    entityKey: row.entity_key.trim(),
+    entityDisplayName: row.entity_display_name,
+    factType: databaseEnum(row.fact_type) as IndexFact["factType"],
+    factKey: row.fact_key.trim(),
+    valueJson: isRecord(row.value_json) ? row.value_json : { value: row.value_json },
+    normalizedValue: row.normalized_value.trim(),
+    ...(row.unit ? { unit: row.unit } : {}),
+    ...(validFrom === undefined ? {} : { validFrom }),
+    ...(validUntil === undefined ? {} : { validUntil }),
+    authorityLevel: row.authority_level,
+    visibility: databaseEnum(row.visibility) as IndexFact["visibility"],
+    sourceChunkId: databaseId(row.source_chunk_id),
+    sourceLocator: sourceLocator(row.source_locator_json),
+    sourceQuote: row.source_quote,
+    extractionMethod: databaseEnum(row.extraction_method) as IndexFact["extractionMethod"],
+    reviewStatus: databaseEnum(row.review_status) as IndexFact["reviewStatus"],
+    ...(reviewedAt === undefined ? {} : { reviewedAt }),
+  });
+};
 
 class RuntimeKnowledgeSource implements RetrievalSource {
   constructor(private readonly chunks: IndexChunk[], private readonly facts: IndexFact[]) {}
