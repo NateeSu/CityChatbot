@@ -242,7 +242,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 | P6 Admin/Content | DONE (AUTO_CLOSED_UNIT_GREEN) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [Evidence](./evidence/P6-GATE/index.md) |
 | P7 KPI/Ops | DONE (AUTO_CLOSED_UNIT_GREEN) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
 | P8 Post-production Certification | DONE (AUTO_CLOSED_UNIT_GREEN; safe operational follow-up remains) | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-GATE/index.md) |
-| P9 Immediate Deploy/Hypercare | IN_PROGRESS (final same-webhook LINE verification pending after grounding and queue-clock fixes) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
+| P9 Immediate Deploy/Hypercare | DONE (grounding regression and LINE queue-clock race fixed; final same-webhook probe passed) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
 
 ---
 
@@ -1469,7 +1469,7 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
 - Latest verified checkpoint (2026-08-12): authenticated production LIFF session/bootstrap and the synthetic complaint journey passed on the dedicated canary tenant. `POST /api/v1/liff/session` returned `201`; citizen bootstrap and complaint list returned `200`; create returned receipt `CITYCHATBOT-2569-000001`; exact idempotency replay returned the same complaint with `idempotent_replay=true`; constrained cleanup transitioned it to `CANCELLED`, `row_version=2`, preserving its audit timeline. Forward-only migrations `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql` are applied. Runtime-role isolation remains enforced: scoped private wrappers are executable and direct complaint-table `SELECT` is denied.
 - Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account. The Project Owner-declared `doc_rag_test` corpus is active through the screened `safe-facts-mvp` surface: 17 receipt-bound source records, 18 active PUBLIC chunks and 6 APPROVED PUBLIC exact facts. Content outside this certified surface remains fail-closed.
 - Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error. Runtime verification and the evidence-only follow-up deployment both reached READY and `/api/health` returned HTTP 200.
-- `P9-KNOW-002` is reopened on 2026-08-14. Commit `42f1fca` fixes entity-scoped grounding/rendering on READY deployment `dpl_3YWTFwsE8sXBntmePxHEdnA2pxDj`; additive migration `20260814010000_fix_line_delivery_clock_skew.sql` is active in Supabase production and a drain probe processed chat `1` / provider delivery `1` with no retry or DLQ. One fresh real-message same-webhook probe remains before DONE.
+- `P9-KNOW-002` completed on 2026-08-14. Commit `42f1fca` fixed entity-scoped grounding/rendering; migration commit `2e1635b` bounded both LINE claim clocks to Postgres time. Final real request `4adb782c-015f-4831-a91a-ce834423affe` on READY deployment `dpl_2fFdTghydAwDkkXk4JasD76abhZs` completed chat `1` and provider delivery `1` in the same webhook with retry/DLQ `0/0`, and LINE displayed only the certified Fitness fee with source title.
 
 - [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
   - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0; revision=6c0a95116477c3c0c2200dcaddff6b0d94d01593)
@@ -1557,8 +1557,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: XL (8) | Trace: RF-07, RF-08, RF-13, RF-14, RF-15, RF-16, RF-18
   - หลักฐาน: [Evidence](./evidence/P9-KNOW-001/index.md)
 
-- [ ] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
-  - สถานะ: IN_PROGRESS (2026-08-14 — grounding regression is fixed and live output is correct; database-bounded clocks are active for inbound/outbound claims; final fresh same-webhook LINE probe is pending)
+- [x] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
+  - สถานะ: DONE (2026-08-14 — final fresh LINE request passed grounded answer, source citation and same-webhook chat/provider delivery checks)
   - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
   - Prerequisites: `P9-KNOW-001`; deployed runtime; existing canary tenant and LINE webhook
   - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`

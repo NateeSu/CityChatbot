@@ -1,6 +1,6 @@
 # Evidence — P9-KNOW-002
 
-Status: **IN_PROGRESS** (2026-08-14 — final same-webhook LINE probe pending)
+Status: **DONE** (2026-08-14)
 
 ## Traceability
 
@@ -58,7 +58,9 @@ The original visible reply was not acceptable: it merged the Fitness fee with a 
 
 The first post-release live probe exposed a separate production timing defect. Postgres stamped newly queued jobs after the Vercel host timestamp passed into the claim RPC, so inbound and outbound jobs could miss the same worker invocation by milliseconds and move one probe behind. Migration `20260814010000_fix_line_delivery_clock_skew.sql` replaces both claim functions with database-bounded `claim_at := greatest(p_now, statement_timestamp())` semantics. Supabase production postconditions passed for webhook, delivery and queue eligibility (`true / true / true`).
 
-After the migration, the LINE Developers provider Verify probe succeeded and drained the pending real message. Vercel request `7587dfa8-8e63-42e4-84cb-08387e42078f` completed `OK` with `chatProcessed=1`, `deliveryAccepted=1`, retry `0`, DLQ `0`. LINE Desktop visibly showed the exact two-line Fitness answer at 11:40 Asia/Bangkok. A final fresh real-message probe remains required to prove that both counts occur in the originating webhook invocation, rather than during a drain probe; therefore this task remains IN_PROGRESS.
+After the migration, the LINE Developers provider Verify probe succeeded and drained the pending real message. Vercel request `7587dfa8-8e63-42e4-84cb-08387e42078f` completed `OK` with `chatProcessed=1`, `deliveryAccepted=1`, retry `0`, DLQ `0`. LINE Desktop visibly showed the exact two-line Fitness answer at 11:40 Asia/Bangkok.
+
+The final action-time-confirmed real message then passed on deployment `dpl_2fFdTghydAwDkkXk4JasD76abhZs`. Its originating webhook request `4adb782c-015f-4831-a91a-ce834423affe` accepted one event and, in the same deferred worker invocation, recorded `chatProcessed=1`, `deliveryAccepted=1`, retry `0`, DLQ `0`. Retrieval was `READY`, coverage complete, `matchedFactCount=1`, `exactCandidateCount=1`, and the canonical decision was `ANSWER / ANSWERABLE`. LINE Desktop visibly returned exactly `ค่าบริการรายครั้ง 30 บาท` and `แหล่งข้อมูล: ฟิตเนส` within the same minute, with no KCC or free-service leakage. This closes the task.
 
 The LINE webhook path, channel credentials, LINE user identifier, source PII, and database credentials are intentionally omitted. The Vercel runtime log retained only a tenant hash, input shape/hash, counts, canonical outcomes, and request identifier.
 
@@ -82,6 +84,8 @@ The LINE webhook path, channel credentials, LINE user identifier, source PII, an
 | Supabase production claim-function postconditions | PASS — webhook clock, webhook queue eligibility and delivery clock all `true` |
 | LINE Developers provider Verify | PASS — webhook verification `Success` |
 | Production drain telemetry | PASS — request `7587dfa8-8e63-42e4-84cb-08387e42078f`; chat `1`, delivery accepted `1`, retry/DLQ `0/0` |
+| Final fresh real LINE same-webhook probe | PASS — request `4adb782c-015f-4831-a91a-ce834423affe`; accepted `1`, chat `1`, delivery accepted `1`, retry/DLQ `0/0` |
+| Final visible LINE answer | PASS — `ค่าบริการรายครั้ง 30 บาท` + `แหล่งข้อมูล: ฟิตเนส`; no unrelated entity evidence |
 
 The first `pnpm test:db` attempt correctly failed three release-candidate tests because the local production build had changed `.next/BUILD_ID` after the previous release manifest. The release manifest was regenerated and verified; the entire Python suite then passed `341/341`. This recovery is part of the actual test record rather than being hidden.
 
@@ -107,5 +111,5 @@ The first `pnpm test:db` attempt correctly failed three release-candidate tests 
 ## Known limitations
 
 - The production MVP intentionally exposes only six certified exact-fact anchors. Questions outside that small surface safely return `CLARIFY` or `HANDOFF`; the remaining screened corpus is not bulk-answerable.
-- Grounding and queue-clock fixes are active and the corrected answer is visible. Task closure still requires one fresh real-message probe whose own webhook telemetry records both chat processing and provider acceptance; no additional representational LINE message will be sent without a new action-time confirmation.
+- The production MVP intentionally remains limited to the certified safe-facts surface. The final same-webhook probe proves this Fitness fee path; questions outside the approved facts continue to abstain or hand off by canonical policy.
 - Source screenshots and raw production identifiers are deliberately not stored in repository evidence. The redacted telemetry record is sufficient to reproduce counts and canonical outcomes without exposing PII or credentials.

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "taskId": "P9-KNOW-002",
-  "verifiedAt": "2026-08-14T04:41:00Z",
+  "verifiedAt": "2026-08-14T06:40:00Z",
   "tenantScopeSha256Prefix": "a94eb94221d8",
   "activation": {
     "mode": "safe-facts-mvp",
@@ -14,10 +14,10 @@
     "approvedPublicFacts": 6
   },
   "lineProbe": {
-    "requestId": "7587dfa8-8e63-42e4-84cb-08387e42078f",
-    "receivedAt": "2026-08-14T04:40:53Z",
+    "requestId": "4adb782c-015f-4831-a91a-ce834423affe",
+    "receivedAt": "2026-08-14T06:39:42Z",
     "httpStatus": 200,
-    "acceptedEventCount": 0,
+    "acceptedEventCount": 1,
     "duplicateEventCount": 0,
     "knowledgeChunks": 18,
     "knowledgeFacts": 6,
@@ -42,12 +42,18 @@
     "retryScheduled": 0,
     "deadLettered": 0,
     "visibleReply": "ค่าบริการรายครั้ง 30 บาท\nแหล่งข้อมูล: ฟิตเนส",
-    "sameWebhookFreshProbePending": true
+    "sameWebhookFreshProbePending": false,
+    "sameWebhookRequestId": "4adb782c-015f-4831-a91a-ce834423affe",
+    "sameWebhookAcceptedEvents": 1,
+    "sameWebhookChatProcessed": 1,
+    "sameWebhookDeliveryAccepted": 1,
+    "sameWebhookRetryScheduled": 0,
+    "sameWebhookDeadLettered": 0
   },
   "finalRelease": {
-    "commit": "42f1fca85c65afd9081e2e1845bb2e28e7b0620f",
-    "deploymentId": "dpl_3YWTFwsE8sXBntmePxHEdnA2pxDj",
-    "deploymentUrl": "city-chatbot-fil7nl5i7-nateesus-projects.vercel.app",
+    "commit": "2e1635ba37a36af66350eb0039b649e087818025",
+    "deploymentId": "dpl_2fFdTghydAwDkkXk4JasD76abhZs",
+    "deploymentUrl": "city-chatbot-e5h62tfq1-nateesus-projects.vercel.app",
     "productionAlias": "city-chatbot-murex.vercel.app",
     "region": "sin1",
     "state": "READY",
