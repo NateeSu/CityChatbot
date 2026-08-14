@@ -242,7 +242,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 | P6 Admin/Content | DONE (AUTO_CLOSED_UNIT_GREEN) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [Evidence](./evidence/P6-GATE/index.md) |
 | P7 KPI/Ops | DONE (AUTO_CLOSED_UNIT_GREEN) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
 | P8 Post-production Certification | DONE (AUTO_CLOSED_UNIT_GREEN; safe operational follow-up remains) | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-GATE/index.md) |
-| P9 Immediate Deploy/Hypercare | DONE (production corpus and LINE grounded-answer verification complete) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
+| P9 Immediate Deploy/Hypercare | IN_PROGRESS (LINE answer relevance/rendering regression) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
 
 ---
 
@@ -1557,8 +1557,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: XL (8) | Trace: RF-07, RF-08, RF-13, RF-14, RF-15, RF-16, RF-18
   - หลักฐาน: [Evidence](./evidence/P9-KNOW-001/index.md)
 
-- [x] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
-  - สถานะ: DONE (2026-08-14 — 17/17 production receipts, 18 active PUBLIC chunks, 6 APPROVED PUBLIC facts, real LINE `ANSWER / ANSWERABLE`, final deployment READY)
+- [ ] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
+  - สถานะ: IN_PROGRESS (2026-08-14 — reopened after the real LINE reply mixed a KCC fee/citation into a fitness answer; entity, supporting-evidence and final rendering regression is being fixed and redeployed)
   - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
   - Prerequisites: `P9-KNOW-001`; deployed runtime; existing canary tenant and LINE webhook
   - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`

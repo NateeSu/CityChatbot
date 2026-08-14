@@ -176,6 +176,22 @@ const factLabel = (factType: IndexFactType): string => ({
   DISCLAIMER: "หมายเหตุ",
 }[factType] ?? factType);
 
+const factText = (fact: IndexFact): string => {
+  const raw = typeof fact.valueJson.raw === "string" && fact.valueJson.raw.trim()
+    ? fact.valueJson.raw.trim()
+    : fact.normalizedValue.trim();
+  const alreadyDescriptive = fact.factType === "FEE"
+    ? /ค่า|บาท|ฟรี|ไม่เสีย/u.test(raw)
+    : fact.factType === "PHONE"
+      ? /โทร|เบอร์|phone|tel/iu.test(raw)
+      : fact.factType === "BUSINESS_HOURS"
+        ? /เวลา|เปิด|วัน|hours/iu.test(raw)
+        : fact.factType === "DURATION"
+          ? /เวลา|วัน|เดือน|ปี|อายุ|duration/iu.test(raw)
+          : false;
+  return alreadyDescriptive ? raw : `${factLabel(fact.factType)}: ${raw}`;
+};
+
 const stableLocator = (locator: Record<string, unknown>): string => JSON.stringify(locator, Object.keys(locator).sort());
 const normalizeValue = (value: string): string => value.normalize("NFC").toLocaleLowerCase("th-TH").replace(/[๐-๙]/g, (digit) => String(digit.charCodeAt(0) - "๐".charCodeAt(0))).replace(/[^\p{L}\p{N}]+/gu, "");
 const digits = (value: string): string => value.replace(/[๐-๙]/g, (digit) => String(digit.charCodeAt(0) - "๐".charCodeAt(0))).replace(/\D/g, "");
@@ -185,7 +201,12 @@ const expectedOverallOutcome = (results: readonly IntentResult[]): AnswerOutcome
   ? "HANDOFF"
   : results.some((result) => result.outcome === "CLARIFY") ? "CLARIFY" : "ANSWER";
 
-const evidenceFromRetrieval = (retrieval: RetrievalResult, titles: Record<string, string> = {}): GroundingEvidence[] => retrieval.evidence.map((item) => ({
+const evidenceFromRetrieval = (retrieval: RetrievalResult, titles: Record<string, string> = {}): GroundingEvidence[] => {
+  const supportingChunkIds = new Set(retrieval.matchedFacts.map((fact) => fact.sourceChunkId));
+  const selectedEvidence = supportingChunkIds.size > 0
+    ? retrieval.evidence.filter((item) => supportingChunkIds.has(item.chunk.id))
+    : retrieval.evidence;
+  return selectedEvidence.map((item) => ({
   evidenceId: item.evidenceId,
   documentVersionId: item.chunk.documentVersionId,
   title: titles[item.chunk.documentVersionId] ?? "เอกสารอ้างอิง",
@@ -193,7 +214,8 @@ const evidenceFromRetrieval = (retrieval: RetrievalResult, titles: Record<string
   text: item.chunk.displayText,
   exactValues: retrieval.matchedFacts.filter((fact) => fact.sourceChunkId === item.chunk.id).map((fact) => fact.normalizedValue),
   public: item.chunk.visibility === "PUBLIC",
-}));
+  }));
+};
 
 const mapHandoffReason = (reason: RetrievalResult["reasonCode"]): HandoffReasonCode => {
   if (reason === "CONFLICTING_EVIDENCE") return "CONFLICTING_EVIDENCE";
@@ -243,7 +265,7 @@ const answer = (intentId: string, facts: readonly IndexFact[], evidence: readonl
   const claims = materialFacts.length > 0
     ? materialFacts.map((fact, index) => ({
       claimId: `claim-${index + 1}`,
-      text: `${factLabel(fact.factType)}: ${fact.valueJson.raw as string ?? fact.normalizedValue}`,
+      text: factText(fact),
       material: true,
       evidenceIds: [`evidence-${fact.sourceChunkId}`],
     }))
