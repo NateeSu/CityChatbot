@@ -3,8 +3,21 @@
 Status: **DONE** (2026-08-13)
 
 This gate records the MVP production deployment gate. The P8 automatic gate is
-also complete under the current authoritative policy; this checkpoint does not
-enable uncertified factual knowledge or broadcast traffic.
+also complete under the current authoritative policy. The later `P9-KNOW-002`
+continuation now enables only the screened `safe-facts-mvp` knowledge surface;
+uncertified factual knowledge and broadcast traffic remain disabled.
+
+## Final knowledge activation checkpoint (2026-08-14)
+
+`P9-KNOW-002` is complete. The dedicated production tenant has `17/17`
+receipt-bound `ACTIVE + UNIT_GATED` source versions, `17` READY index
+generations, `18` active PUBLIC chunks and `6` APPROVED PUBLIC exact facts. A
+real LINE request completed `ANSWER / ANSWERABLE`, provider delivery was
+accepted, and no retry or dead letter was created. Final commit `5f98004`
+adds entity-scoped fact selection and source-title citations and is READY on
+deployment `dpl_BJ98vGo16dm6HjRh2HWBgcgka4Qn` in `sin1`; production health
+returned HTTP `200` and the selected 30-minute runtime-error scan was clean.
+See [P9-KNOW-002](../P9-KNOW-002/index.md).
 
 ## Current continuation checkpoint (2026-08-13)
 
@@ -25,8 +38,9 @@ durable worker. Migrations
 are applied, scoped Vercel environment values are configured, the tenant flag
 is enabled in audited `SAFE_ABSTENTION` mode, and LINE Developers `Verify`
 passes.
-The current production knowledge index is empty, so factual answers remain
-fail-closed and must use canonical CLARIFY/HANDOFF behavior.
+At this historical checkpoint the production knowledge index was empty. It is
+superseded by the final knowledge activation checkpoint above; content outside
+the six certified exact-fact anchors still uses canonical CLARIFY/HANDOFF.
 
 The real LINE journey was verified on deployment
 `dpl_6vhzdaSbEGP7tHJdPAX6YWLRvei8` from source commit `d7122d0`. Runtime
@@ -118,7 +132,7 @@ knowledge remains distinct operational evidence and is intentionally absent.
 
 ## Decision
 
-The P9 immediate production gate is **PASS** because the current release artifacts passed the L1 unit gate, a real production deployment completed, and the dedicated LINE inbound/outbound journey reconciled successfully. Dedicated LINE traffic is enabled in `SAFE_ABSTENTION` mode after migration, environment, RLS/grant, regional deployment and provider verification. Factual RAG answers remain fail-closed while the production knowledge index is empty.
+The P9 immediate production gate is **PASS** because the release artifacts passed the L1 unit gate, real production deployments completed, and the dedicated LINE inbound/outbound journey reconciled successfully. Dedicated LINE traffic is enabled after migration, environment, RLS/grant, regional deployment and provider verification. The later `P9-KNOW-002` gate safely activates six certified exact-fact anchors; every other factual path remains fail-closed.
 
 ## Verification commands
 
@@ -149,8 +163,8 @@ rewrite production data.
   reconciliation is complete.
 - `P8-GATE` is complete under `SPEC-AUTO-001`; external observation and content
   governance remain safe operational follow-up.
-- Supabase project provisioning, LINE developer authentication and tenant data
-  wiring are complete. Certified ACTIVE production knowledge is not present.
+- Supabase project provisioning, LINE developer authentication, tenant data
+  wiring and screened `safe-facts-mvp` activation are complete.
 - MVP project completion is **claimed for the declared unit-gated and
-  production-safe scope**. Certified factual knowledge activation is not
-  claimed because the current active public index is intentionally empty.
+  production-safe scope**, including the six certified ACTIVE exact facts and
+  their safe CLARIFY/HANDOFF boundary.

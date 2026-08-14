@@ -1068,7 +1068,7 @@
     },
     {
       "taskId": "P9-KNOW-002",
-      "state": "planned",
+      "state": "completed",
       "requiredCommands": [],
       "requiredTestIds": [],
       "onPass": []

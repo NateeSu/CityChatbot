@@ -242,7 +242,7 @@ Phase ที่มี dependency ระดับ task ใช้ contract/mock �
 | P6 Admin/Content | DONE (AUTO_CLOSED_UNIT_GREEN) | เริ่ม: P1,P2; Gate: P3,P4 | 42 | [Evidence](./evidence/P6-GATE/index.md) |
 | P7 KPI/Ops | DONE (AUTO_CLOSED_UNIT_GREEN) | P3–P6 | 44 | [Evidence](./evidence/P7-GATE/index.md) |
 | P8 Post-production Certification | DONE (AUTO_CLOSED_UNIT_GREEN; safe operational follow-up remains) | MVP Production ไม่ต้องรอ | 42 | [Evidence](./evidence/P8-GATE/index.md) |
-| P9 Immediate Deploy/Hypercare | IN_PROGRESS (authorized municipal corpus production activation) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
+| P9 Immediate Deploy/Hypercare | DONE (production corpus and LINE grounded-answer verification complete) | P0–P7 unit green | 28 | [Evidence](./evidence/P9-GATE/index.md) |
 
 ---
 
@@ -1467,9 +1467,9 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - หลักฐาน: [Evidence](./evidence/P9-CAN-001/index.md)
 
 - Latest verified checkpoint (2026-08-12): authenticated production LIFF session/bootstrap and the synthetic complaint journey passed on the dedicated canary tenant. `POST /api/v1/liff/session` returned `201`; citizen bootstrap and complaint list returned `200`; create returned receipt `CITYCHATBOT-2569-000001`; exact idempotency replay returned the same complaint with `idempotent_replay=true`; constrained cleanup transitioned it to `CANCELLED`, `row_version=2`, preserving its audit timeline. Forward-only migrations `20260812170000_fix_liff_identity_return.sql` and `20260812180000_fix_citizen_list_projection.sql` are applied. Runtime-role isolation remains enforced: scoped private wrappers are executable and direct complaint-table `SELECT` is denied.
-- Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account in `SAFE_ABSTENTION` mode as of 2026-08-13. The Project Owner has now declared `doc_rag_test` to be the authentic municipal corpus; `P9-KNOW-001` is the next executable task and will activate only unit-gated, conflict-screened public text/facts. Until its receipt and production verification are complete, factual answering remains fail-closed.
+- Direct LINE webhook/runtime/tenant traffic is ENABLED for the dedicated account. The Project Owner-declared `doc_rag_test` corpus is active through the screened `safe-facts-mvp` surface: 17 receipt-bound source records, 18 active PUBLIC chunks and 6 APPROVED PUBLIC exact facts. Content outside this certified surface remains fail-closed.
 - Production LINE E2E proof is complete: redacted one-hour ledger aggregate shows inbound `PROCESSED=4`, outbound `API_ACCEPTED=4`, inbox FAILED/DLQ `0`, outbound FAILED/DLQ `0`; post-fix Vercel logs contain no worker failure or runtime error. Runtime verification and the evidence-only follow-up deployment both reached READY and `/api/health` returned HTTP 200.
-- `P9-KNOW-001` closed its machine-verifiable implementation gate from the Project Owner's source-authority declaration. `P9-KNOW-002` is now the only open task: it applies that reviewed artifact to the production tenant, verifies tenant-scoped active knowledge, and proves a real LINE factual answer with source evidence.
+- `P9-KNOW-002` completed production activation and verification on 2026-08-14. A real LINE request reached `ANSWER / ANSWERABLE` and provider delivery `API_ACCEPTED`; final commit `5f98004` adds entity-scoped exact-fact selection and source-title citations and is READY on deployment `dpl_BJ98vGo16dm6HjRh2HWBgcgka4Qn`.
 
 - [x] `P9-CAN-002` เปิด pilot tenant canary แบบ staff-supervised
   - สถานะ: DONE (AUTO_CLOSED_UNIT_GREEN; reportHash=06040173024af3519796e5e2eb42de2649e074f1e159b4f652fc6e090b1e60a0; revision=6c0a95116477c3c0c2200dcaddff6b0d94d01593)
@@ -1557,8 +1557,8 @@ Observation windows, manual journeys, stakeholder feedback, signatures, training
   - Effort: XL (8) | Trace: RF-07, RF-08, RF-13, RF-14, RF-15, RF-16, RF-18
   - หลักฐาน: [Evidence](./evidence/P9-KNOW-001/index.md)
 
-- [ ] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
-  - สถานะ: IN_PROGRESS (AUTO_QUEUED_BY_SYSTEM_UNIT_GATE)
+- [x] `P9-KNOW-002` นำ corpus เทศบาลที่ screened/unit-gated ขึ้น Production และยืนยันการตอบผ่าน LINE
+  - สถานะ: DONE (2026-08-14 — 17/17 production receipts, 18 active PUBLIC chunks, 6 APPROVED PUBLIC facts, real LINE `ANSWER / ANSWERABLE`, final deployment READY)
   - เจ้าของระบบ: Coding Agent + `SYSTEM_UNIT_GATE`
   - Prerequisites: `P9-KNOW-001`; deployed runtime; existing canary tenant and LINE webhook
   - Requirement IDs: `RAG-CORPUS-001`..`RAG-CORPUS-011`, `INV-TENANT-001`, `INV-ANSWER-001`, `INV-CLAIM-001`, `INV-AUDIT-001`, `SPEC-AUTO-001`

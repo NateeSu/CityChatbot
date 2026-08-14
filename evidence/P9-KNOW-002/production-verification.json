@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "taskId": "P9-KNOW-002",
+  "verifiedAt": "2026-08-14T03:26:00Z",
+  "tenantScopeSha256Prefix": "a94eb94221d8",
+  "activation": {
+    "mode": "safe-facts-mvp",
+    "receiptReportHash": "sha256:f08981a910049cbfe90580100eae8f307235e2a345e84400a88b2ff8e6cfe4e4",
+    "activationManifestHash": "sha256:bca48b0011d664372c3292c6d4b8246f2fc34eb9e1fee1115ebe650843426e69",
+    "sourceRecords": 17,
+    "activeUnitGatedVersions": 17,
+    "readyIndexGenerations": 17,
+    "activePublicChunks": 18,
+    "approvedPublicFacts": 6
+  },
+  "lineProbe": {
+    "requestId": "64441e7d-c742-437f-be1b-8805dfad8078",
+    "receivedAt": "2026-08-14T03:12:34Z",
+    "httpStatus": 200,
+    "acceptedEventCount": 1,
+    "duplicateEventCount": 0,
+    "knowledgeChunks": 18,
+    "knowledgeFacts": 6,
+    "retrievalOutcome": "READY",
+    "decisionOutcome": "ANSWER",
+    "decisionReasonCode": "ANSWERABLE",
+    "deliveryAccepted": 1,
+    "retryScheduled": 0,
+    "deadLettered": 0,
+    "visibleReplyVerified": true
+  },
+  "finalRelease": {
+    "commit": "5f98004ef8a675ee033e3d56d89a274f9c7bb6af",
+    "deploymentId": "dpl_BJ98vGo16dm6HjRh2HWBgcgka4Qn",
+    "deploymentUrl": "city-chatbot-escgs6twz-nateesus-projects.vercel.app",
+    "productionAlias": "city-chatbot-murex.vercel.app",
+    "region": "sin1",
+    "state": "READY",
+    "healthStatus": 200,
+    "runtimeErrorsLast30Minutes": 0,
+    "releaseManifestDigest": "606c47ccc98bd20ba63c407282529739d42b95df2b6aacde161193f4cfb12014"
+  },
+  "automatedChecks": {
+    "vitest": "66 files / 399 tests passed",
+    "pythonContracts": "341 tests passed",
+    "targetedKnowledge": "22 tests passed",
+    "lint": "passed",
+    "typecheck": "passed",
+    "build": "passed",
+    "secretScan": "clean",
+    "unitGateManifest": "valid"
+  }
+}

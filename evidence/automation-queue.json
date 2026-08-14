@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "actor": "SYSTEM_UNIT_GATE",
-  "sourceTaskId": "P9-KNOW-001",
-  "nextTaskId": "P9-KNOW-002",
-  "reportHash": "f08981a910049cbfe90580100eae8f307235e2a345e84400a88b2ff8e6cfe4e4",
-  "revision": "d1028c787f6841737472c38dfdf9f23d20a54bfa",
-  "queuedAt": "2026-08-13T09:17:33Z",
-  "status": "QUEUED"
+  "sourceTaskId": "P9-KNOW-002",
+  "nextTaskId": null,
+  "reportHash": "0bcce573f65968e3eb511f094befe3c61bfb135747fe5e33bf7168a8112d159a",
+  "revision": "5f98004ef8a675ee033e3d56d89a274f9c7bb6af",
+  "queuedAt": "2026-08-14T03:26:00Z",
+  "status": "EMPTY"
 }
