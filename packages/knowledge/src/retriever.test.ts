@@ -129,6 +129,56 @@ describe("knowledge hybrid retrieval", () => {
     expect(result.outcome).toBe("READY");
   });
 
+  it("limits exact facts to the named entity and clarifies an unscoped multi-entity fee question", () => {
+    const fitnessChunk = chunk({
+      id: "fitness-fee-chunk",
+      tenantId: TENANT_A,
+      displayText: "ค่าบริการรายครั้ง 30 บาท",
+      sourceHash: "fitness-fee-source",
+      factTypes: ["FEE"],
+    });
+    const kccChunk = chunk({
+      id: "kcc-fee-chunk",
+      tenantId: TENANT_A,
+      displayText: "ไม่เสียค่าใช้จ่ายในการใช้บริการ",
+      sourceHash: "kcc-fee-source",
+      factTypes: ["FEE"],
+    });
+    const fitnessFee = fact({
+      id: "fitness-fee",
+      sourceChunkId: fitnessChunk.id,
+      factType: "FEE",
+      entityKey: "fitness-center:single-visit-fee",
+      entityDisplayName: "Fitness Center",
+      normalizedValue: "ค่าบริการรายครั้ง 30 บาท",
+    });
+    const kccFee = fact({
+      id: "kcc-fee",
+      sourceChunkId: kccChunk.id,
+      factType: "FEE",
+      entityKey: "kcc-center:service-fee",
+      entityDisplayName: "KCC",
+      normalizedValue: "ไม่เสียค่าใช้จ่ายในการใช้บริการ",
+    });
+    const retrievalSource = source([fitnessChunk, kccChunk], [fitnessFee, kccFee]);
+    const entities = [
+      { type: "MUNICIPAL_SOURCE", key: "fitness-center", label: "Fitness Center", aliases: ["ฟิตเนส"] },
+      { type: "MUNICIPAL_SOURCE", key: "kcc-center", label: "KCC", aliases: ["เคซีซี"] },
+    ];
+
+    const scoped = retrieve(retrievalSource, TENANT_A, "ฟิตเนส ค่าธรรมเนียมรายครั้งเท่าไร", { at: AT, entities });
+    expect(scoped.outcome).toBe("READY");
+    expect(scoped.matchedFacts.map((item) => item.id)).toEqual([fitnessFee.id]);
+
+    const ambiguous = retrieve(retrievalSource, TENANT_A, "ค่าธรรมเนียมเท่าไร", { at: AT, entities });
+    expect(ambiguous).toMatchObject({
+      outcome: "CLARIFY",
+      reasonCode: "AMBIGUOUS_ENTITY",
+      matchedFacts: [],
+      plan: { ambiguity: { isAmbiguous: true, missingSlots: ["entity"] } },
+    });
+  });
+
   it("applies RRF deterministically, source/section diversity and context budget", () => {
     const chunks = [
       chunk({ id: "chunk-1", tenantId: TENANT_A, displayText: "service permit application process", sourceHash: "same-source", chunkIndex: 0 }),

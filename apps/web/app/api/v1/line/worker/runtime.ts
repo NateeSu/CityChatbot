@@ -24,6 +24,8 @@ import {
 } from "@citychatbot/line";
 import {
   retrieve,
+  documentTitlesFromChunks,
+  retrievalEntitiesFromFacts,
   type IndexChunk,
   type IndexFact,
   type RetrievalSource,
@@ -528,9 +530,13 @@ const createChatService = async (event: DurableLineInboxEvent, knowledgeCache: M
       const retrieval = retrieve(source, input.tenantId, input.userText, {
         audience: "CITIZEN",
         at: new Date().toISOString(),
+        entities: retrievalEntitiesFromFacts(scopedFacts),
         priorTurns: input.context.map((turn) => ({ role: turn.role === "ASSISTANT" ? "assistant" : "user", content: turn.text })),
       });
-      const decision = decideAnswerability(retrieval.plan, retrieval, { intentId: "intent-1" });
+      const decision = decideAnswerability(retrieval.plan, retrieval, {
+        intentId: "intent-1",
+        documentTitles: documentTitlesFromChunks(scopedChunks),
+      });
       const normalizedQuestion = retrieval.plan.normalizedQuestion;
       const requestedScopedFacts = scopedFacts.filter((fact) => retrieval.plan.requestedFactTypes.includes(fact.factType));
       const diagnosticMatchCount = requestedScopedFacts.filter((fact) => {

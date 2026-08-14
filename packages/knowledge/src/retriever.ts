@@ -438,9 +438,13 @@ const lexicalScore = (query: string, chunk: IndexChunk): number => {
 const effectiveAt = (chunk: IndexChunk, at: string): boolean =>
   (chunk.validFrom === undefined || chunk.validFrom <= at) && (chunk.validUntil === undefined || chunk.validUntil > at);
 
+export const retrievalEntityScopeKey = (entityKey: string): string => entityKey.split(":", 1)[0]!.trim();
+
 const factMatchesQuery = (fact: IndexFact, plan: QueryPlan): boolean => {
   if (fact.reviewStatus !== "APPROVED") return false;
   if (plan.requestedFactTypes.length > 0 && !plan.requestedFactTypes.includes(fact.factType)) return false;
+  if (plan.entityCandidates.length > 0 && !plan.entityCandidates.some((entity) =>
+    entity.key === fact.entityKey || entity.key === retrievalEntityScopeKey(fact.entityKey))) return false;
   const queryValue = exactValue(plan.normalizedQuestion);
   const factValue = exactValue(fact.normalizedValue);
   return factValue.length > 0 && (queryValue.includes(factValue) || factValue.includes(queryValue) || containsAny(plan.normalizedQuestion, FACT_KEYWORDS[fact.factType]));
@@ -499,7 +503,7 @@ export const retrieve = (
   const policy = mergePolicy(options.policy);
   const audience = options.audience ?? "CITIZEN";
   const at = iso(options.at, "at");
-  const plan = understandQuery(question, {
+  let plan = understandQuery(question, {
     now: at,
     requireAsOfDate: options.requireAsOfDate,
     entities: options.entities,
@@ -538,7 +542,46 @@ export const retrieve = (
   const allowedChunks = new Map(chunks.map((chunk) => [chunk.id, chunk]));
   const facts = source.listSearchableFacts(tenantId, retrievalOptions)
     .filter((fact) => fact.tenantId === tenantId && fact.reviewStatus === "APPROVED" && allowedChunks.has(fact.sourceChunkId));
-  const matchedFacts = facts.filter((fact) => factMatchesQuery(fact, plan));
+  let matchedFacts = facts.filter((fact) => factMatchesQuery(fact, plan));
+  if (plan.entityCandidates.length === 0) {
+    const entityChoices = new Map<string, QueryEntityCandidate>();
+    for (const fact of matchedFacts) {
+      const key = retrievalEntityScopeKey(fact.entityKey);
+      if (!entityChoices.has(key)) entityChoices.set(key, {
+        type: fact.entityType,
+        key,
+        label: fact.entityDisplayName,
+        confidenceBand: "LOW",
+      });
+    }
+    if (entityChoices.size > 1) {
+      plan = {
+        ...plan,
+        entityCandidates: [...entityChoices.values()].sort((left, right) => left.key.localeCompare(right.key)),
+        ambiguity: { isAmbiguous: true, missingSlots: ["entity"] },
+      };
+      matchedFacts = [];
+      return {
+        plan,
+        policy,
+        candidates: [],
+        evidence: [],
+        contextChunks: [],
+        contextText: "",
+        matchedFacts,
+        conflicts: [],
+        coverage: {
+          requestedFactTypes: plan.requestedFactTypes,
+          coveredFactTypes: [],
+          missingFactTypes: plan.requestedFactTypes,
+          complete: false,
+        },
+        outcome: "CLARIFY",
+        reasonCode: "AMBIGUOUS_ENTITY",
+        trace,
+      };
+    }
+  }
   const exactChunkIds = [...new Set(matchedFacts.map((fact) => fact.sourceChunkId))];
   trace.exactCandidateCount = exactChunkIds.length;
   const lexical = chunks.map((chunk) => ({ chunk, score: Math.max(...plan.retrievalQueries.map((query) => lexicalScore(query, chunk))) }))
