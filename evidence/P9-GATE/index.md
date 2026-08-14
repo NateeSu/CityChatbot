@@ -1,6 +1,6 @@
 # Evidence - P9-GATE
 
-Status: **DONE** (2026-08-13)
+Status: **DONE** (2026-08-14)
 
 This gate records the MVP production deployment gate. The P8 automatic gate is
 also complete under the current authoritative policy. The later `P9-KNOW-002`
@@ -13,10 +13,16 @@ uncertified factual knowledge and broadcast traffic remain disabled.
 receipt-bound `ACTIVE + UNIT_GATED` source versions, `17` READY index
 generations, `18` active PUBLIC chunks and `6` APPROVED PUBLIC exact facts. A
 real LINE request completed `ANSWER / ANSWERABLE`, provider delivery was
-accepted, and no retry or dead letter was created. Final commit `5f98004`
-adds entity-scoped fact selection and source-title citations and is READY on
-deployment `dpl_BJ98vGo16dm6HjRh2HWBgcgka4Qn` in `sin1`; production health
-returned HTTP `200` and the selected 30-minute runtime-error scan was clean.
+accepted, and no retry or dead letter was created. Commit `42f1fca` fixes
+entity-scoped fact rendering and source-title citations. Migration commit
+`2e1635b` bounds both durable LINE claim clocks to the Postgres clock and is
+active in Supabase production. Final request
+`4adb782c-015f-4831-a91a-ce834423affe` on READY deployment
+`dpl_2fFdTghydAwDkkXk4JasD76abhZs` accepted one event and completed chat `1`
+plus provider delivery `1` in the same webhook invocation, with retry/DLQ
+`0/0`. LINE visibly returned only `ค่าบริการรายครั้ง 30 บาท` and
+`แหล่งข้อมูล: ฟิตเนส`. Production health returned HTTP `200` and the final
+runtime-error scan was clean.
 See [P9-KNOW-002](../P9-KNOW-002/index.md).
 
 ## Current continuation checkpoint (2026-08-13)
@@ -136,7 +142,7 @@ The P9 immediate production gate is **PASS** because the release artifacts passe
 
 ## Verification commands
 
-- `pnpm test:unit` - PASS, 387/387.
+- `pnpm test:unit` - PASS, 400/400.
 - `pnpm --filter @citychatbot/web lint` - PASS.
 - `pnpm --filter @citychatbot/web typecheck` - PASS.
 - `pnpm --filter @citychatbot/web build` - PASS.
@@ -147,6 +153,9 @@ The P9 immediate production gate is **PASS** because the release artifacts passe
 - Vercel runtime errors for the last 30 minutes - none found.
 - Real LINE E2E ledger query, one-hour redacted aggregate - PASS (`PROCESSED=4`, `API_ACCEPTED=4`, FAILED/DLQ `0/0`).
 - Vercel post-fix worker failure query, five minutes - PASS (no `line_worker_step_failed`; no runtime errors).
+- `python -m unittest scripts.test_line_runtime_schema scripts.test_line_webhook_api` - PASS, 17/17.
+- Supabase production clock-fix postconditions - PASS, webhook/delivery `true / true / true`.
+- Final fresh LINE same-webhook probe - PASS, accepted/chat/delivery `1/1/1`, retry/DLQ `0/0`.
 
 ## Rollback
 
