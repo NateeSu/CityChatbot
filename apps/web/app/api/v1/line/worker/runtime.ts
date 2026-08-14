@@ -192,6 +192,13 @@ const stringArray = (value: unknown): string[] => Array.isArray(value) && value.
 const databaseId = (value: string): string => value.trim().toLowerCase();
 const databaseEnum = (value: string): string => value.trim().toUpperCase();
 const databaseLanguage = (value: string): IndexChunk["language"] => databaseEnum(value).toLowerCase() as IndexChunk["language"];
+const exactRetrievalValue = (value: string): string => value.normalize("NFC")
+  .toLocaleLowerCase("th-TH")
+  .replace(/[๐-๙]/g, (digit) => String(digit.charCodeAt(0) - "๐".charCodeAt(0)))
+  .replace(/[^\p{L}\p{N}]+/gu, "");
+const retrievalFactKeywords: Readonly<Record<string, readonly string[]>> = {
+  FEE: ["fee", "price", "cost", "ค่าธรรมเนียม", "ค่าใช้จ่าย", "ราคา"],
+};
 
 const sourceLocator = (value: unknown): IndexChunk["sourceLocator"] => {
   const record = isRecord(value) ? value : {};
@@ -510,6 +517,13 @@ const createChatService = async (event: DurableLineInboxEvent, knowledgeCache: M
         priorTurns: input.context.map((turn) => ({ role: turn.role === "ASSISTANT" ? "assistant" : "user", content: turn.text })),
       });
       const decision = decideAnswerability(retrieval.plan, retrieval, { intentId: "intent-1" });
+      const normalizedQuestion = retrieval.plan.normalizedQuestion;
+      const requestedScopedFacts = scopedFacts.filter((fact) => retrieval.plan.requestedFactTypes.includes(fact.factType));
+      const diagnosticMatchCount = requestedScopedFacts.filter((fact) => {
+        const factValue = exactRetrievalValue(fact.normalizedValue);
+        const keywords = retrievalFactKeywords[fact.factType] ?? [];
+        return factValue.length > 0 && (exactRetrievalValue(normalizedQuestion).includes(factValue) || factValue.includes(exactRetrievalValue(normalizedQuestion)) || keywords.some((keyword) => normalizedQuestion.includes(keyword.normalize("NFC").toLocaleLowerCase("th-TH"))));
+      }).length;
       console.info("line_retrieval_snapshot", {
         requestId: event.requestId ?? null,
         tenantScope: sha256(input.tenantId).slice(0, 12),
@@ -521,6 +535,10 @@ const createChatService = async (event: DurableLineInboxEvent, knowledgeCache: M
         scopedChunkCount: scopedChunks.length,
         scopedFactCount: scopedFacts.length,
         scopedFactTypes,
+        scopedFactValueLengths: scopedFacts.map((fact) => `${fact.factType}:${fact.normalizedValue.length}`).sort(),
+        normalizedQuestionHasFeeMarker: normalizedQuestion.includes("ค่าธรรมเนียม"),
+        requestedScopedFactCount: requestedScopedFacts.length,
+        diagnosticMatchCount,
         queryLanguage: retrieval.plan.language,
         requestedFactTypes: retrieval.plan.requestedFactTypes,
         candidateCount: retrieval.candidates.length,
